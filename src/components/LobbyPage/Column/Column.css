@@ -1,0 +1,15 @@
+.column {
+    float: left;
+}
+
+.field {
+    width: 35px;
+    height: 35px;
+    border: 1px solid rgb(206, 197, 197);
+    background-color: #e2e7e7;
+}
+
+#field:hover {
+    background-color: rgb(84, 205, 226);
+    cursor: pointer;
+}

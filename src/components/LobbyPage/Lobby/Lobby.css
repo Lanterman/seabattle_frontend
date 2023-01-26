@@ -1,0 +1,43 @@
+.singl-lobby {
+    height: 100%;
+    float: left;
+}
+
+.singl-lobby .lobby-name {
+    text-align: center;
+    font-size: 35px;
+    margin-top: -25px;
+}
+
+.singl-lobby .lobby-options {
+    padding: 20px 0px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.singl-lobby .bet {
+    padding-right: 5px;
+}
+
+.singl-lobby .time-to-move {
+    padding: 0px 5px 0px 30px;  
+}
+
+.singl-lobby .enemy {
+    padding-left: 30px;
+    text-decoration: none;
+    color: black;
+}
+
+.singl-lobby .enemy:hover {
+    color: rgb(67, 130, 247);
+}
+
+.singl-lobby .enemy span {
+    padding-right: 5px;
+}
+
+.game-block {
+    height: 100%;
+    float: left;
+}

@@ -1,0 +1,8 @@
+.advertisng {
+    width: 18%;
+    height: 100%;
+    float: left;
+    background-color: rgb(238, 235, 243);
+    position: fixed;
+    padding-top: 100px;
+}

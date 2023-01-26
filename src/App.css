@@ -1,0 +1,12 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+.main-page {
+    padding-top: 100px;
+    padding-left: 18%;
+    width: 50%;
+    height: 100%;
+    float: left;
+}

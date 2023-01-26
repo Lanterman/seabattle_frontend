@@ -1,0 +1,15 @@
+.lobbyList {
+    margin: 50px 10px 0px 10px;
+    padding: 20px 0px 20px 0px;
+}
+
+.lobbyList .title {
+    text-align: center;
+    font-size: 35px;
+}
+
+.lobbyList .suspense {
+    text-align: center;
+    font-size: 35px;
+    margin-top: 20%;
+}

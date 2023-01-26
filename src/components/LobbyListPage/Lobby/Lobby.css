@@ -1,0 +1,37 @@
+.lobby {
+    padding: 0px 15px;
+    margin: 10px 0px;
+    border-bottom: 2px inset rgb(69, 14, 219);
+}
+
+.lobby .lobbyLink {
+    text-decoration: none;
+    color: black;
+}
+
+.lobby:hover {
+    background-color: rgb(179, 183, 192);
+}
+
+.lobby .lobbyName {
+    text-align: center;
+    font-size: 24px;
+}
+
+.options {
+    padding: 10px;
+    font-size: 19px;
+    text-align: center;
+}
+
+.options .privateLobby {
+    float: left;
+}
+
+.options .option {
+    padding: 0px 3px 0px 30px;
+}
+
+.options .ownerLobby {
+    float: right;
+}
