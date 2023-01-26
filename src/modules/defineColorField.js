@@ -1,7 +1,12 @@
 class DefineColorField {
 
-    defineColorOverField(fieldNameList, updateColorShip) {
-        updateColorShip(true);
+    defineColorDropField(fieldNameList) {
+        fieldNameList.map((fieldName => (
+            document.getElementsByName(fieldName)[0].style.background = "#4382f7"
+        )));
+    };
+
+    defineColorOverField(fieldNameList) {
         fieldNameList.map((fieldName => (
             document.getElementsByName(fieldName)[0].style.background = "gray"
         )));

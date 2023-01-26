@@ -1,5 +1,4 @@
-import { SetShipOnBoard } from "../../../modules/setShipLocation";
-import { DefineColorField } from "../../../modules/defineColorField";
+import { MakeShootOnBoard } from "../../../modules/makeShootOnBoard";
 
 import "./Column.css";
 
@@ -7,50 +6,47 @@ import "./Column.css";
 function Column(props) {
     const column = JSON.parse(props.column.replace(/'/g, '"'))
     const isShoot = props.makeShoot && true;
-    const setShipOnBoard = new SetShipOnBoard();
-    const defineColorField = new DefineColorField();
+    const isShipExists = props.ship && true;
+    const makeShootOnBoard = new MakeShootOnBoard();
 
     function makeShoot(e) {
         const fieldName = e.target.attributes.name.value;
-        if (fieldName === "A1") {
-            e.target.style.backgroundColor = "blue";
-        } else {e.target.style.backgroundColor = "red"}
-        column[fieldName] = "shoot";
-        props.makeShoot(fieldName[0], column);
+        if (["miss", "hit"].indexOf(column[fieldName]) === -1) {
+            const updatedColumn = makeShootOnBoard.makeShoot(fieldName, column);
+            props.makeShoot(fieldName[0], updatedColumn);
+        };
     };
 
     function dropHandler(e, fieldName) {
         e.preventDefault();
-        const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size);
-        if (fieldNameList.indexOf(null) === -1) {
-            const updatedColumnByShip = setShipOnBoard.putShipOnBoard(fieldNameList, props.ship.name, column)
-            // const updatedColumnBySpace = setShipOnBoard.defineSpaceFieldName(updatedColumnByShip);
-            props.setUpdatedColumn(fieldName[0], updatedColumnByShip);
-            e.target.style.background = "#4382f7";
-        };
+        props.dropShipOnBoard(fieldName ,column);
     };
 
     function dragOverHandler(e, fieldName) {
         e.preventDefault();
-        const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size);
-        fieldNameList.indexOf(null) === -1 ? 
-        defineColorField.defineColorOverField(fieldNameList, props.updateColorShip) : 
-            props.updateColorShip(false);
+        props.swipeOverFields(fieldName);
     };
 
     function dragLeaveHandler(e, fieldName) {
-        const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size);
-        fieldNameList.indexOf(null) === -1 && defineColorField.defineColorLeaveField(fieldNameList);
-    }
+        props.leaveFields(fieldName);
+    };
 
     return (
             <div className="column">
             {Object.keys(column).map((fieldName) => 
-                <div id={isShoot ? "field" : undefined} className="field" key={fieldName} name={fieldName} 
+                <div 
+                    key={fieldName} 
+                    name={fieldName} 
+                    id={isShoot ? "field" : undefined} 
+                    className={`field ${column[fieldName] === "miss" ? "miss-shoot-field" :
+                                        column[fieldName] === "hit" ? "hit-shoot-field" :
+                                        column[fieldName] === "space" ? "space-field" :
+                                        column[fieldName] && !isShoot ? "ship-field" :
+                                        "empty-field"}`}  
                     onClick={isShoot ? makeShoot : undefined} 
-                    onDrop={(e) => {props.ship && dropHandler(e, fieldName)}}
-                    onDragOver={(e) => {props.ship && dragOverHandler(e, fieldName)}}
-                    onDragLeave={(e) => {props.ship && dragLeaveHandler(e, fieldName)}}>
+                    onDrop={(e) => {isShipExists && dropHandler(e, fieldName)}}
+                    onDragOver={(e) => {isShipExists && dragOverHandler(e, fieldName)}}
+                    onDragLeave={(e) => {isShipExists && dragLeaveHandler(e, fieldName)}}>
                     {column[fieldName]}
                 </div>
             )}

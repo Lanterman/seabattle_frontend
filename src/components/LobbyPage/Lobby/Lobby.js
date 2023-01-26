@@ -25,7 +25,6 @@ function Lobby(props) {
 
     function setUpdatedColumn(columnName, column) {
         const updatedLobby = Object.assign({}, lobby);
-        console.log(updatedLobby.maps[0])
         updatedLobby.maps[0][columnName] = JSON.stringify(column)
         setLobby(updatedLobby);
     }
@@ -33,7 +32,7 @@ function Lobby(props) {
     function makeShoot(columnName, column) {
         const updatedLobby = Object.assign({}, lobby);
         updatedLobby.maps[1][columnName] = JSON.stringify(column);
-        setLobby(updatedLobby)
+        setLobby(updatedLobby);
     };
 
     return (
@@ -60,7 +59,7 @@ function Lobby(props) {
                     updateColorShip={updateColorShip}
                     setUpdatedColumn={setUpdatedColumn}
                     />
-                <Board board={lobby.maps[1]} key={lobby.maps[1].id} makeShoot={makeShoot} />
+                <Board board={lobby.maps[1]} key={lobby.maps[1].id} makeShoot={makeShoot}/>
             </div>
             <Ships setShip={setShip}/>
         </div>
