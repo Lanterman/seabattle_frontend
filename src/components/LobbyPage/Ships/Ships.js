@@ -18,8 +18,9 @@ function Ships(props) {
     };
 
     function dragEndHandler(e, ship) {
+        console.log(props.ship)
         if (ship.count > 0) {
-            ship.count -= 1;
+            if (!props.ship) ship.count -= 1;
             setShips([...ships], ship);
             if (ship.count > 0) e.target.style.background = "#4382f7";
         };

@@ -1,32 +1,36 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faMoneyBillTransfer,  faClock, faUser } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMoneyBillTransfer,  faClock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { Board } from "../Board/Board";
 import { Ships } from "../Ships/Ships";
 
-import "./Lobby.css"
+import "./Lobby.css";
 
 
 function Lobby(props) {
     const [lobby, setLobby] = useState(props.lobby);
     const [ship, setShip] = useState({});
     const [isCanPutShip, setIsCanPutShip] = useState(true);
+    const [plane, setPlane] = useState("vertical");
+    console.log("сделать горизонтальную расстановку, добавить выбор расстановки, возможность убрать корабль с поля")
+    console.log("Менять цвет перемещаемого корабля в зависимости от действия")
 
     function updateColorShip(value) {
         setIsCanPutShip(value);
         if (isCanPutShip) {
-            ship.shipHtml.style.background = "#b7b9c7" 
+            ship.shipHtml.style.background = "#b7b9c7";
         } else {
             ship.shipHtml.style.background = "red";
-        }
+        };
     };
 
-    function setUpdatedColumn(columnName, column) {
+    function setUpdatedBoard(board) {
         const updatedLobby = Object.assign({}, lobby);
-        updatedLobby.maps[0][columnName] = JSON.stringify(column)
+        updatedLobby.maps[0] = board;
         setLobby(updatedLobby);
+        setShip();
     }
 
     function makeShoot(columnName, column) {
@@ -55,13 +59,14 @@ function Lobby(props) {
                 <Board 
                     board={lobby.maps[0]} 
                     key={lobby.maps[0].id} 
-                    ship={ship} 
+                    ship={ship}
+                    plane={plane}
                     updateColorShip={updateColorShip}
-                    setUpdatedColumn={setUpdatedColumn}
+                    setUpdatedBoard={setUpdatedBoard}
                     />
                 <Board board={lobby.maps[1]} key={lobby.maps[1].id} makeShoot={makeShoot}/>
             </div>
-            <Ships setShip={setShip}/>
+            <Ships setShip={setShip} setPlane={setPlane} ship={ship}/>
         </div>
     );
 };

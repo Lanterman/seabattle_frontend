@@ -1,4 +1,5 @@
 import { SetShipOnBoard } from "../../../modules/setShipLocation";
+import { AddSpaceAroundShip } from "../../../modules/addSpaceAroundShip";
 import { DefineColorField } from "../../../modules/defineColorField";
 
 import { Column } from "../Column/Column";
@@ -9,33 +10,42 @@ import "./Board.css"
 function Board(props) {
     const columnNameList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
     const fieldNumberList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    const userTable = props.board.user_id
+    const userTable = props.board.user_id;
+    const board = columnNameList.map(columnName => JSON.parse(props.board[columnName].replace(/'/g, '"')));
     const setShipOnBoard = new SetShipOnBoard();
+    const addSpaceAroundShip = new AddSpaceAroundShip(props.plane);
     const defineColorField = new DefineColorField();
 
-    function dropShipOnBoard(fieldName, column) {
+    function dropShipOnBoard(fieldName) {
         const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size);
-        if (fieldNameList.indexOf(null) === -1) {
-            const updatedColumnByShip = setShipOnBoard.putShipOnBoard(fieldNameList, props.ship.name, column)
-            const updatedColumnBySpace = setShipOnBoard.defineSpaceFieldName(fieldNameList, columnNameList, updatedColumnByShip);
+
+        if (setShipOnBoard.isCanPut(fieldNameList, columnNameList, board)) {
+            setShipOnBoard.putShipOnBoard(fieldNameList, props.ship.name, columnNameList, board);
+            addSpaceAroundShip.defineSpaceFieldName(fieldNameList, columnNameList, board);
             defineColorField.defineColorDropField(fieldNameList);
-            props.setUpdatedColumn(fieldName[0], updatedColumnByShip);
+
+            columnNameList.map(columnName => {
+                return props.board[columnName] = JSON.stringify(board[columnNameList.indexOf(columnName)])
+            });
+
+            props.setUpdatedBoard(props.board);
         };
     };
 
     function swipeOverFields(fieldName) {
         const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size);
-        if (fieldNameList.indexOf(null) === -1) { 
+        
+        if (setShipOnBoard.isCanPut(fieldNameList, columnNameList, board)) {
             defineColorField.defineColorOverField(fieldNameList);
             props.updateColorShip(true);
-        } else { 
-            props.updateColorShip(false);
+            return;
         };
+        props.updateColorShip(false);
     };
 
     function leaveFields(fieldName) {
         const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size);
-        fieldNameList.indexOf(null) === -1 && defineColorField.defineColorLeaveField(fieldNameList);
+        setShipOnBoard.isCanPut(fieldNameList, columnNameList, board) && defineColorField.defineColorLeaveField(fieldNameList);
     };
 
     return (
@@ -48,10 +58,10 @@ function Board(props) {
                 {fieldNumberList.map(number => {return <span key={number} className="field-name">{number}</span>})}
             </div>
             <div className="game-fields">
-                {columnNameList.map((columName) => {
+                {board.map((colum) => {
                     return <Column 
-                        key={columName} 
-                        column={props.board[columName]} 
+                        key={board.indexOf(colum)} 
+                        column={colum} 
                         makeShoot={props.makeShoot} 
                         ship={props.ship}
                         dropShipOnBoard={dropShipOnBoard}
