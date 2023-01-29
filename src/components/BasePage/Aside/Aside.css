@@ -7,4 +7,5 @@
     background-color: rgb(232, 240, 240);
     padding-top: 100px;
     border-left: 1px inset rgb(228, 227, 227);
+    z-index: 99;
 }

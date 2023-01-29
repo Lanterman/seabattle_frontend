@@ -1,6 +1,7 @@
 import { SetShipOnBoard } from "../../../modules/setShipLocation";
-import { AddSpaceAroundShip } from "../../../modules/addSpaceAroundShip";
 import { DefineColorField } from "../../../modules/defineColorField";
+import { AddSpaceAroundShipHorizontally } from "../../../modules/addSpaceAroundShip/horizontalShip";
+import { AddSpaceAroundShipVertically } from "../../../modules/addSpaceAroundShip/verticalShip";
 
 import { Column } from "../Column/Column";
 
@@ -13,15 +14,19 @@ function Board(props) {
     const userTable = props.board.user_id;
     const board = columnNameList.map(columnName => JSON.parse(props.board[columnName].replace(/'/g, '"')));
     const setShipOnBoard = new SetShipOnBoard();
-    const addSpaceAroundShip = new AddSpaceAroundShip(props.plane);
+    const addSpaceAroundShipHorizontally = new AddSpaceAroundShipHorizontally();
+    const addSpaceAroundShipVertically = new AddSpaceAroundShipVertically();
     const defineColorField = new DefineColorField();
 
     function dropShipOnBoard(fieldName) {
-        const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size);
-
+        const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size, props.ship.plane, columnNameList);
         if (setShipOnBoard.isCanPut(fieldNameList, columnNameList, board)) {
             setShipOnBoard.putShipOnBoard(fieldNameList, props.ship.name, columnNameList, board);
-            addSpaceAroundShip.defineSpaceFieldName(fieldNameList, columnNameList, board);
+
+            props.ship.plane === "horizontal" ? 
+                addSpaceAroundShipHorizontally.defineSpaceFieldName(fieldNameList, columnNameList, board) :
+                addSpaceAroundShipVertically.defineSpaceFieldName(fieldNameList, columnNameList, board);
+
             defineColorField.defineColorDropField(fieldNameList);
 
             columnNameList.map(columnName => {
@@ -33,7 +38,7 @@ function Board(props) {
     };
 
     function swipeOverFields(fieldName) {
-        const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size);
+        const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size, props.ship.plane, columnNameList);
         
         if (setShipOnBoard.isCanPut(fieldNameList, columnNameList, board)) {
             defineColorField.defineColorOverField(fieldNameList);
@@ -44,7 +49,7 @@ function Board(props) {
     };
 
     function leaveFields(fieldName) {
-        const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size);
+        const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size, props.ship.plane, columnNameList);
         setShipOnBoard.isCanPut(fieldNameList, columnNameList, board) && defineColorField.defineColorLeaveField(fieldNameList);
     };
 

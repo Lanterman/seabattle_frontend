@@ -13,9 +13,8 @@ function Lobby(props) {
     const [lobby, setLobby] = useState(props.lobby);
     const [ship, setShip] = useState({});
     const [isCanPutShip, setIsCanPutShip] = useState(true);
-    const [plane, setPlane] = useState("vertical");
-    console.log("сделать горизонтальную расстановку, добавить выбор расстановки, возможность убрать корабль с поля")
-    console.log("Менять цвет перемещаемого корабля в зависимости от действия")
+    console.log("возможность убрать корабль с поля")
+    console.log("Менять цвет и плоскость перемещаемого корабля в зависимости от действия")
 
     function updateColorShip(value) {
         setIsCanPutShip(value);
@@ -60,13 +59,12 @@ function Lobby(props) {
                     board={lobby.maps[0]} 
                     key={lobby.maps[0].id} 
                     ship={ship}
-                    plane={plane}
                     updateColorShip={updateColorShip}
                     setUpdatedBoard={setUpdatedBoard}
                     />
                 <Board board={lobby.maps[1]} key={lobby.maps[1].id} makeShoot={makeShoot}/>
             </div>
-            <Ships setShip={setShip} setPlane={setPlane} ship={ship}/>
+            <Ships setShip={setShip} ship={ship}/>
         </div>
     );
 };

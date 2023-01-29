@@ -10,14 +10,22 @@ class SetShipOnBoard {
         return false;
     };
 
-    defineShipFieldsName(fieldName, shipSize) {
+    defineShipFieldsName(fieldName, shipSize, shipPlane, columnNameList) {
         const numberList = [...Array(shipSize).keys()];
-        const fieldNameList = numberList.map(number => (
-            (number % 2 === 0) ? fieldName[0] + (Number(fieldName.slice(1)) + (number === 0 ? number : number - 1)) : 
+        if (shipPlane === "vertical") {
+            const fieldNameList = numberList.map(number => (
+                (number % 2 === 0) ? fieldName[0] + (Number(fieldName.slice(1)) + (number === 0 ? number : number - 1)) : 
                 fieldName[0] + (Number(fieldName.slice(1)) - (number === 1 ? number : number - 1))
-        ));
-        
-        return fieldNameList.map(fieldName => Number(fieldName.slice(1)) <= 10 & Number(fieldName.slice(1)) > 0 ? fieldName : null);
+            ));
+            return fieldNameList.map(fieldName => Number(fieldName.slice(1)) <= 10 & Number(fieldName.slice(1)) > 0 ? fieldName : null);
+        } else {
+            const indexOfField = columnNameList.indexOf(fieldName[0]);
+            const indexList = numberList.map(number => (
+                (number % 2 === 0) ? indexOfField - (number === 0 ? number : number - 1) : 
+                    indexOfField + (number === 1 ? number : number - 1)
+            ));
+            return indexList.map(index => index < 10 & index >= 0 ? columnNameList[index] + fieldName.slice(1) : null)
+        };
     };
 
     putShipOnBoard(fieldNameList, shipName, columnNameList, board) {
