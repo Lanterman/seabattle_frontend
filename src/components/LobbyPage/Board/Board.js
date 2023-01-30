@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRefresh } from '@fortawesome/free-solid-svg-icons';
+
 import { SetShipOnBoard } from "../../../modules/setShipLocation";
 import { DefineColorField } from "../../../modules/defineColorField";
 import { AddSpaceAroundShipHorizontally } from "../../../modules/addSpaceAroundShip/horizontalShip";
@@ -18,6 +21,31 @@ function Board(props) {
     const addSpaceAroundShipVertically = new AddSpaceAroundShipVertically();
     const defineColorField = new DefineColorField();
 
+    function updateBoardState(board) {
+        columnNameList.map(columnName => {
+            return props.board[columnName] = JSON.stringify(board[columnNameList.indexOf(columnName)])
+        });
+
+        props.setUpdatedBoard(props.board);
+    };
+
+    function refreshTableHandler(e) {
+        let fieldNameList = [];
+        const clearedBoard = board.map((column) => {
+            for (let key in column) {
+                if (column[key]) {
+                    column[key] !== "space" && fieldNameList.push(key);
+                    column[key] = "";
+                };
+            };
+            return column;
+        });
+        
+        updateBoardState(clearedBoard);
+        props.returnShips();
+        defineColorField.defineColorLeaveField(fieldNameList);
+    };
+
     function dropShipOnBoard(fieldName) {
         const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size, props.ship.plane, columnNameList);
         if (setShipOnBoard.isCanPut(fieldNameList, columnNameList, board)) {
@@ -29,11 +57,7 @@ function Board(props) {
 
             defineColorField.defineColorDropField(fieldNameList);
 
-            columnNameList.map(columnName => {
-                return props.board[columnName] = JSON.stringify(board[columnNameList.indexOf(columnName)])
-            });
-
-            props.setUpdatedBoard(props.board);
+            updateBoardState(board);
         };
     };
 
@@ -55,7 +79,10 @@ function Board(props) {
 
     return (
         <div className="battlefield">
-            <p className="table-name" id={!userTable ? "enemy-table": undefined}>{userTable ? "My table" : "Enemy table"}</p> 
+            <p className="table-name" id={!userTable ? "enemy-table": undefined}>
+            { userTable && <FontAwesomeIcon className="refresh-table" icon={faRefresh} onClick={(e) => refreshTableHandler(e)}/>}
+            {userTable ? "My table" : "Enemy table"}
+            </p> 
             <div className="columns-name">
                 {columnNameList.map(columName => {return <span key={columName} className="column-name">{columName}</span>})}
             </div>

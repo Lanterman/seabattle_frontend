@@ -15,6 +15,15 @@
     color: rgb(209, 58, 58);
 }
 
+.battlefield .refresh-table {
+    margin-right: 10px;
+}
+
+.battlefield .refresh-table:hover {
+    transform: scale(1.1);
+    color: rgb(67, 130, 247);
+}
+
 .columns-name {
     margin-left: 33px;
     width: 371px;
