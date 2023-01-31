@@ -20,7 +20,7 @@ function Lobby(props) {
     const [currentShip, setCurrentShip] = useState({});
     const [ships, setShips] = useState(initialShips);
     const [isCanPutShip, setIsCanPutShip] = useState(true);
-    // console.log("Менять цвет и плоскость перемещаемого корабля в зависимости от действия")
+    // console.log("Менять цвет перемещаемого корабля в зависимости от действия")
 
     function returnShips() {
         setShips(initialShips);
@@ -73,14 +73,15 @@ function Lobby(props) {
                     returnShips={returnShips}
                     updateColorShip={updateColorShip}
                     setUpdatedBoard={setUpdatedBoard}
-                    />
+                />
                 <Board board={lobby.maps[1]} key={lobby.maps[1].id} makeShoot={makeShoot}/>
             </div>
             <Ships
                 currentShip={currentShip} 
                 setCurrentShip={setCurrentShip} 
                 ships={ships} 
-                setShips={setShips}/>
+                setShips={setShips}
+            />
         </div>
     );
 };

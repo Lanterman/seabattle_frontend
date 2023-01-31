@@ -11,8 +11,7 @@
 }
 
 .initial-ships .ship-label {
-	float: right;
-	margin: 7px 0px 0px 10px;
+	margin-left: 10px;
 	font-size: 19px;
 }
 
@@ -21,7 +20,7 @@
 	background-color: #4382f7;
 	border: 1px solid black;
 	float: left;
-	margin-left: 30px;
+	margin: -8px 0px 0px 30px;
 }
 
 .initial-ships #fourdeck {
@@ -44,6 +43,22 @@
 	height: 37px;
 }
 
-.transform {
-	transform: rotate(90deg);
+.initial-ships #fourdeck-vertical  {
+	width: 37px;
+	height: 144px;
+}
+
+.initial-ships #tripledeck-vertical  {
+	width: 37px;
+	height: 111px;
+}
+
+.initial-ships #doubledeck-vertical {
+	width: 37px;
+	height: 74px;
+}
+
+.initial-ships #singledeck-vertical  {
+	width: 37px;
+	height: 37px;
 }

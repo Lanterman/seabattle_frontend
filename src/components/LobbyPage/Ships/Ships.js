@@ -1,7 +1,10 @@
-import "./Ships.css"
+import { useState } from "react";
+
+import "./Ships.css";
 
 
 function Ships(props) {
+    const [shipPlane, setShipPlane] = useState(null)
 
     function replacePlaneOfShip(currentShip, ship) {
         if (ship.plane === "vertical" & (ship.name !== currentShip.name)) {
@@ -27,11 +30,11 @@ function Ships(props) {
         e.preventDefault();
         if (currentShip.plane === "horizontal") {
             currentShip.plane = "vertical";
-            e.target.attributes.class.value += " transform";
+            setShipPlane(currentShip.name)
             props.ships.map(ship =>replacePlaneOfShip(currentShip, ship));
         } else {
             currentShip.plane = "horizontal";
-            e.target.attributes.class.value = "ship";
+            setShipPlane();
         };
         
         props.ships.slice(props.ships[currentShip.size - 1], 1, currentShip);
@@ -44,8 +47,8 @@ function Ships(props) {
                 <div key={ship.name} className="shipBlock">
                     <label className="ship-label"> - {ship.count} {ship.count > 1 ? "ships" : "ship"}</label>
                     <p 
-                        id={ship.name}
-                        className="ship" 
+                        id={shipPlane === ship.name ? `${ship.name}-vertical` : ship.name}
+                        className="ship"
                         draggable={ship.count > 0 ? true : false}
                         onDragStart={(e) => dragStartHandler(e, ship)}
                         onDragEnd={(e) => dragEndHandler(e, ship)}
