@@ -2,9 +2,9 @@ import { useLoaderData, Await } from "react-router-dom";
 import { Suspense } from "react";
 import axios from "axios";
 
-import { Lobby } from "../Lobby/Lobby"
+import { Lobby } from "../Lobby/Lobby";
 
-import "./LobbyPage.css" 
+import "./LobbyPage.css" ;
 
 
 
@@ -28,8 +28,8 @@ async function getLobbyBySlug(slug) {
     const response = await axios.get(`http://127.0.0.1:8000/api/v1/lobbies/${slug}/`, {auth: {username: "admin", password: "admin"}});
 
     if (response.statusText !== "OK") {
-        throw new Response("", {status: response.status, statusText: "Not found"})
-    }
+        throw new Response("", {status: response.status, statusText: "Not found"});
+    };
 
     return response.data;
 }
@@ -37,7 +37,7 @@ async function getLobbyBySlug(slug) {
 
 const lobbyLoader = async ({params}) => {
     const slug = params.slug;
-    return {lobby: getLobbyBySlug(slug)}
+    return {lobby: getLobbyBySlug(slug)};
 };
 
 

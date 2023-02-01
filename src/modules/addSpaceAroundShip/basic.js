@@ -1,4 +1,4 @@
-class BasicClass {
+class BaseClass {
 
     compareNumber(a, b) {
         return a.slice(1) - b.slice(1);
@@ -18,4 +18,4 @@ class BasicClass {
 };
 
 
-export { BasicClass };
+export { BaseClass };

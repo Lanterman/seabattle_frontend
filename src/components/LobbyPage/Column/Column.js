@@ -46,7 +46,6 @@ function Column(props) {
                     onDrop={(e) => {isShipExists && dropHandler(e, fieldName)}}
                     onDragOver={(e) => {isShipExists && dragOverHandler(e, fieldName)}}
                     onDragLeave={(e) => {isShipExists && dragLeaveHandler(e, fieldName)}}>
-                    {props.column[fieldName]}
                 </div>
             )}
         </div>

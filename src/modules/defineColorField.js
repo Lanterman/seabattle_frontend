@@ -1,22 +1,11 @@
 class DefineColorField {
 
-    defineColorDropField(fieldNameList) {
+    defineColorField(fieldNameList, color) {
         fieldNameList.map((fieldName => (
-            document.getElementsByName(fieldName)[0].style.background = "#4382f7"
+            document.getElementsByName(fieldName)[0].style.background = color
         )));
     };
 
-    defineColorOverField(fieldNameList) {
-        fieldNameList.map((fieldName => (
-            document.getElementsByName(fieldName)[0].style.background = "gray"
-        )));
-    };
-
-    defineColorLeaveField(fieldNameList) {
-        fieldNameList.map((fieldName => (
-            document.getElementsByName(fieldName)[0].style.background = "#e2e7e7"
-        )));
-    };
 };
 
 export { DefineColorField };

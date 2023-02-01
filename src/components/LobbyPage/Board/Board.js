@@ -8,7 +8,7 @@ import { AddSpaceAroundShipVertically } from "../../../modules/addSpaceAroundShi
 
 import { Column } from "../Column/Column";
 
-import "./Board.css"
+import "./Board.css";
 
 
 function Board(props) {
@@ -43,7 +43,7 @@ function Board(props) {
         
         updateBoardState(clearedBoard);
         props.returnShips();
-        defineColorField.defineColorLeaveField(fieldNameList);
+        defineColorField.defineColorField(fieldNameList, "#e2e7e7");
     };
 
     function dropShipOnBoard(fieldName) {
@@ -55,7 +55,7 @@ function Board(props) {
                 addSpaceAroundShipHorizontally.defineSpaceFieldName(fieldNameList, columnNameList, board) :
                 addSpaceAroundShipVertically.defineSpaceFieldName(fieldNameList, columnNameList, board);
 
-            defineColorField.defineColorDropField(fieldNameList);
+            defineColorField.defineColorField(fieldNameList, "#4382f7");
 
             updateBoardState(board);
         };
@@ -65,7 +65,7 @@ function Board(props) {
         const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size, props.ship.plane, columnNameList);
         
         if (setShipOnBoard.isCanPut(fieldNameList, columnNameList, board)) {
-            defineColorField.defineColorOverField(fieldNameList);
+            defineColorField.defineColorField(fieldNameList, "gray");
             props.updateColorShip(true);
             return;
         };
@@ -74,7 +74,7 @@ function Board(props) {
 
     function leaveFields(fieldName) {
         const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size, props.ship.plane, columnNameList);
-        setShipOnBoard.isCanPut(fieldNameList, columnNameList, board) && defineColorField.defineColorLeaveField(fieldNameList);
+        setShipOnBoard.isCanPut(fieldNameList, columnNameList, board) && defineColorField.defineColorField(fieldNameList, "#e2e7e7");
     };
 
     return (

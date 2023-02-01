@@ -20,7 +20,6 @@ function Lobby(props) {
     const [currentShip, setCurrentShip] = useState({});
     const [ships, setShips] = useState(initialShips);
     const [isCanPutShip, setIsCanPutShip] = useState(true);
-    // console.log("Менять цвет перемещаемого корабля в зависимости от действия")
 
     function returnShips() {
         setShips(initialShips);
@@ -41,7 +40,7 @@ function Lobby(props) {
         updatedLobby.maps[0] = board;
         setLobby(updatedLobby);
         setCurrentShip();
-    }
+    };
 
     function makeShoot(columnName, column) {
         const updatedLobby = Object.assign({}, lobby);

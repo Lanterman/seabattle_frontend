@@ -1,7 +1,7 @@
-import { BasicClass } from "./basic"
+import { BaseClass } from "./basic"
 
 
-class AddSpaceAroundShipVertically extends BasicClass {
+class AddSpaceAroundShipVertically extends BaseClass {
 
     addSpaceAtTopVertically(firstElem, columnNameList, board) {
         this.getFirstElem(firstElem, columnNameList,board);

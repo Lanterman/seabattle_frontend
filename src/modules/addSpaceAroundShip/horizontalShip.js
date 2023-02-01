@@ -1,7 +1,7 @@
-import { BasicClass } from "./basic"
+import { BaseClass } from "./basic"
 
 
-class AddSpaceAroundShipHorizontally extends BasicClass {
+class AddSpaceAroundShipHorizontally extends BaseClass {
 
     addSpaceAtTopHorizontally(fieldNameList, columnNameList, board) {
         const topColumnNumber = fieldNameList[0].slice(1) - 1;
