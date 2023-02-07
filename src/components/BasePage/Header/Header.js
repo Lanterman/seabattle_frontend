@@ -17,8 +17,8 @@ function Header(props) {
                 <NavLink to="/about" className="navLink">About</NavLink>
             </nav>
             <div className="aside-header">
-                <Link>v0.1.0</Link>
-                <Link>GitHub</Link>
+                <Link to="/">v0.1.0</Link>
+                <Link to="/">GitHub</Link>
             </div>
         </header>
     );

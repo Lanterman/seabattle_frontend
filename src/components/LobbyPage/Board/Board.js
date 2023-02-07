@@ -20,6 +20,8 @@ function Board(props) {
     const addSpaceAroundShipHorizontally = new AddSpaceAroundShipHorizontally();
     const addSpaceAroundShipVertically = new AddSpaceAroundShipVertically();
     const defineColorField = new DefineColorField();
+    console.log("добавить сохранение в бд оцищенную таблицу, мб перенести вызов вебсокета в lobby component")
+
 
     function updateBoardState(board) {
         columnNameList.map(columnName => {
@@ -30,20 +32,13 @@ function Board(props) {
     };
 
     function refreshTableHandler(e) {
-        let fieldNameList = [];
-        const clearedBoard = board.map((column) => {
-            for (let key in column) {
-                if (column[key]) {
-                    column[key] !== "space" && fieldNameList.push(key);
-                    column[key] = "";
-                };
-            };
-            return column;
-        });
-        
-        updateBoardState(clearedBoard);
-        props.returnShips();
-        defineColorField.defineColorField(fieldNameList, "#e2e7e7");
+        props.client.refreshBoard(props.board.id, userTable, board);
+        props.client.client.onmessage = function(e) {
+            const data = JSON.parse(e.data)
+            updateBoardState(data.cleared_board);
+            defineColorField.defineColorField(data.field_name_list, "#e2e7e7");
+            props.returnShips();
+        };
     };
 
     function dropShipOnBoard(fieldName) {
