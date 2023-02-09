@@ -1,21 +1,27 @@
 import { useLoaderData, Await } from "react-router-dom";
-import { Suspense } from "react";
+import { Suspense, useRef } from "react";
 import axios from "axios";
 
 import { Lobby } from "../Lobby/Lobby";
 
 import "./LobbyPage.css";
+import { WSClient } from "../../../modules/webSocket";
 
 
 function LobbyPage(props) {
 
     const {lobby, slug} = useLoaderData();
+    let clientRef = useRef(null);
+
+    if (!clientRef.current) {
+        clientRef.current = new WSClient(slug);
+    };
 
     return (
         <div className="main-page">
             <Suspense fallback={<h1 className="suspense">Lobby is loading...</h1>}>
                 <Await resolve={lobby}>
-                    {resolvedLobby => {return <Lobby lobby={resolvedLobby} lobbySlug={slug} />}}
+                    {resolvedLobby => {return <Lobby lobby={resolvedLobby} client={clientRef.current}/>}}
                 </Await>
             </Suspense>
         </div>

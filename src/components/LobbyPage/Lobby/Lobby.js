@@ -6,8 +6,6 @@ import { faMoneyBillTransfer,  faClock, faUser } from '@fortawesome/free-solid-s
 import { Board } from "../Board/Board";
 import { Ships } from "../Ships/Ships";
 
-import { WSClient } from "../../../modules/webSocket";
-
 import "./Lobby.css";
 
 
@@ -18,7 +16,6 @@ function Lobby(props) {
         {count: 2, size: 3, name: "tripledeck", plane: "horizontal"},
         {count: 1, size: 4, name: "fourdeck", plane: "horizontal"}, 
     ];
-    const client =  new WSClient(props.lobbySlug);
     
     const [lobby, setLobby] = useState(props.lobby);
     const [currentShip, setCurrentShip] = useState({});
@@ -70,8 +67,7 @@ function Lobby(props) {
             
             <div className="game-block">
                 <Board
-                    lobbySlug={props.lobbySlug}
-                    client={client}
+                    client={props.client}
                     board={lobby.maps[0]} 
                     key={lobby.maps[0].id} 
                     ship={currentShip}
@@ -79,7 +75,7 @@ function Lobby(props) {
                     updateColorShip={updateColorShip}
                     setUpdatedBoard={setUpdatedBoard}
                 />
-                <Board board={lobby.maps[1]} key={lobby.maps[1].id} makeShoot={makeShoot} lobbySlug={props.lobbySlug} client={client}/>
+                <Board board={lobby.maps[1]} key={lobby.maps[1].id} makeShoot={makeShoot}/>
             </div>
             <Ships
                 currentShip={currentShip} 

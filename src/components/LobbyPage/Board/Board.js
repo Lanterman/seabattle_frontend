@@ -20,7 +20,7 @@ function Board(props) {
     const addSpaceAroundShipHorizontally = new AddSpaceAroundShipHorizontally();
     const addSpaceAroundShipVertically = new AddSpaceAroundShipVertically();
     const defineColorField = new DefineColorField();
-    console.log("добавить сохранение в бд оцищенную таблицу, мб перенести вызов вебсокета в lobby component")
+    // console.log("поработать над закрытием вебсокета переходе на другую страницу, на уровне соединения с вебсокетом в python")
 
 
     function updateBoardState(board) {
@@ -32,6 +32,7 @@ function Board(props) {
     };
 
     function refreshTableHandler(e) {
+        console.log(props.board.id, userTable, board)
         props.client.refreshBoard(props.board.id, userTable, board);
         props.client.client.onmessage = function(e) {
             const data = JSON.parse(e.data)
@@ -44,15 +45,19 @@ function Board(props) {
     function dropShipOnBoard(fieldName) {
         const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size, props.ship.plane, columnNameList);
         if (setShipOnBoard.isCanPut(fieldNameList, columnNameList, board)) {
-            setShipOnBoard.putShipOnBoard(fieldNameList, props.ship.name, columnNameList, board);
-
-            props.ship.plane === "horizontal" ? 
+            props.client.putShipOnBoard(userTable, fieldNameList, props.ship.name, board);
+            props.client.client.onmessage = function(e) {
+                const data = JSON.parse(e.data); 
+                // 1111111111111111
+                props.ship.plane === "horizontal" ? 
                 addSpaceAroundShipHorizontally.defineSpaceFieldName(fieldNameList, columnNameList, board) :
                 addSpaceAroundShipVertically.defineSpaceFieldName(fieldNameList, columnNameList, board);
+                // 1111111111111111
+                defineColorField.defineColorField(fieldNameList, "#4382f7");
 
-            defineColorField.defineColorField(fieldNameList, "#4382f7");
-
-            updateBoardState(board);
+                updateBoardState(data.board);
+            
+            };
         };
     };
 

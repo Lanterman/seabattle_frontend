@@ -13,6 +13,16 @@ class WSClient {
         }));
     };
 
+    putShipOnBoard(userId, fieldNameList, shipName, board) {
+        this.client.send(JSON.stringify({
+            "type": "put_ship",
+            "user_id": userId,
+            "field_name_list": fieldNameList,
+            "ship_name": shipName,
+            "board": board,
+        }));
+    };
+
 };
 
 
