@@ -3,8 +3,6 @@ import { faRefresh } from '@fortawesome/free-solid-svg-icons';
 
 import { SetShipOnBoard } from "../../../modules/setShipLocation";
 import { DefineColorField } from "../../../modules/defineColorField";
-import { AddSpaceAroundShipHorizontally } from "../../../modules/addSpaceAroundShip/horizontalShip";
-import { AddSpaceAroundShipVertically } from "../../../modules/addSpaceAroundShip/verticalShip";
 
 import { Column } from "../Column/Column";
 
@@ -17,10 +15,9 @@ function Board(props) {
     const userTable = props.board.user_id;
     const board = columnNameList.map(columnName => JSON.parse(props.board[columnName].replace(/'/g, '"')));
     const setShipOnBoard = new SetShipOnBoard();
-    const addSpaceAroundShipHorizontally = new AddSpaceAroundShipHorizontally();
-    const addSpaceAroundShipVertically = new AddSpaceAroundShipVertically();
     const defineColorField = new DefineColorField();
     // console.log("поработать над закрытием вебсокета переходе на другую страницу, на уровне соединения с вебсокетом в python")
+    // console.log("не обновляется currentShip")
 
 
     function updateBoardState(board) {
@@ -32,10 +29,9 @@ function Board(props) {
     };
 
     function refreshTableHandler(e) {
-        console.log(props.board.id, userTable, board)
         props.client.refreshBoard(props.board.id, userTable, board);
         props.client.client.onmessage = function(e) {
-            const data = JSON.parse(e.data)
+            const data = JSON.parse(e.data);
             updateBoardState(data.cleared_board);
             defineColorField.defineColorField(data.field_name_list, "#e2e7e7");
             props.returnShips();
@@ -45,18 +41,11 @@ function Board(props) {
     function dropShipOnBoard(fieldName) {
         const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size, props.ship.plane, columnNameList);
         if (setShipOnBoard.isCanPut(fieldNameList, columnNameList, board)) {
-            props.client.putShipOnBoard(userTable, fieldNameList, props.ship.name, board);
+            props.client.putShipOnBoard(userTable, fieldNameList, props.ship.name, props.ship.plane, board, props.board.id);
             props.client.client.onmessage = function(e) {
-                const data = JSON.parse(e.data); 
-                // 1111111111111111
-                props.ship.plane === "horizontal" ? 
-                addSpaceAroundShipHorizontally.defineSpaceFieldName(fieldNameList, columnNameList, board) :
-                addSpaceAroundShipVertically.defineSpaceFieldName(fieldNameList, columnNameList, board);
-                // 1111111111111111
-                defineColorField.defineColorField(fieldNameList, "#4382f7");
-
+                const data = JSON.parse(e.data);
                 updateBoardState(data.board);
-            
+                defineColorField.defineColorField(fieldNameList, "#4382f7");
             };
         };
     };
