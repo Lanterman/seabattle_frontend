@@ -29,14 +29,6 @@ class SetShipOnBoard {
             return indexList.map(index => index < 10 & index >= 0 ? columnNameList[index] + fieldName.slice(1) : null)
         };
     };
-
-    putShipOnBoard(fieldNameList, shipName, columnNameList, board) {
-        fieldNameList.map(fieldName => {
-            return board[columnNameList.indexOf(fieldName[0])][fieldName] = shipName
-        });
-
-        return board;
-    };
 };
 
 export { SetShipOnBoard };
