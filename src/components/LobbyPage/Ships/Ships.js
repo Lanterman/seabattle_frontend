@@ -1,10 +1,7 @@
-import { useState } from "react";
-
 import "./Ships.css";
 
 
 function Ships(props) {
-    const [shipPlane, setShipPlane] = useState(null);
 
     function replacePlaneOfShip(currentShip, ship) {
         if (ship.plane === "vertical" & (ship.name !== currentShip.name)) {
@@ -27,9 +24,14 @@ function Ships(props) {
     function dragEndHandler(e, ship) {
         Array.from(document.getElementsByClassName("space-field")).map(spaceField => updateSpaceColor(spaceField, "#e2e7e7"));
         if (ship.count > 0) {
-            if (!props.currentShip) ship.count -= 1;
+            if (props.client.isPut) ship.count -= 1;
             props.setShips([...props.ships], ship);
-            if (ship.count > 0) e.target.style.background = "#4382f7";
+            props.client.isPut = false;
+            if (ship.count > 0) {
+                e.target.style.background = "#4382f7";
+            } else {
+                ship.plane = "horizontal";
+            };
         };
     };
 
@@ -37,15 +39,14 @@ function Ships(props) {
         e.preventDefault();
         if (currentShip.plane === "horizontal") {
             currentShip.plane = "vertical";
-            setShipPlane(currentShip.name);
             props.ships.map(ship =>replacePlaneOfShip(currentShip, ship));
         } else {
             currentShip.plane = "horizontal";
-            setShipPlane();
         };
         
         props.ships.slice(props.ships[currentShip.size - 1], 1, currentShip);
         props.setShips(props.ships);
+        props.setCurrentShip(Object.assign({}, currentShip, {shipHtml: e.target}));
     };
 
     return (
@@ -54,12 +55,12 @@ function Ships(props) {
                 <div key={ship.name} className="shipBlock">
                     <label className="ship-label"> - {ship.count} {ship.count > 1 ? "ships" : "ship"}</label>
                     <p 
-                        id={shipPlane === ship.name ? `${ship.name}-vertical` : ship.name}
+                        id={ship.plane === "vertical" ? `${ship.name}-vertical` : ship.name}
                         className="ship"
                         draggable={ship.count > 0 ? true : false}
                         onDragStart={(e) => dragStartHandler(e, ship)}
                         onDragEnd={(e) => dragEndHandler(e, ship)}
-                        onContextMenu={(e) => contextMenuHandler(e, ship)}>
+                        onContextMenu={(e) => ship.count > 0 ? contextMenuHandler(e, ship) : e.preventDefault()}>
                     </p>
                 </div>
             )}

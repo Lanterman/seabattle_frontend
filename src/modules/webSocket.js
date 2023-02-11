@@ -1,14 +1,15 @@
 class WSClient {
     constructor(slug) {
-        this.lobbySlug = slug;
-        this.client = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${this.lobbySlug}/`);
+        this.isPut = false;
+        this.client = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${slug}/`);
     };
 
-    refreshBoard(boardId, userId, board) {
+    refreshBoard(boardId, userId, ships, board) {
         this.client.send(JSON.stringify({
             type: "refresh_board",
             board_id: boardId,
             user_id: userId,
+            ships: ships,
             board: board,
         }));
     };

@@ -10,20 +10,14 @@ import "./Lobby.css";
 
 
 function Lobby(props) {
-    const initialShips = [
-        {count: 4, size: 1, name: "singledeck", plane: "horizontal"},
-        {count: 3, size: 2, name: "doubledeck", plane: "horizontal"},
-        {count: 2, size: 3, name: "tripledeck", plane: "horizontal"},
-        {count: 1, size: 4, name: "fourdeck", plane: "horizontal"}, 
-    ];
     
     const [lobby, setLobby] = useState(props.lobby);
     const [currentShip, setCurrentShip] = useState({});
-    const [ships, setShips] = useState(initialShips);
+    const [ships, setShips] = useState(props.lobby.boards[0].ships);
     const [isCanPutShip, setIsCanPutShip] = useState(true);
 
-    function returnShips() {
-        setShips(initialShips);
+    function returnShips(ships) {
+        setShips(ships);
         Array.from(document.getElementsByClassName("ship")).map(element => element.style.background = "#4382f7");
     };
 
@@ -38,14 +32,13 @@ function Lobby(props) {
 
     function setUpdatedBoard(board) {
         const updatedLobby = Object.assign({}, lobby);
-        updatedLobby.maps[0] = board;
+        updatedLobby.boards[0] = board;
         setLobby(updatedLobby);
-        setCurrentShip();
     };
 
     function makeShoot(columnName, column) {
         const updatedLobby = Object.assign({}, lobby);
-        updatedLobby.maps[1][columnName] = JSON.stringify(column);
+        updatedLobby.boards[1][columnName] = JSON.stringify(column);
         setLobby(updatedLobby);
     };
 
@@ -68,17 +61,18 @@ function Lobby(props) {
             <div className="game-block">
                 <Board
                     client={props.client}
-                    board={lobby.maps[0]} 
-                    key={lobby.maps[0].id} 
+                    board={lobby.boards[0]} 
+                    key={lobby.boards[0].id} 
                     ship={currentShip}
+                    setShips={setShips}
                     returnShips={returnShips}
                     updateColorShip={updateColorShip}
                     setUpdatedBoard={setUpdatedBoard}
                 />
-                <Board board={lobby.maps[1]} key={lobby.maps[1].id} makeShoot={makeShoot}/>
+                <Board board={lobby.boards[1]} key={lobby.boards[1].id} makeShoot={makeShoot}/>
             </div>
             <Ships
-                currentShip={currentShip} 
+                client={props.client}
                 setCurrentShip={setCurrentShip} 
                 ships={ships} 
                 setShips={setShips}

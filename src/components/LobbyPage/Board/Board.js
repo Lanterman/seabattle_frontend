@@ -17,7 +17,6 @@ function Board(props) {
     const setShipOnBoard = new SetShipOnBoard();
     const defineColorField = new DefineColorField();
     // console.log("поработать над закрытием вебсокета переходе на другую страницу, на уровне соединения с вебсокетом в python")
-    // console.log("не обновляется currentShip")
 
 
     function updateBoardState(board) {
@@ -29,18 +28,19 @@ function Board(props) {
     };
 
     function refreshTableHandler(e) {
-        props.client.refreshBoard(props.board.id, userTable, board);
+        props.client.refreshBoard(props.board.id, userTable, props.board.ships, board);
         props.client.client.onmessage = function(e) {
             const data = JSON.parse(e.data);
             updateBoardState(data.cleared_board);
             defineColorField.defineColorField(data.field_name_list, "#e2e7e7");
-            props.returnShips();
+            props.returnShips(data.ships);
         };
     };
 
     function dropShipOnBoard(fieldName) {
         const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size, props.ship.plane, columnNameList);
         if (setShipOnBoard.isCanPut(fieldNameList, columnNameList, board)) {
+            props.client.isPut = true;
             props.client.putShipOnBoard(userTable, fieldNameList, props.ship.name, props.ship.plane, board, props.board.id);
             props.client.client.onmessage = function(e) {
                 const data = JSON.parse(e.data);
