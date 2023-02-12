@@ -41,7 +41,7 @@ function Board(props) {
         const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size, props.ship.plane, columnNameList);
         if (setShipOnBoard.isCanPut(fieldNameList, columnNameList, board)) {
             props.client.isPut = true;
-            props.client.putShipOnBoard(userTable, fieldNameList, props.ship.name, props.ship.plane, board, props.board.id);
+            props.client.putShipOnBoard(userTable, props.ship.id, props.board.id, props.ship.plane, props.ship.count, fieldNameList, board);
             props.client.client.onmessage = function(e) {
                 const data = JSON.parse(e.data);
                 updateBoardState(data.board);

@@ -15,9 +15,16 @@
 	font-size: 19px;
 }
 
+.initial-ships .exists {
+	background-color: #4382f7;
+}
+
+.initial-ships .does-not-exists {
+	background-color: #b7b9c7;
+}
+
 .initial-ships .ship {
 	cursor: grab;
-	background-color: #4382f7;
 	border: 1px solid black;
 	float: left;
 	margin: -8px 0px 0px 30px;

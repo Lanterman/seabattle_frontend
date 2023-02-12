@@ -56,7 +56,7 @@ function Ships(props) {
                     <label className="ship-label"> - {ship.count} {ship.count > 1 ? "ships" : "ship"}</label>
                     <p 
                         id={ship.plane === "vertical" ? `${ship.name}-vertical` : ship.name}
-                        className="ship"
+                        className={`ship ${ship.count ? "exists" : "does-not-exists"}`}
                         draggable={ship.count > 0 ? true : false}
                         onDragStart={(e) => dragStartHandler(e, ship)}
                         onDragEnd={(e) => dragEndHandler(e, ship)}
