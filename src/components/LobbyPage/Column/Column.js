@@ -38,10 +38,10 @@ function Column(props) {
                     name={fieldName} 
                     id={isShoot ? "field" : undefined} 
                     className={`field ${props.column[fieldName] === "miss" ? "miss-shoot-field" :
-                    props.column[fieldName] === "hit" ? "hit-shoot-field" :
-                    props.column[fieldName] === "space" ? "space-field" :
-                    props.column[fieldName] && !isShoot ? "ship-field" :
-                                        "empty-field"}`}  
+                        props.column[fieldName] === "hit" ? "hit-shoot-field" :
+                        String(props.column[fieldName]).includes("space") ? "space-field" :
+                        props.column[fieldName] && !isShoot ? "ship-field" :
+                        "empty-field"}`}  
                     onClick={isShoot ? makeShoot : undefined} 
                     onDrop={(e) => {isShipExists && dropHandler(e, fieldName)}}
                     onDragOver={(e) => {isShipExists && dragOverHandler(e, fieldName)}}
