@@ -1,11 +1,11 @@
-import { useLoaderData, Await } from "react-router-dom";
+import { useLoaderData, Await, redirect } from "react-router-dom";
 import { Suspense, useRef } from "react";
 import axios from "axios";
 
 import { Lobby } from "../Lobby/Lobby";
 
 import "./LobbyPage.css";
-import { WSClient } from "../../../modules/webSocket";
+import { WSLobbyClient } from "../../../modules/websockets/WsLobbyClient";
 
 
 function LobbyPage(props) {
@@ -14,7 +14,7 @@ function LobbyPage(props) {
     let clientRef = useRef(null);
 
     if (!clientRef.current) {
-        clientRef.current = new WSClient(slug);
+        clientRef.current = new WSLobbyClient(slug);
     };
 
     return (
@@ -29,8 +29,9 @@ function LobbyPage(props) {
 };
 
 
-async function getLobbyBySlug(slug) {
-    const response = await axios.get(`http://127.0.0.1:8000/api/v1/lobbies/${slug}/`, {auth: {username: "admin", password: "admin"}});
+async function getLobbyBySlug(slug, token) {
+    const baseURL = "http://127.0.0.1:8000/api/v1";
+    const response = await axios.get(`${baseURL}/lobbies/${slug}/`, {headers: {"Authorization": `Token ${token}`}});
 
     if (response.statusText !== "OK") {
         throw new Response("", {status: response.status, statusText: "Not found"});
@@ -42,7 +43,13 @@ async function getLobbyBySlug(slug) {
 
 const lobbyLoader = async ({params}) => {
     const slug = params.slug;
-    return {lobby: getLobbyBySlug(slug), slug: slug};
+    const token = sessionStorage.getItem("auth_token");
+
+    if (!token) {
+        return redirect(`/login?next=/lobbies/${slug}`);
+    };
+
+    return {lobby: getLobbyBySlug(slug, token), slug: slug};
 };
 
 

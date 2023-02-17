@@ -1,10 +1,10 @@
 import { Suspense } from "react";
 import axios from "axios";
-import { Await, json, useLoaderData } from "react-router-dom";
+import { Await, redirect, useLoaderData } from "react-router-dom";
 
-import { Lobby } from "../Lobby/Lobby"
+import { Lobby } from "../Lobby/Lobby";
 
-import "./LobbyList.css"
+import "./LobbyList.css";
 
 function LobbyList(props) {
 
@@ -23,25 +23,26 @@ function LobbyList(props) {
 };
 
 
-async function getLobbyList() {
-    const response = await axios.get(`http://127.0.0.1:8000/api/v1/lobbies/`, {auth: {username: "admin", password: "admin"}})
+async function getLobbyList(token) {
+    const baseURL = "http://127.0.0.1:8000/api/v1";
+    const response = await axios.get(`${baseURL}/lobbies/`, {headers: {"Authorization": `Token ${token}`}});
 
     if (response.statusText !== "OK") {
-        throw new Response("", {status: response.status, statusText: "Not found"})
-    }
+        throw new Response("", {status: response.status, statusText: "Not found"});
+    };
 
-    return response.data
+    return response.data;
 };
 
 
 const lobbyListLoader = async () => {
-    const lobbyList = getLobbyList();
+    const token = sessionStorage.getItem("auth_token");
 
-    if (!lobbyList) {
-        throw json({message: "Not found", reason: "Wrong url!"}, {status: 404})
-    }
+    if (!token) {
+        return redirect("/login?next=/lobbies");
+    };
 
-    return {lobbyList};
+    return {lobbyList: getLobbyList(token)};
 };
 
 

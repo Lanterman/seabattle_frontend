@@ -11,6 +11,7 @@ function Column(props) {
     function makeShoot(e) {
         const fieldName = e.target.attributes.name.value;
         if (["miss", "hit"].indexOf(props.column[fieldName]) === -1) {
+            props.client.makeShoot(props.boardId, fieldName);
             const updatedColumn = makeShootOnBoard.makeShoot(fieldName, props.column);
             props.makeShoot(fieldName[0], updatedColumn);
         };

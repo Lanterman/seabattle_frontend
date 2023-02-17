@@ -1,23 +1,21 @@
-class WSClient {
+class WSLobbyClient {
     constructor(slug) {
         this.isPut = false;
-        this.client = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${slug}/`);
+        this.client = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${slug}/?token=${sessionStorage.getItem("auth_token")}`);
     };
 
-    refreshBoard(boardId, userId, ships, board) {
+    refreshBoard(boardId, ships, board) {
         this.client.send(JSON.stringify({
             type: "refresh_board",
             board_id: boardId,
-            user_id: userId,
             ships: ships,
             board: board,
         }));
     };
 
-    putShipOnBoard(userId, shipId, boardId, plane, shipCount, fieldNameList, board) {
+    putShipOnBoard(shipId, boardId, plane, shipCount, fieldNameList, board) {
         this.client.send(JSON.stringify({
             type: "drop_ship",
-            user_id: userId,
             ship_id: shipId,
             board_id: boardId,
             ship_plane: plane,
@@ -27,7 +25,14 @@ class WSClient {
         }));
     };
 
+    makeShoot(boardId, fieldName) {
+        this.client.send(JSON.stringify({
+            type: "make_shoot",
+            board_id: boardId,
+            field_name: fieldName,
+        }))
+    };
 };
 
 
-export { WSClient }
+export { WSLobbyClient }

@@ -12,7 +12,7 @@ import "./Board.css";
 function Board(props) {
     const columnNameList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
     const fieldNumberList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    const userTable = props.board.user_id;
+    const user_id = props.user_id;
     const board = columnNameList.map(columnName => JSON.parse(props.board[columnName].replace(/'/g, '"')));
     const setShipOnBoard = new SetShipOnBoard();
     const defineColorField = new DefineColorField();
@@ -28,7 +28,7 @@ function Board(props) {
     };
 
     function refreshTableHandler(e) {
-        props.client.refreshBoard(props.board.id, userTable, props.board.ships, board);
+        props.client.refreshBoard(props.board.id, props.board.ships, board);
         props.client.client.onmessage = function(e) {
             const data = JSON.parse(e.data);
             updateBoardState(data.cleared_board);
@@ -38,10 +38,12 @@ function Board(props) {
     };
 
     function dropShipOnBoard(fieldName) {
-        const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size, props.ship.plane, columnNameList);
+        const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size, 
+                                                                  props.ship.plane, columnNameList);
         if (setShipOnBoard.isCanPut(fieldNameList, columnNameList, board)) {
             props.client.isPut = true;
-            props.client.putShipOnBoard(userTable, props.ship.id, props.board.id, props.ship.plane, props.ship.count, fieldNameList, board);
+            props.client.putShipOnBoard(props.ship.id, props.board.id, props.ship.plane, 
+                                        props.ship.count, fieldNameList, board);
             props.client.client.onmessage = function(e) {
                 const data = JSON.parse(e.data);
                 updateBoardState(data.board);
@@ -51,7 +53,8 @@ function Board(props) {
     };
 
     function swipeOverFields(fieldName) {
-        const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size, props.ship.plane, columnNameList);
+        const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size, 
+                                                                  props.ship.plane, columnNameList);
         
         if (setShipOnBoard.isCanPut(fieldNameList, columnNameList, board)) {
             defineColorField.defineColorField(fieldNameList, "gray");
@@ -62,18 +65,24 @@ function Board(props) {
     };
 
     function leaveFields(fieldName) {
-        const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size, props.ship.plane, columnNameList);
-        setShipOnBoard.isCanPut(fieldNameList, columnNameList, board) && defineColorField.defineColorField(fieldNameList, "#e2e7e7");
+        const fieldNameList = setShipOnBoard.defineShipFieldsName(fieldName, props.ship.size, 
+                                                                  props.ship.plane, columnNameList);
+        if (setShipOnBoard.isCanPut(fieldNameList, columnNameList, board)) {
+            defineColorField.defineColorField(fieldNameList, "#e2e7e7");
+        };
     };
 
     return (
         <div className="battlefield">
-            <p className="table-name" id={!userTable ? "enemy-table": undefined}>
-            { userTable && <FontAwesomeIcon className="refresh-table" icon={faRefresh} onClick={(e) => refreshTableHandler(e)}/>}
-            {userTable ? "My table" : "Enemy table"}
+            <p className="table-name" id={!user_id ? "enemy-table": undefined}>
+                { user_id && <FontAwesomeIcon className="refresh-table" icon={faRefresh} 
+                                                onClick={(e) => refreshTableHandler(e)}/>}
+                {user_id ? "My table" : "Enemy table"}
             </p> 
             <div className="columns-name">
-                {columnNameList.map(columName => {return <span key={columName} className="column-name">{columName}</span>})}
+                {columnNameList.map(columName => {
+                    return <span key={columName} className="column-name">{columName}</span>})
+                }
             </div>
             <div className="fields-name">
                 {fieldNumberList.map(number => {return <span key={number} className="field-name">{number}</span>})}
@@ -82,9 +91,11 @@ function Board(props) {
                 {board.map((colum) => {
                     return <Column 
                         key={board.indexOf(colum)} 
-                        column={colum} 
-                        makeShoot={props.makeShoot} 
+                        boardId={props.board.id}
+                        column={colum}
                         ship={props.ship}
+                        client={props.client}
+                        makeShoot={props.makeShoot} 
                         dropShipOnBoard={dropShipOnBoard}
                         swipeOverFields={swipeOverFields}
                         leaveFields={leaveFields}
