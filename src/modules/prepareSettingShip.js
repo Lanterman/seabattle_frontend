@@ -1,4 +1,4 @@
-class SetShipOnBoard {
+class PrepareSettingShipOnBoard {
 
     isCanPut(fieldNameList, columnNameList, board) {
         if (fieldNameList.indexOf(null) === -1) {
@@ -31,4 +31,4 @@ class SetShipOnBoard {
     };
 };
 
-export { SetShipOnBoard };
+export { PrepareSettingShipOnBoard };

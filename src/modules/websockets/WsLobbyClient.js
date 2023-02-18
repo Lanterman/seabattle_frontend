@@ -25,9 +25,9 @@ class WSLobbyClient {
         }));
     };
 
-    makeShoot(boardId, fieldName) {
+    makeShot(boardId, fieldName) {
         this.client.send(JSON.stringify({
-            type: "make_shoot",
+            type: "make_shot",
             board_id: boardId,
             field_name: fieldName,
         }))

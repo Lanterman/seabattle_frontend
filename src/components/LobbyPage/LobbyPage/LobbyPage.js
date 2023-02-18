@@ -5,16 +5,15 @@ import axios from "axios";
 import { Lobby } from "../Lobby/Lobby";
 
 import "./LobbyPage.css";
-import { WSLobbyClient } from "../../../modules/websockets/WsLobbyClient";
 
 
 function LobbyPage(props) {
 
     const {lobby, slug} = useLoaderData();
-    let clientRef = useRef(null);
+    let clientRef = new useRef(null);
 
     if (!clientRef.current) {
-        clientRef.current = new WSLobbyClient(slug);
+        clientRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${slug}/?token=${sessionStorage.getItem("auth_token")}`);
     };
 
     return (
@@ -38,7 +37,7 @@ async function getLobbyBySlug(slug, token) {
     };
 
     return response.data;
-}
+};
 
 
 const lobbyLoader = async ({params}) => {

@@ -1,19 +1,22 @@
-import { MakeShootOnBoard } from "../../../modules/makeShootOnBoard";
-
 import "./Column.css";
 
 
 function Column(props) {
-    const isShoot = props.makeShoot && true;
+    const isEnemyBoard = !props.userId && true;
     const isShipExists = props.ship && true;
-    const makeShootOnBoard = new MakeShootOnBoard();
 
-    function makeShoot(e) {
+    function sendToWS(boardId, fieldName) {
+        props.client.send(JSON.stringify({
+            type: "make_shot",
+            board_id: boardId,
+            field_name: fieldName,
+        }));
+    };
+
+    function makeShot(e) {
         const fieldName = e.target.attributes.name.value;
         if (["miss", "hit"].indexOf(props.column[fieldName]) === -1) {
-            props.client.makeShoot(props.boardId, fieldName);
-            const updatedColumn = makeShootOnBoard.makeShoot(fieldName, props.column);
-            props.makeShoot(fieldName[0], updatedColumn);
+            sendToWS(props.boardId, fieldName);
         };
     };
 
@@ -37,13 +40,13 @@ function Column(props) {
                 <div 
                     key={fieldName} 
                     name={fieldName} 
-                    id={isShoot ? "field" : undefined} 
+                    id={isEnemyBoard ? "field" : undefined} 
                     className={`field ${props.column[fieldName] === "miss" ? "miss-shoot-field" :
                         props.column[fieldName] === "hit" ? "hit-shoot-field" :
                         String(props.column[fieldName]).includes("space") ? "space-field" :
-                        props.column[fieldName] && !isShoot ? "ship-field" :
+                        props.column[fieldName] && !isEnemyBoard ? "ship-field" :
                         "empty-field"}`}  
-                    onClick={isShoot ? makeShoot : undefined} 
+                    onClick={isEnemyBoard ? makeShot : undefined} 
                     onDrop={(e) => {isShipExists && dropHandler(e, fieldName)}}
                     onDragOver={(e) => {isShipExists && dragOverHandler(e, fieldName)}}
                     onDragLeave={(e) => {isShipExists && dragLeaveHandler(e, fieldName)}}>

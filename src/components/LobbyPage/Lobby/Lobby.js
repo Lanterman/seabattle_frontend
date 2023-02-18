@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoneyBillTransfer,  faClock, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -11,13 +11,35 @@ import "./Lobby.css";
 
 function Lobby(props) {
     const [lobby, setLobby] = useState(props.lobby);
-    const user_id = sessionStorage.getItem("user_id");
-    const [myBoard, enemyBoard, enemyBoardIndex] = String(lobby.boards[0]["user_id"]) === user_id ? 
-        [lobby.boards[0], lobby.boards[1], 1] : [lobby.boards[1], lobby.boards[0], 0];
-    const enemy = String(lobby.users[0]["id"]) === user_id ? lobby.users[1] : lobby.users[0]; 
+    const userId = Number(sessionStorage.getItem("user_id"));
+    const [myBoard, setMyBoard] = useState(lobby.boards[0]["user_id"] === userId ? lobby.boards[0]: lobby.boards[1]);
+    const [enemyBoard, setEnemyBoard] = useState(lobby.boards[0]["user_id"] !== userId ? lobby.boards[0]: lobby.boards[1]);
+    const enemy = lobby.users[0]["id"] === userId ? lobby.users[1] : lobby.users[0];
     const [currentShip, setCurrentShip] = useState({});
     const [ships, setShips] = useState(myBoard.ships);
     const [isCanPutShip, setIsCanPutShip] = useState(true);
+    console.log("правильно выводить выстрелы на досках....")
+
+    useEffect(() => {
+        console.log("start");
+        props.client.onopen = (e) => console.log("Websocket started");
+        props.client.onmessage = (e) => {
+            const data = JSON.parse(e.data);
+            if (data.type === "send_shot") {
+                // const updatedLobby = Object.assign({}, lobby);
+                console.log("user", userId)
+                console.log("myboard:", myBoard.id, myBoard.user_id)
+                console.log("db_board:", data.board)
+                console.log("enemy_board:", enemyBoard.id)
+
+                for (let key in data.board) {
+                    data.board[key] = JSON.stringify(data.board[key]);
+                };
+                myBoard.id === data.board.id ? setMyBoard(data.board) : setEnemyBoard(data.board)
+                // setMyBoard(updatedLobby);
+            };
+        };
+    });
 
     function returnShips(ships) {
         setShips(ships);
@@ -36,12 +58,6 @@ function Lobby(props) {
     function setUpdatedBoard(board) {
         const updatedLobby = Object.assign({}, lobby);
         updatedLobby.myBoard = board;
-        setLobby(updatedLobby);
-    };
-
-    function makeShoot(columnName, column) {
-        const updatedLobby = Object.assign({}, lobby);
-        updatedLobby.boards[enemyBoardIndex][columnName] = JSON.stringify(column);
         setLobby(updatedLobby);
     };
 
@@ -65,15 +81,14 @@ function Lobby(props) {
                 <Board
                     client={props.client}
                     board={myBoard}
-                    user_id={user_id}
-                    key={myBoard.id} 
+                    userId={userId}
                     ship={currentShip}
                     setShips={setShips}
                     returnShips={returnShips}
                     updateColorShip={updateColorShip}
                     setUpdatedBoard={setUpdatedBoard}
                 />
-                <Board board={enemyBoard} key={enemyBoard.id} client={props.client} makeShoot={makeShoot}/>
+                <Board board={enemyBoard} client={props.client}/>
             </div>
             <Ships
                 client={props.client}
