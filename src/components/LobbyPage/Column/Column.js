@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark, faCircle } from '@fortawesome/free-solid-svg-icons';
+
 import "./Column.css";
 
 
@@ -15,9 +18,7 @@ function Column(props) {
 
     function makeShot(e) {
         const fieldName = e.target.attributes.name.value;
-        if (["miss", "hit"].indexOf(props.column[fieldName]) === -1) {
-            sendToWS(props.boardId, fieldName);
-        };
+        sendToWS(props.boardId, fieldName);
     };
 
     function dropHandler(e, fieldName) {
@@ -35,21 +36,22 @@ function Column(props) {
     };
 
     return (
-            <div className="column">
+        <div className="column">
             {Object.keys(props.column).map((fieldName) => 
                 <div 
-                    key={fieldName} 
+                    key={fieldName}
                     name={fieldName} 
-                    id={isEnemyBoard ? "field" : undefined} 
-                    className={`field ${props.column[fieldName] === "miss" ? "miss-shoot-field" :
-                        props.column[fieldName] === "hit" ? "hit-shoot-field" :
-                        String(props.column[fieldName]).includes("space") ? "space-field" :
-                        props.column[fieldName] && !isEnemyBoard ? "ship-field" :
-                        "empty-field"}`}  
-                    onClick={isEnemyBoard ? makeShot : undefined} 
+                    id={isEnemyBoard && ["miss", "hit"].indexOf(props.column[fieldName]) === -1 ? "field" : undefined} 
+                    className={`field ${String(props.column[fieldName]).includes("space") ? "space-field" :
+                        props.column[fieldName] && props.column[fieldName] !== "miss" && !isEnemyBoard ? "ship-field" :
+                        "empty-field"}`}
+                    onClick={isEnemyBoard && ["miss", "hit"].indexOf(props.column[fieldName]) === -1 ?
+                        makeShot : undefined} 
                     onDrop={(e) => {isShipExists && dropHandler(e, fieldName)}}
                     onDragOver={(e) => {isShipExists && dragOverHandler(e, fieldName)}}
                     onDragLeave={(e) => {isShipExists && dragLeaveHandler(e, fieldName)}}>
+                    {props.column[fieldName] === "hit" && <FontAwesomeIcon icon={faXmark} className="x-mark" />}
+                    {props.column[fieldName] === "miss" && <FontAwesomeIcon icon={faCircle} className="cirle" />}
                 </div>
             )}
         </div>

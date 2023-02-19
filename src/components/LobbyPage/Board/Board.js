@@ -2,8 +2,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRefresh } from '@fortawesome/free-solid-svg-icons';
 
 import { PrepareSettingShipOnBoard } from "../../../modules/prepareSettingShip";
-import { DefineColorField } from "../../../modules/defineColorField";
-
 import { Column } from "../Column/Column";
 
 import "./Board.css";
@@ -15,10 +13,10 @@ function Board(props) {
     const userId = props.userId;
     const board = columnNameList.map(columnName => JSON.parse(props.board[columnName].replace(/'/g, '"')));
     const prepareSetting = new PrepareSettingShipOnBoard();
-    const defineColorField = new DefineColorField();
+    const defineColorField = props.defineColorField;
     // console.log("поработать над закрытием вебсокета переходе на другую страницу, на уровне соединения с вебсокетом в python")
 
-    function refreshBoard(boardId, ships, board) {
+    function sendRefreshBoard(boardId, ships, board) {
         props.client.send(JSON.stringify({
             type: "refresh_board",
             board_id: boardId,
@@ -27,36 +25,29 @@ function Board(props) {
         }));
     };
 
-    function updateBoardState(board) {
-        columnNameList.map(columnName => {
-            return props.board[columnName] = JSON.stringify(board[columnNameList.indexOf(columnName)])
-        });
-
-        props.setUpdatedBoard(props.board);
+    function sendPutShip(shipId, boardId, plane, shipCount, fieldNameList, board) {
+        props.client.send(JSON.stringify({
+            type: "drop_ship",
+            ship_id: shipId,
+            board_id: boardId,
+            ship_plane: plane,
+            ship_count: shipCount,
+            field_name_list: fieldNameList,
+            board: board,
+        }));
     };
 
     function refreshTableHandler(e) {
-        refreshBoard(props.board.id, props.board.ships, board);
-        props.client.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            updateBoardState(data.cleared_board);
-            defineColorField.defineColorField(data.field_name_list, "#e2e7e7");
-            props.returnShips(data.ships);
-        };
+        sendRefreshBoard(props.board.id, props.board.ships, board);
     };
 
     function dropShipOnBoard(fieldName) {
         const fieldNameList = prepareSetting.defineShipFieldsName(fieldName, props.ship.size, 
                                                                   props.ship.plane, columnNameList);
         if (prepareSetting.isCanPut(fieldNameList, columnNameList, board)) {
+            defineColorField.defineColorField(fieldNameList, "#4382f7");
             props.client.isPut = true;
-            props.client.putShipOnBoard(props.ship.id, props.board.id, props.ship.plane, 
-                                        props.ship.count, fieldNameList, board);
-            props.client.client.onmessage = function(e) {
-                const data = JSON.parse(e.data);
-                updateBoardState(data.board);
-                defineColorField.defineColorField(fieldNameList, "#4382f7");
-            };
+            sendPutShip(props.ship.id, props.board.id, props.ship.plane, props.ship.count, fieldNameList, board);
         };
     };
 
