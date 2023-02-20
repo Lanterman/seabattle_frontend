@@ -6,7 +6,7 @@ function Ships(props) {
     function replacePlaneOfShip(currentShip, ship) {
         if (ship.plane === "vertical" & (ship.name !== currentShip.name)) {
             ship.plane = "horizontal";
-            document.getElementById(`${ship.name}-vertical`).attributes.class.value = "ship";
+            document.getElementById(`${ship.name}-vertical`).attributes.class.value = "ship exists";
         };
     };
 
@@ -23,15 +23,8 @@ function Ships(props) {
 
     function dragEndHandler(e, ship) {
         Array.from(document.getElementsByClassName("space-field")).map(spaceField => updateSpaceColor(spaceField, "#e2e7e7"));
-        if (ship.count > 0) {
-            if (props.client.isPut) ship.count -= 1;
-            props.setShips([...props.ships], ship);
-            props.client.isPut = false;
-            if (ship.count > 0) {
-                e.target.style.background = "#4382f7";
-            } else {
-                ship.plane = "horizontal";
-            };
+        if (ship.count > 1) {
+            e.target.style.background = "#4382f7";
         };
     };
 
@@ -45,7 +38,6 @@ function Ships(props) {
         };
         
         props.ships.slice(props.ships[currentShip.size - 1], 1, currentShip);
-        props.setShips(props.ships);
         props.setCurrentShip(Object.assign({}, currentShip, {shipHtml: e.target}));
     };
 

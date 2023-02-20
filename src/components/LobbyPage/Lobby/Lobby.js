@@ -13,13 +13,13 @@ import "./Lobby.css";
 function Lobby(props) {
     const lobby = props.lobby;
     const userId = Number(sessionStorage.getItem("user_id"));
+    const enemy = lobby.users[0]["id"] === userId ? lobby.users[1] : lobby.users[0];
+    const defineColorField = new DefineColorField();
     const [myBoard, setMyBoard] = useState(lobby.boards[0]["user_id"] === userId ? lobby.boards[0]: lobby.boards[1]);
     const [enemyBoard, setEnemyBoard] = useState(lobby.boards[0]["user_id"] !== userId ? lobby.boards[0]: lobby.boards[1]);
-    const enemy = lobby.users[0]["id"] === userId ? lobby.users[1] : lobby.users[0];
     const [currentShip, setCurrentShip] = useState({});
     const [ships, setShips] = useState(myBoard.ships);
     const [isCanPutShip, setIsCanPutShip] = useState(true);
-    const defineColorField = new DefineColorField();
 
     useEffect(() => {
         props.client.onopen = (e) => console.log("Websocket started");
@@ -37,10 +37,11 @@ function Lobby(props) {
 
             } else if (data.type === "drop_ship") {
                 setMyBoard(Object.assign({}, myBoard, data.board));
+                setShips(data.ships);
 
             } else if (data.type === "clear_board") {
                 defineColorField.defineColorField(data.field_name_list, "#e2e7e7");
-                setMyBoard(Object.assign({}, myBoard, data.board))
+                setMyBoard(Object.assign({}, myBoard, data.board));
                 returnShips(data.ships);
             };
         };
@@ -87,12 +88,7 @@ function Lobby(props) {
                 />
                 <Board board={enemyBoard} client={props.client}/>
             </div>
-            <Ships
-                client={props.client}
-                setCurrentShip={setCurrentShip} 
-                ships={ships} 
-                setShips={setShips}
-            />
+            <Ships setCurrentShip={setCurrentShip} ships={ships} />
         </div>
     );
 };

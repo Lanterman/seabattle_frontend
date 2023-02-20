@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRefresh } from '@fortawesome/free-solid-svg-icons';
 
 import { PrepareSettingShipOnBoard } from "../../../modules/prepareSettingShip";
+import { sendPutShip, sendRefreshBoard } from "../../../modules/wsRequests/wsLobbyRequests";
 import { Column } from "../Column/Column";
 
 import "./Board.css";
@@ -16,29 +17,8 @@ function Board(props) {
     const defineColorField = props.defineColorField;
     // console.log("поработать над закрытием вебсокета переходе на другую страницу, на уровне соединения с вебсокетом в python")
 
-    function sendRefreshBoard(boardId, ships, board) {
-        props.client.send(JSON.stringify({
-            type: "refresh_board",
-            board_id: boardId,
-            ships: ships,
-            board: board,
-        }));
-    };
-
-    function sendPutShip(shipId, boardId, plane, shipCount, fieldNameList, board) {
-        props.client.send(JSON.stringify({
-            type: "drop_ship",
-            ship_id: shipId,
-            board_id: boardId,
-            ship_plane: plane,
-            ship_count: shipCount,
-            field_name_list: fieldNameList,
-            board: board,
-        }));
-    };
-
     function refreshTableHandler(e) {
-        sendRefreshBoard(props.board.id, props.board.ships, board);
+        sendRefreshBoard(props.client, props.board.id, props.board.ships, board);
     };
 
     function dropShipOnBoard(fieldName) {
@@ -46,8 +26,8 @@ function Board(props) {
                                                                   props.ship.plane, columnNameList);
         if (prepareSetting.isCanPut(fieldNameList, columnNameList, board)) {
             defineColorField.defineColorField(fieldNameList, "#4382f7");
-            props.client.isPut = true;
-            sendPutShip(props.ship.id, props.board.id, props.ship.plane, props.ship.count, fieldNameList, board);
+            sendPutShip(props.client, props.ship.id, props.board.id, props.ship.plane, 
+                        props.ship.count, fieldNameList, board);
         };
     };
 

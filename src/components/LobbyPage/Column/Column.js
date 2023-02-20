@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faCircle } from '@fortawesome/free-solid-svg-icons';
 
+import { sendToWS } from "../../../modules/wsRequests/wsLobbyRequests";
 import "./Column.css";
 
 
@@ -8,17 +9,9 @@ function Column(props) {
     const isEnemyBoard = !props.userId && true;
     const isShipExists = props.ship && true;
 
-    function sendToWS(boardId, fieldName) {
-        props.client.send(JSON.stringify({
-            type: "make_shot",
-            board_id: boardId,
-            field_name: fieldName,
-        }));
-    };
-
     function makeShot(e) {
         const fieldName = e.target.attributes.name.value;
-        sendToWS(props.boardId, fieldName);
+        sendToWS(props.client, props.boardId, fieldName);
     };
 
     function dropHandler(e, fieldName) {
