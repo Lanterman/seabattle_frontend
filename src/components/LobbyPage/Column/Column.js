@@ -9,7 +9,7 @@ function Column(props) {
     const isEnemyBoard = !props.userId && true;
     const isShipExists = props.ship && true;
 
-    function makeShot(e) {
+    function takeShot(e) {
         const fieldName = e.target.attributes.name.value;
         sendToWS(props.client, props.boardId, fieldName);
     };
@@ -39,7 +39,7 @@ function Column(props) {
                         props.column[fieldName] && props.column[fieldName] !== "miss" && !isEnemyBoard ? "ship-field" :
                         "empty-field"}`}
                     onClick={isEnemyBoard && ["miss", "hit"].indexOf(props.column[fieldName]) === -1 ?
-                        makeShot : undefined} 
+                        takeShot : undefined} 
                     onDrop={(e) => {isShipExists && dropHandler(e, fieldName)}}
                     onDragOver={(e) => {isShipExists && dragOverHandler(e, fieldName)}}
                     onDragLeave={(e) => {isShipExists && dragLeaveHandler(e, fieldName)}}>

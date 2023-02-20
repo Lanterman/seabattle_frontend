@@ -21,7 +21,7 @@ function sendPutShip(client, shipId, boardId, plane, shipCount, fieldNameList, b
 
 function sendToWS(client, boardId, fieldName) {
     client.send(JSON.stringify({
-        type: "make_shot",
+        type: "take_shot",
         board_id: boardId,
         field_name: fieldName,
     }));
