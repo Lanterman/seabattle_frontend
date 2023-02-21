@@ -1,8 +1,10 @@
 import { useLoaderData, Await, redirect } from "react-router-dom";
-import { Suspense, useRef } from "react";
+import { Suspense, useRef, useState } from "react";
 import axios from "axios";
 
+import { SidePanel } from "../SidePanel/SidePanel";
 import { Lobby } from "../Lobby/Lobby";
+
 
 import "./LobbyPage.css";
 
@@ -10,6 +12,7 @@ import "./LobbyPage.css";
 function LobbyPage(props) {
 
     const {lobby, slug} = useLoaderData();
+    const [isReady, setIsReady] = useState(false);
     let clientRef = new useRef(null);
 
     if (!clientRef.current) {
@@ -17,12 +20,17 @@ function LobbyPage(props) {
     };
 
     return (
-        <div className="main-page">
-            <Suspense fallback={<h1 className="suspense">Lobby is loading...</h1>}>
-                <Await resolve={lobby}>
-                    {resolvedLobby => {return <Lobby lobby={resolvedLobby} client={clientRef.current}/>}}
-                </Await>
-            </Suspense>
+        <div>
+            <SidePanel setIsReady={setIsReady} isReady={isReady} />
+            <div className="main-page">
+                <Suspense fallback={<h1 className="suspense">Lobby is loading...</h1>}>
+                    <Await resolve={lobby}>
+                        {resolvedLobby => {
+                            return <Lobby lobby={resolvedLobby} client={clientRef.current} isReady={isReady} />
+                        }}
+                    </Await>
+                </Suspense>
+            </div>
         </div>
     );
 };

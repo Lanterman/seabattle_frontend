@@ -20,6 +20,8 @@ function Lobby(props) {
     const [currentShip, setCurrentShip] = useState({});
     const [ships, setShips] = useState(myBoard.ships);
     const [isCanPutShip, setIsCanPutShip] = useState(true);
+    // console.log("поработать над закрытием вебсокета переходе на другую страницу, на уровне соединения с вебсокетом в python")
+    // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это")
 
     useEffect(() => {
         props.client.onopen = (e) => console.log("Websocket started");

@@ -1,0 +1,29 @@
+.dialog {
+    background-color: rgb(235, 240, 245);
+    width: 80%;
+    margin: 0px 15% 10px 5%;
+    resize: none;
+}
+
+.panel {
+    width: 80%;
+    height: 100px;
+    background-color: aqua;
+    margin: 0px 15% 10px 5%;
+}
+
+.message-input {
+    resize: none;
+    width: 80%;
+    font-size: 15px;
+    padding: 5px;
+
+}
+
+.send {
+    position: absolute;
+    float: right;
+    font-size: 15px;
+    padding: 3px 15px;
+    margin: 55px 0 10px 5px;
+}

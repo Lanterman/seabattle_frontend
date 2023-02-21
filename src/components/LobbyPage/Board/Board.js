@@ -15,7 +15,6 @@ function Board(props) {
     const board = columnNameList.map(columnName => JSON.parse(props.board[columnName].replace(/'/g, '"')));
     const prepareSetting = new PrepareSettingShipOnBoard();
     const defineColorField = props.defineColorField;
-    // console.log("поработать над закрытием вебсокета переходе на другую страницу, на уровне соединения с вебсокетом в python")
 
     function refreshTableHandler(e) {
         sendRefreshBoard(props.client, props.board.id, props.board.ships, board);
