@@ -1,5 +1,6 @@
+import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRefresh } from '@fortawesome/free-solid-svg-icons';
+import { faRefresh, faCheck } from '@fortawesome/free-solid-svg-icons';
 
 import { PrepareSettingShipOnBoard } from "../../../modules/prepareSettingShip";
 import { sendPutShip, sendRefreshBoard } from "../../../modules/wsRequests/wsLobbyRequests";
@@ -12,6 +13,7 @@ function Board(props) {
     const columnNameList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
     const fieldNumberList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     const userId = props.userId;
+    const isReady = useSelector(state => state.base.isReady);
     const board = columnNameList.map(columnName => JSON.parse(props.board[columnName].replace(/'/g, '"')));
     const prepareSetting = new PrepareSettingShipOnBoard();
     const defineColorField = props.defineColorField;
@@ -53,9 +55,10 @@ function Board(props) {
     return (
         <div className="battlefield">
             <p className="table-name" id={!userId ? "enemy-table": undefined}>
-                { userId && <FontAwesomeIcon className="refresh-table" icon={faRefresh} 
-                                                onClick={(e) => refreshTableHandler(e)}/>}
-                {userId ? "My table" : "Enemy table"} {props.board.id}
+                { userId && !isReady && <FontAwesomeIcon className="refresh-table" icon={faRefresh} 
+                                                         onClick={(e) => refreshTableHandler(e)}/>}
+                {userId ? "My table" : "Enemy table"} 
+                {userId && isReady && <FontAwesomeIcon className="check-mark" icon={faCheck}/>}
             </p> 
             <div className="columns-name">
                 {columnNameList.map(columName => {

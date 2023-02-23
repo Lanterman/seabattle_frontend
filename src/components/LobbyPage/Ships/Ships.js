@@ -1,7 +1,13 @@
+import { useSelector, useDispatch } from "react-redux";
+
+import { setCurrentShip } from "../../../store/reducers/lobbyReducer";
+
 import "./Ships.css";
 
 
 function Ships(props) {
+    const dispatch = useDispatch();
+    const ships = useSelector(state => state.lobby.ships);
 
     function replacePlaneOfShip(currentShip, ship) {
         if (ship.plane === "vertical" & (ship.name !== currentShip.name)) {
@@ -17,8 +23,9 @@ function Ships(props) {
 
     function dragStartHandler(e, ship) {
         e.target.style.background = "#b7b9c7";
+        e.target.attributes.class.value = "ship exists action";
         Array.from(document.getElementsByClassName("space-field")).map(spaceField => updateSpaceColor(spaceField, "#e42c2c", true));
-        props.setCurrentShip(Object.assign({}, ship, {shipHtml: e.target}));
+        dispatch(setCurrentShip(Object.assign({}, ship)));
     };
 
     function dragEndHandler(e, ship) {
@@ -30,20 +37,21 @@ function Ships(props) {
 
     function contextMenuHandler(e, currentShip) {
         e.preventDefault();
+        e.target.attributes.class.value = "ship exists action";
         if (currentShip.plane === "horizontal") {
             currentShip.plane = "vertical";
-            props.ships.map(ship =>replacePlaneOfShip(currentShip, ship));
+            ships.map(ship =>replacePlaneOfShip(currentShip, ship));
         } else {
             currentShip.plane = "horizontal";
         };
         
-        props.ships.slice(props.ships[currentShip.size - 1], 1, currentShip);
-        props.setCurrentShip(Object.assign({}, currentShip, {shipHtml: e.target}));
+        ships.slice(ships[currentShip.size - 1], 1, currentShip);
+        dispatch(setCurrentShip(Object.assign({}, currentShip)));
     };
 
     return (
         <div className="initial-ships">
-            {props.ships.map((ship) => 
+            {ships.map((ship) => 
                 <div key={ship.name} className="shipBlock">
                     <label className="ship-label"> - {ship.count} {ship.count > 1 ? "ships" : "ship"}</label>
                     <p 

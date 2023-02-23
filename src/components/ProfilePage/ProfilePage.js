@@ -8,10 +8,11 @@ import "./ProfilePage.css";
 function ProfilePage(props) {
     
     const token = sessionStorage.getItem("auth_token");
+    const username = sessionStorage.getItem("username");
 
     function get_info() {
         console.log(token)
-        axios.get("/auth/admin/", {headers: {"Authorization": `Token ${token}`}})
+        axios.get(`/auth/${username}/`, {headers: {"Authorization": `Token ${token}`}})
         .then(response => {console.log(response.data)});
     };
 

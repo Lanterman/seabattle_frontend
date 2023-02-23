@@ -17,6 +17,7 @@ function LoginPage(props) {
             .then(function(response) {
                 sessionStorage.setItem("auth_token", response.data.key);
                 sessionStorage.setItem("user_id", response.data.user);
+                sessionStorage.setItem("username", username);
                 setIsAuth(true);
             })
             .catch((function(response) {
