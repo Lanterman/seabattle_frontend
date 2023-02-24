@@ -27,7 +27,7 @@ export const lobbyReducer = (state = defaultState, action) => {
         case SET_CURRENT_SHIP:
             return {...state, currentShip: action.payload};
         case SET_IS_CAN_PUT_SHIP:
-            return {...state, setIsCanPutShip: action.payload};
+            return {...state, isCanPutShip: action.payload};
         default: 
             return state;
     }

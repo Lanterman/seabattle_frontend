@@ -28,7 +28,11 @@ function sendToWS(client, boardId, fieldName) {
 };
 
 function sendReadyToPlay(client, isReady, boardId) {
-    client.send(JSON.stringify({type: "is_ready_to_play", is_ready: isReady, board_id: boardId}));
+    client.send(JSON.stringify({
+        type: "is_ready_to_play", 
+        is_ready: isReady, 
+        board_id: boardId,
+    }));
 };
 
 

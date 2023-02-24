@@ -7,7 +7,7 @@
 
 .table-name {
     text-align: center;
-    margin-bottom: 30px;
+    margin: 0px 0px 30px 30px;
     font-size: 20px;
 }
 
@@ -16,7 +16,7 @@
 }
 
 .battlefield .refresh-table {
-    margin-right: 10px;
+    margin-left: 10px;
 }
 
 .battlefield .refresh-table:hover {
@@ -61,7 +61,12 @@
     border: 2px solid;
 }
 
-.check-mark {
+.ready {
     color: rgb(47, 255, 57);
+    margin-left: 10px;
+}
+
+.nready {
+    color: rgb(190, 147, 149);
     margin-left: 10px;
 }

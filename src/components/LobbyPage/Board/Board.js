@@ -1,9 +1,10 @@
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRefresh, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faRefresh, faCheck, faClock } from '@fortawesome/free-solid-svg-icons';
 
 import { PrepareSettingShipOnBoard } from "../../../modules/prepareSettingShip";
-import { sendPutShip, sendRefreshBoard } from "../../../modules/wsRequests/wsLobbyRequests";
+import { setCurrentShip } from "../../../store/reducers/lobbyReducer";
+import { sendPutShip, sendRefreshBoard } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import { Column } from "../Column/Column";
 
 import "./Board.css";
@@ -12,11 +13,11 @@ import "./Board.css";
 function Board(props) {
     const columnNameList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
     const fieldNumberList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    const userId = props.userId;
-    const isReady = useSelector(state => state.base.isReady);
-    const board = columnNameList.map(columnName => JSON.parse(props.board[columnName].replace(/'/g, '"')));
-    const prepareSetting = new PrepareSettingShipOnBoard();
+    const isMyBoard = props.userId;
     const defineColorField = props.defineColorField;
+    const board = columnNameList.map(columnName => JSON.parse(props.board[columnName].replace(/'/g, '"')));
+    const dispatch = useDispatch();
+    const prepareSetting = new PrepareSettingShipOnBoard();
 
     function refreshTableHandler(e) {
         sendRefreshBoard(props.client, props.board.id, props.board.ships, board);
@@ -27,6 +28,7 @@ function Board(props) {
                                                                   props.ship.plane, columnNameList);
         if (prepareSetting.isCanPut(fieldNameList, columnNameList, board)) {
             defineColorField.defineColorField(fieldNameList, "#4382f7");
+            dispatch(setCurrentShip(Object.assign({}, props.ship, {count: props.ship.count - 1})));
             sendPutShip(props.client, props.ship.id, props.board.id, props.ship.plane, 
                         props.ship.count, fieldNameList, board);
         };
@@ -54,11 +56,12 @@ function Board(props) {
 
     return (
         <div className="battlefield">
-            <p className="table-name" id={!userId ? "enemy-table": undefined}>
-                { userId && !isReady && <FontAwesomeIcon className="refresh-table" icon={faRefresh} 
-                                                         onClick={(e) => refreshTableHandler(e)}/>}
-                {userId ? "My table" : "Enemy table"} 
-                {userId && isReady && <FontAwesomeIcon className="check-mark" icon={faCheck}/>}
+            <p className="table-name" id={!isMyBoard ? "enemy-table": undefined}>
+                <i className="name">{isMyBoard ? "My table" : "Enemy table"}</i>
+                {isMyBoard && !props.board.is_ready && <FontAwesomeIcon className="refresh-table" icon={faRefresh} 
+                                                                           onClick={refreshTableHandler}/>}
+                {!isMyBoard && !props.board.is_ready && <FontAwesomeIcon className="nready" icon={faClock}/>}
+                {props.board.is_ready && <FontAwesomeIcon className="ready" icon={faCheck}/>}
             </p> 
             <div className="columns-name">
                 {columnNameList.map(columName => {
@@ -73,7 +76,7 @@ function Board(props) {
                     return <Column 
                         key={board.indexOf(colum)} 
                         boardId={props.board.id}
-                        userId={userId}
+                        isEnemyBoard={isMyBoard}
                         column={colum}
                         ship={props.ship}
                         client={props.client}

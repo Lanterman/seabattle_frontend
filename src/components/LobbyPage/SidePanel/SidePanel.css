@@ -9,3 +9,13 @@
     border-left: 1px inset rgb(228, 227, 227);
     z-index: 99;
 }
+
+.ready-button {
+    font-size: 18px;
+    padding: 3px 5px;
+}
+
+.pre-ready-button {
+    width: 50px;
+    font-size: 19px;
+}

@@ -1,12 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faCircle } from '@fortawesome/free-solid-svg-icons';
 
-import { sendToWS } from "../../../modules/wsRequests/wsLobbyRequests";
+import { sendToWS } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import "./Column.css";
 
 
 function Column(props) {
-    const isEnemyBoard = !props.userId && true;
+    const isEnemyBoard = !props.isEnemyBoard && true;
     const isShipExists = props.ship && true;
 
     function takeShot(e) {
@@ -41,7 +41,7 @@ function Column(props) {
                     onClick={isEnemyBoard && ["miss", "hit"].indexOf(props.column[fieldName]) === -1 ?
                         takeShot : undefined} 
                     onDrop={(e) => {isShipExists && dropHandler(e, fieldName)}}
-                    onDragOver={(e) => {isShipExists && dragOverHandler(e, fieldName)}}
+                    onDragOver={(e) => {isShipExists && props.ship.count && dragOverHandler(e, fieldName)}}
                     onDragLeave={(e) => {isShipExists && dragLeaveHandler(e, fieldName)}}>
                     {props.column[fieldName] === "hit" && <FontAwesomeIcon icon={faXmark} className="x-mark" />}
                     {props.column[fieldName] === "miss" && <FontAwesomeIcon icon={faCircle} className="cirle" />}
