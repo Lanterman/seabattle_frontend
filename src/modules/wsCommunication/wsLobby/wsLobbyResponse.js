@@ -25,7 +25,6 @@ export class WSResponse {
     clearBoard(dispatch, board, newBoard, ships) {
         dispatch(setMyBoard(Object.assign({}, board, newBoard)));
         dispatch(setShips(ships));
-        Array.from(document.getElementsByClassName("ship")).map(element => element.style.background = "#4382f7");
     };
 
     isReadyToPlay(dispatch, method, board, isReady) {

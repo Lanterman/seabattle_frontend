@@ -17,30 +17,28 @@ function Ships(props) {
         };
     };
 
-    function updateSpaceColor(spaceField, color, opacity=null) {
-        spaceField.style.background = color;
+    function updateSpaceClassName(spaceField, name, opacity=null) {
+        spaceField.attributes.class.value = `field ${name}`;
         opacity ? spaceField.style.opacity = 0.7 : spaceField.style.opacity = 1;
     };
 
     function dragStartHandler(e, ship) {
-        e.target.style.background = "#b7b9c7";
         e.target.attributes.class.value = "ship action";
-        Array.from(document.getElementsByClassName("space-field")).map(spaceField => updateSpaceColor(spaceField, "#e42c2c", true));
+        Array.from(document.getElementsByClassName("space-field")).map(spaceField => updateSpaceClassName(spaceField, "space-action", true));
         dispatch(setCurrentShip(Object.assign({}, ship)));
     };
 
     function dragEndHandler(e) {
-        Array.from(document.getElementsByClassName("space-field")).map(spaceField => updateSpaceColor(spaceField, "#e2e7e7"));
+        Array.from(document.getElementsByClassName("space-action")).map(spaceField => updateSpaceClassName(spaceField, "space-field"));
         if (currentShip.count > 0) {
-            e.target.style.background = "#4382f7";
+            e.target.attributes.class.value = "ship exists";
         };
         dispatch(setCurrentShip(null));
-        e.target.attributes.class.value = "ship";
     };
 
     function contextMenuHandler(e, currentShip) {
         e.preventDefault();
-        e.target.attributes.class.value = "ship exists action";
+        e.target.attributes.class.value = "ship exists";
         if (currentShip.plane === "horizontal") {
             currentShip.plane = "vertical";
             ships.map(ship =>replacePlaneOfShip(currentShip, ship));

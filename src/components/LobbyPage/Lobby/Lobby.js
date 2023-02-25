@@ -6,7 +6,6 @@ import { faMoneyBillTransfer,  faClock, faUser } from '@fortawesome/free-solid-s
 
 import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResponse";
 import { setEnemyBoard, setMyBoard, setIsCanPutShip } from "../../../store/reducers/lobbyReducer";
-import { DefineColorField } from "../../../modules/defineColorField";
 import { Board } from "../Board/Board";
 import { Ships } from "../Ships/Ships";
 
@@ -22,8 +21,8 @@ function Lobby(props) {
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
     const currentShip = useSelector(state => state.lobby.currentShip);
     const isCanPutShip = useSelector(state => state.lobby.isCanPutShip);
-    const defineColorField = new DefineColorField();
     const wsResp = new WSResponse();
+    console.log(myBoard)
     // console.log("поработать над закрытием вебсокета переходе на другую страницу, на уровне соединения с вебсокетом в python")
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это")
 
@@ -43,25 +42,26 @@ function Lobby(props) {
                 wsResp.dropShip(dispatch, myBoard, data.board, data.ships);
 
             } else if (data.type === "clear_board") {
-                defineColorField.defineColorField(data.field_name_list, "#e2e7e7");
                 wsResp.clearBoard(dispatch, myBoard, data.board, data.ships);
 
             } else if (data.type === "is_ready_to_play") {
                 userId === data.user_id ?
                     wsResp.isReadyToPlay(dispatch, setMyBoard, myBoard, data.is_ready) :
                     wsResp.isReadyToPlay(dispatch, setEnemyBoard, enemyBoard, data.is_ready);
+            } else if (data.type === "random_replaced") {
+                wsResp.clearBoard(dispatch, myBoard, data.board, data.ships);
             };
         };
     });
 
-    function updateColorShip(value) {
+    function updateShipClassName(value) {
         dispatch(setIsCanPutShip(value));
         const actionShip = document.getElementsByClassName("action")[0];
 
         if (isCanPutShip) {
-            actionShip.attributes.style.value = "background: #b7b9c7";
+            actionShip.attributes.class.value = "ship action";
         } else {
-            actionShip.attributes.style.value = "background: red";
+            actionShip.attributes.class.value = "ship action not-put";
         };
     };
 
@@ -87,8 +87,7 @@ function Lobby(props) {
                     board={myBoard}
                     userId={userId}
                     ship={currentShip}
-                    updateColorShip={updateColorShip}
-                    defineColorField={defineColorField}
+                    updateShipClassName={updateShipClassName}
                 />
                 <Board board={enemyBoard} client={props.client}/>
             </div>

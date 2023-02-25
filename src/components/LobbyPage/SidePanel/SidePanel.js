@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 
-import { sendReadyToPlay } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { sendReadyToPlay, sendRandomPlacement } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import { Chat } from "../Chat/Chat";
 
 import "./SidePanel.css";
@@ -18,17 +18,19 @@ function SidePanel(props) {
         };
         return true;
     };
- 
+
     return (
         <div className="side-panel">
             <Chat />
-            {myBoard.is_ready && <p className="label-ready">You ready!!!</p>}
-            {boardIsReady ? 
-                <input className="ready-button" type="button" value="Ready" 
-                    onClick={(e) => sendReadyToPlay(props.client, !myBoard.is_ready, myBoard.id)}/> :
-                <p className="pre-ready-button">Ready</p>
-            }
-            
+            <div id="is-ready">
+                {boardIsReady ? 
+                    <input className="ready-button" type="button" value="Ready" 
+                        onClick={(e) => sendReadyToPlay(props.client, !myBoard.is_ready, myBoard.id)}/> :
+                    <i className="pre-ready-button" title="Not all ships are placed.">Ready</i>
+                }
+                <input type="button" className="random-placement" value="Random placement"
+                       onClick={() => sendRandomPlacement(props.client, myBoard.id)}/>
+            </div>
         </div>
     );
 };

@@ -1,6 +1,6 @@
 .side-panel {
     position: fixed;
-    margin-left: 68%;
+    margin-left: 68%; 
     float: right;
     width: 32%;
     height: 100%;
@@ -10,12 +10,24 @@
     z-index: 99;
 }
 
+#is-ready {
+    width: 80%;
+    margin: 20px 5%;
+    text-align: center;
+}
+
 .ready-button {
-    font-size: 18px;
+    font-size: 17px;
     padding: 3px 5px;
 }
 
 .pre-ready-button {
-    width: 50px;
     font-size: 19px;
+    opacity: 0.8;
+}
+
+.random-placement {
+    margin-left: 40px;
+    font-size: 17px;
+    padding: 3px 5px;
 }

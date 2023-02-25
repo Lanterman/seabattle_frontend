@@ -1,4 +1,4 @@
-function sendRefreshBoard(client, boardId, ships, board) {
+export function sendRefreshBoard(client, boardId, ships, board) {
     client.send(JSON.stringify({
         type: "refresh_board",
         board_id: boardId,
@@ -7,7 +7,7 @@ function sendRefreshBoard(client, boardId, ships, board) {
     }));
 };
 
-function sendPutShip(client, shipId, boardId, plane, shipCount, fieldNameList, board) {
+export function sendPutShip(client, shipId, boardId, plane, shipCount, fieldNameList, board) {
     client.send(JSON.stringify({
         type: "drop_ship",
         ship_id: shipId,
@@ -19,7 +19,7 @@ function sendPutShip(client, shipId, boardId, plane, shipCount, fieldNameList, b
     }));
 };
 
-function sendToWS(client, boardId, fieldName) {
+export function sendToWS(client, boardId, fieldName) {
     client.send(JSON.stringify({
         type: "take_shot",
         board_id: boardId,
@@ -27,7 +27,7 @@ function sendToWS(client, boardId, fieldName) {
     }));
 };
 
-function sendReadyToPlay(client, isReady, boardId) {
+export function sendReadyToPlay(client, isReady, boardId) {
     client.send(JSON.stringify({
         type: "is_ready_to_play", 
         is_ready: isReady, 
@@ -35,5 +35,10 @@ function sendReadyToPlay(client, isReady, boardId) {
     }));
 };
 
+export function sendRandomPlacement(client, boardId) {
+    client.send(JSON.stringify({
+        type: "random_placement", 
+        board_id: boardId,
+    }));
+};
 
-export { sendRefreshBoard, sendPutShip, sendToWS, sendReadyToPlay };

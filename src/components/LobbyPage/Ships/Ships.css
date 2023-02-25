@@ -19,8 +19,12 @@
 	background-color: #4382f7;
 }
 
-.initial-ships .does-not-exists {
+.initial-ships .does-not-exists, .initial-ships .action {
 	background-color: #b7b9c7;
+}
+
+.initial-ships .not-put {
+	background-color: red;
 }
 
 .initial-ships .ship {

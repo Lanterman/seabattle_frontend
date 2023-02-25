@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRefresh, faCheck, faClock } from '@fortawesome/free-solid-svg-icons';
 
 import { PrepareSettingShipOnBoard } from "../../../modules/prepareSettingShip";
+import { DefineShipClassName } from "../../../modules/defineShipClassName";
 import { setCurrentShip } from "../../../store/reducers/lobbyReducer";
 import { sendPutShip, sendRefreshBoard } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import { Column } from "../Column/Column";
@@ -14,9 +15,9 @@ function Board(props) {
     const columnNameList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
     const fieldNumberList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     const isMyBoard = props.userId;
-    const defineColorField = props.defineColorField;
     const board = columnNameList.map(columnName => JSON.parse(props.board[columnName].replace(/'/g, '"')));
     const dispatch = useDispatch();
+    const defineClassName = new DefineShipClassName();
     const prepareSetting = new PrepareSettingShipOnBoard();
 
     function refreshTableHandler(e) {
@@ -27,7 +28,6 @@ function Board(props) {
         const fieldNameList = prepareSetting.defineShipFieldsName(fieldName, props.ship.size, 
                                                                   props.ship.plane, columnNameList);
         if (prepareSetting.isCanPut(fieldNameList, columnNameList, board)) {
-            defineColorField.defineColorField(fieldNameList, "#4382f7");
             dispatch(setCurrentShip(Object.assign({}, props.ship, {count: props.ship.count - 1})));
             sendPutShip(props.client, props.ship.id, props.board.id, props.ship.plane, 
                         props.ship.count, fieldNameList, board);
@@ -39,18 +39,18 @@ function Board(props) {
                                                                   props.ship.plane, columnNameList);
         
         if (prepareSetting.isCanPut(fieldNameList, columnNameList, board)) {
-            defineColorField.defineColorField(fieldNameList, "gray");
-            props.updateColorShip(true);
+            defineClassName.defineShipClassName(fieldNameList, "over");
+            props.updateShipClassName(true);
             return;
         };
-        props.updateColorShip(false);
+        props.updateShipClassName(false);
     };
 
     function leaveFields(fieldName) {
         const fieldNameList = prepareSetting.defineShipFieldsName(fieldName, props.ship.size, 
                                                                   props.ship.plane, columnNameList);
         if (prepareSetting.isCanPut(fieldNameList, columnNameList, board)) {
-            defineColorField.defineColorField(fieldNameList, "#e2e7e7");
+            defineClassName.defineShipClassName(fieldNameList, "");
         };
     };
 
