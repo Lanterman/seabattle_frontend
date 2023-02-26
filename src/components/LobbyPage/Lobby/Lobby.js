@@ -22,7 +22,6 @@ function Lobby(props) {
     const currentShip = useSelector(state => state.lobby.currentShip);
     const isCanPutShip = useSelector(state => state.lobby.isCanPutShip);
     const wsResp = new WSResponse();
-    console.log(myBoard)
     // console.log("поработать над закрытием вебсокета переходе на другую страницу, на уровне соединения с вебсокетом в python")
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это")
 
@@ -39,17 +38,17 @@ function Lobby(props) {
                     wsResp.sendShot(dispatch, setMyBoard, myBoard, data.board);
 
             } else if (data.type === "drop_ship") {
-                wsResp.dropShip(dispatch, myBoard, data.board, data.ships);
+                wsResp.updateBoard(dispatch, myBoard, data.board, data.ships);
 
             } else if (data.type === "clear_board") {
-                wsResp.clearBoard(dispatch, myBoard, data.board, data.ships);
+                wsResp.updateBoard(dispatch, myBoard, data.board, data.ships);
 
             } else if (data.type === "is_ready_to_play") {
                 userId === data.user_id ?
                     wsResp.isReadyToPlay(dispatch, setMyBoard, myBoard, data.is_ready) :
                     wsResp.isReadyToPlay(dispatch, setEnemyBoard, enemyBoard, data.is_ready);
             } else if (data.type === "random_replaced") {
-                wsResp.clearBoard(dispatch, myBoard, data.board, data.ships);
+                wsResp.updateBoard(dispatch, myBoard, data.board, data.ships);
             };
         };
     });

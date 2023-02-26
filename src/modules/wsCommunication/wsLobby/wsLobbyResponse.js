@@ -1,4 +1,4 @@
-import { setMyBoard, setShips } from "../../../store/reducers/lobbyReducer";
+import { setMyBoard } from "../../../store/reducers/lobbyReducer";
 
 export class WSResponse {
 
@@ -17,14 +17,8 @@ export class WSResponse {
         dispatch(method(Object.assign({}, board, newBoard)));
     };;
 
-    dropShip(dispatch, board, newBoard, ships) {
-        dispatch(setMyBoard(Object.assign({}, board, newBoard)));
-        dispatch(setShips(ships));
-    };
-
-    clearBoard(dispatch, board, newBoard, ships) {
-        dispatch(setMyBoard(Object.assign({}, board, newBoard)));
-        dispatch(setShips(ships));
+    updateBoard(dispatch, board, newBoard, ships) {
+        dispatch(setMyBoard(Object.assign({}, board, newBoard, {ships: ships})));
     };
 
     isReadyToPlay(dispatch, method, board, isReady) {

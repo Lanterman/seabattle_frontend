@@ -7,7 +7,7 @@ import "./Ships.css";
 
 function Ships(props) {
     const dispatch = useDispatch();
-    const ships = useSelector(state => state.lobby.ships);
+    const ships = useSelector(state => state.lobby.myBoard).ships;
     const currentShip = useSelector(state => state.lobby.currentShip);
 
     function replacePlaneOfShip(currentShip, ship) {

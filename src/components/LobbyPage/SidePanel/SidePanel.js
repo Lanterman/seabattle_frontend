@@ -7,7 +7,7 @@ import "./SidePanel.css";
 
 function SidePanel(props) {
     const myBoard = useSelector(state => state.lobby.myBoard);
-    const ships = useSelector(state => state.lobby.ships);
+    const ships = myBoard.ships;
     const boardIsReady = isShipPlaced()
 
     function isShipPlaced() {
