@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faCircle } from '@fortawesome/free-solid-svg-icons';
 
-import { sendToWS } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { sendShot } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import "./Column.css";
 
 
@@ -11,7 +11,7 @@ function Column(props) {
 
     function takeShot(e) {
         const fieldName = e.target.attributes.name.value;
-        sendToWS(props.client, props.boardId, fieldName);
+        sendShot(props.client, props.boardId, fieldName);
     };
 
     function dropHandler(e, fieldName) {

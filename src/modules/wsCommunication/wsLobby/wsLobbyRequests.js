@@ -19,7 +19,7 @@ export function sendPutShip(client, shipId, boardId, plane, shipCount, fieldName
     }));
 };
 
-export function sendToWS(client, boardId, fieldName) {
+export function sendShot(client, boardId, fieldName) {
     client.send(JSON.stringify({
         type: "take_shot",
         board_id: boardId,

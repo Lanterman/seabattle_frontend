@@ -14,11 +14,18 @@ import "./Board.css";
 function Board(props) {
     const columnNameList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
     const fieldNumberList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    const isMyBoard = props.userId;
-    const board = columnNameList.map(columnName => JSON.parse(props.board[columnName].replace(/'/g, '"')));
     const dispatch = useDispatch();
+    const isMyBoard = props.userId;
+    const board = {};
     const defineClassName = new DefineShipClassName();
     const prepareSetting = new PrepareSettingShipOnBoard();
+    createBoardVariable();
+    
+    function createBoardVariable() {
+        columnNameList.map((columnName) => (
+            board[columnName] = props.board[columnName]
+        ));
+    };
 
     function refreshTableHandler(e) {
         sendRefreshBoard(props.client, props.board.id, props.board.ships, board);
@@ -27,7 +34,7 @@ function Board(props) {
     function dropShipOnBoard(fieldName) {
         const fieldNameList = prepareSetting.defineShipFieldsName(fieldName, props.ship.size, 
                                                                   props.ship.plane, columnNameList);
-        if (prepareSetting.isCanPut(fieldNameList, columnNameList, board)) {
+        if (prepareSetting.isCanPut(fieldNameList, board)) {
             dispatch(setCurrentShip(Object.assign({}, props.ship, {count: props.ship.count - 1})));
             sendPutShip(props.client, props.ship.id, props.board.id, props.ship.plane, 
                         props.ship.count, fieldNameList, board);
@@ -38,7 +45,7 @@ function Board(props) {
         const fieldNameList = prepareSetting.defineShipFieldsName(fieldName, props.ship.size, 
                                                                   props.ship.plane, columnNameList);
         
-        if (prepareSetting.isCanPut(fieldNameList, columnNameList, board)) {
+        if (prepareSetting.isCanPut(fieldNameList, board)) {
             defineClassName.defineShipClassName(fieldNameList, "over");
             props.updateShipClassName(true);
             return;
@@ -49,7 +56,7 @@ function Board(props) {
     function leaveFields(fieldName) {
         const fieldNameList = prepareSetting.defineShipFieldsName(fieldName, props.ship.size, 
                                                                   props.ship.plane, columnNameList);
-        if (prepareSetting.isCanPut(fieldNameList, columnNameList, board)) {
+        if (prepareSetting.isCanPut(fieldNameList, board)) {
             defineClassName.defineShipClassName(fieldNameList, "");
         };
     };
@@ -72,12 +79,12 @@ function Board(props) {
                 {fieldNumberList.map(number => {return <span key={number} className="field-name">{number}</span>})}
             </div>
             <div className="game-fields">
-                {board.map((colum) => {
+                {columnNameList.map((columName) => {
                     return <Column 
-                        key={board.indexOf(colum)} 
+                        key={columName} 
                         boardId={props.board.id}
                         isEnemyBoard={isMyBoard}
-                        column={colum}
+                        column={board[columName]}
                         ship={props.ship}
                         client={props.client}
                         dropShipOnBoard={dropShipOnBoard}

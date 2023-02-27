@@ -23,14 +23,12 @@ function Lobby(props) {
     const isCanPutShip = useSelector(state => state.lobby.isCanPutShip);
     const wsResp = new WSResponse();
     // console.log("поработать над закрытием вебсокета переходе на другую страницу, на уровне соединения с вебсокетом в python")
-    // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это")
+    // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
 
     useEffect(() => {
         props.client.onopen = (e) => console.log("Websocket started");
         props.client.onmessage = (e) => {
             const data = JSON.parse(e.data);
-
-            wsResp.convertToJSON(data.board);
 
             if (data.type === "send_shot") {
                 userId === data.user_id ?

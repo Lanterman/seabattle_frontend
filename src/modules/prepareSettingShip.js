@@ -1,10 +1,8 @@
 class PrepareSettingShipOnBoard {
 
-    isCanPut(fieldNameList, columnNameList, board) {
+    isCanPut(fieldNameList, board) {
         if (fieldNameList.indexOf(null) === -1) {
-            const check = fieldNameList.map(fieldName => (
-                !board[columnNameList.indexOf(fieldName[0])][fieldName] ?  true : false
-            ));
+            const check = fieldNameList.map(fieldName => (!board[fieldName[0]][fieldName] ?  true : false));
             return check.indexOf(false) >= 0 ? false : true;
         };
         return false;
@@ -18,7 +16,9 @@ class PrepareSettingShipOnBoard {
                 fieldName[0] + (Number(fieldName.slice(1)) - (number === 1 ? number : number - 1))
             ));
             
-            return fieldNameList.map(fieldName => Number(fieldName.slice(1)) <= 10 & Number(fieldName.slice(1)) > 0 ? fieldName : null);
+            return fieldNameList.map(fieldName => (
+                Number(fieldName.slice(1)) <= 10 & Number(fieldName.slice(1)) > 0 ? fieldName : null
+            ));
         } else {
             const indexOfField = columnNameList.indexOf(fieldName[0]);
             const indexList = numberList.map(number => (
