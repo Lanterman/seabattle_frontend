@@ -35,10 +35,12 @@ export function sendReadyToPlay(client, isReady, boardId) {
     }));
 };
 
-export function sendRandomPlacement(client, boardId) {
+export function sendRandomPlacement(client, boardId, board, ships) {
     client.send(JSON.stringify({
         type: "random_placement", 
         board_id: boardId,
+        board: board,
+        ships: ships,
     }));
 };
 

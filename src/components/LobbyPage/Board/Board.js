@@ -4,6 +4,7 @@ import { faRefresh, faCheck, faClock } from '@fortawesome/free-solid-svg-icons';
 
 import { PrepareSettingShipOnBoard } from "../../../modules/prepareSettingShip";
 import { DefineShipClassName } from "../../../modules/defineShipClassName";
+import { columnNameList, fieldNumberList, createBoardVariable } from "../../../modules/services";
 import { setCurrentShip } from "../../../store/reducers/lobbyReducer";
 import { sendPutShip, sendRefreshBoard } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import { Column } from "../Column/Column";
@@ -12,20 +13,11 @@ import "./Board.css";
 
 
 function Board(props) {
-    const columnNameList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
-    const fieldNumberList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     const dispatch = useDispatch();
     const isMyBoard = props.userId;
-    const board = {};
+    const board = createBoardVariable(props.board);
     const defineClassName = new DefineShipClassName();
     const prepareSetting = new PrepareSettingShipOnBoard();
-    createBoardVariable();
-    
-    function createBoardVariable() {
-        columnNameList.map((columnName) => (
-            board[columnName] = props.board[columnName]
-        ));
-    };
 
     function refreshTableHandler(e) {
         sendRefreshBoard(props.client, props.board.id, props.board.ships, board);
