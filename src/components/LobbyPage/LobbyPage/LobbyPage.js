@@ -3,7 +3,7 @@ import { Suspense, useRef } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 
-import  { defineLobbyStateAction } from "../../../store/reducers/lobbyReducer";
+import  { defineLobbyStateAction, setAreUsersReady } from "../../../store/reducers/lobbyReducer";
 import { SidePanel } from "../SidePanel/SidePanel";
 import { Lobby } from "../Lobby/Lobby";
 
@@ -35,6 +35,9 @@ function LobbyPage(props) {
                                     {myBoard: boards[0], enemyBoard: boards[1], ships: boards[0].ships} :
                                     {myBoard: boards[1], enemyBoard: boards[0], ships: boards[1].ships}
                             ));
+                            if(boards[0]["is_ready"] & boards[1]["is_ready"]) {
+                                dispatch(setAreUsersReady({areUsersReady: true}));
+                            };
                             return <Lobby lobby={resolvedLobby} client={clientRef.current}/>
                         }}
                     </Await>

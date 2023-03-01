@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faCircle } from '@fortawesome/free-solid-svg-icons';
 
@@ -6,6 +7,7 @@ import "./Column.css";
 
 
 function Column(props) {
+    const areUsersReady = useSelector(state => state.lobby.areUsersReady);
     const isEnemyBoard = !props.isEnemyBoard && true;
     const isShipExists = props.ship && true;
 
@@ -34,11 +36,12 @@ function Column(props) {
                 <div 
                     key={fieldName}
                     name={fieldName} 
-                    id={isEnemyBoard && ["miss", "hit"].indexOf(props.column[fieldName]) === -1 ? "field" : undefined} 
+                    id={isEnemyBoard && areUsersReady && ["miss", "hit"].indexOf(props.column[fieldName]) === -1 ? 
+                        "field" : undefined} 
                     className={`field ${String(props.column[fieldName]).includes("space") ? "space-field" :
                         props.column[fieldName] && props.column[fieldName] !== "miss" && !isEnemyBoard ? "ship-field" :
                         "empty-field"}`}
-                    onClick={isEnemyBoard && ["miss", "hit"].indexOf(props.column[fieldName]) === -1 ?
+                    onClick={isEnemyBoard && areUsersReady && ["miss", "hit"].indexOf(props.column[fieldName]) === -1 ?
                         takeShot : undefined} 
                     onDrop={(e) => {isShipExists && dropHandler(e, fieldName)}}
                     onDragOver={(e) => {isShipExists && props.ship.count && dragOverHandler(e, fieldName)}}

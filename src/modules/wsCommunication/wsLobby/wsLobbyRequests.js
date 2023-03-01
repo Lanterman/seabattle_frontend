@@ -44,3 +44,12 @@ export function sendRandomPlacement(client, boardId, board, ships) {
     }));
 };
 
+// export function sendWhoStarts(client, myBoardId, enemyBoardId, slug) {
+//     console.log("ok")
+//     client.send(JSON.stringify({
+//         type: "who_starts", 
+//         myBoardId: myBoardId,
+//         enemyBoardId: enemyBoardId,
+//         slug: slug
+//     }));
+// }

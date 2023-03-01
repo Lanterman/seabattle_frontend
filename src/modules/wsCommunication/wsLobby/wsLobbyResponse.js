@@ -2,7 +2,7 @@ import { setMyBoard } from "../../../store/reducers/lobbyReducer";
 
 export class WSResponse {
 
-    sendShot(dispatch, method, board, newBoard) {
+    takeShot(dispatch, method, board, newBoard) {
         dispatch(method(Object.assign({}, board, newBoard)));
     };;
 
