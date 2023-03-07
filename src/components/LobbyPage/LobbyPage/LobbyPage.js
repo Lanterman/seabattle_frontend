@@ -3,7 +3,8 @@ import { Suspense, useRef } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 
-import  { defineLobbyStateAction, setAreUsersReady } from "../../../store/reducers/lobbyReducer";
+import { sendWhoStarts } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import  { defineLobbyStateAction } from "../../../store/reducers/lobbyReducer";
 import { SidePanel } from "../SidePanel/SidePanel";
 import { Lobby } from "../Lobby/Lobby";
 
@@ -35,10 +36,12 @@ function LobbyPage(props) {
                                     {myBoard: boards[0], enemyBoard: boards[1], ships: boards[0].ships} :
                                     {myBoard: boards[1], enemyBoard: boards[0], ships: boards[1].ships}
                             ));
-                            if(boards[0]["is_ready"] & boards[1]["is_ready"]) {
-                                dispatch(setAreUsersReady({areUsersReady: true}));
+                            const areUsersReady = boards[0]["is_ready"] & boards[1]["is_ready"];
+                            const isChoseTurn = !boards[0]["my_turn"] & !boards[1]["my_turn"];
+                            if (areUsersReady & isChoseTurn ) {
+                                sendWhoStarts(clientRef.current, slug);
                             };
-                            return <Lobby lobby={resolvedLobby} client={clientRef.current}/>
+                            return <Lobby lobby={resolvedLobby} client={clientRef.current} lobbySlug={slug} />
                         }}
                     </Await>
                 </Suspense>

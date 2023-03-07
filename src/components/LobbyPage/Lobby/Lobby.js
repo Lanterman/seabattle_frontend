@@ -5,11 +5,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoneyBillTransfer,  faClock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResponse";
-import { setEnemyBoard, setMyBoard, setIsCanPutShip, setAreUsersReady } from "../../../store/reducers/lobbyReducer";
+import { setEnemyBoard, setMyBoard, setIsCanPutShip } from "../../../store/reducers/lobbyReducer";
 import { Board } from "../Board/Board";
 import { Ships } from "../Ships/Ships";
 
 import "./Lobby.css";
+import { sendWhoStarts } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 
 
 function Lobby(props) {
@@ -22,9 +23,9 @@ function Lobby(props) {
     const currentShip = useSelector(state => state.lobby.currentShip);
     const isCanPutShip = useSelector(state => state.lobby.isCanPutShip);
     const wsResp = new WSResponse();
+
     // console.log("поработать над закрытием вебсокета переходе на другую страницу, на уровне соединения с вебсокетом в python")
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
-    console.log("Пересмотреть Кто первый стреляет")
 
     useEffect(() => {
         props.client.onopen = (e) => console.log("Websocket started");
@@ -33,8 +34,8 @@ function Lobby(props) {
 
             if (data.type === "send_shot") {
                 userId === data.user_id ?
-                    wsResp.takeShot(dispatch, setEnemyBoard, enemyBoard, data.board) :
-                    wsResp.takeShot(dispatch, setMyBoard, myBoard, data.board);
+                    wsResp.takeShot(dispatch, setEnemyBoard, setMyBoard, enemyBoard, myBoard, data.board, data.is_my_turn) :
+                    wsResp.takeShot(dispatch, setMyBoard, setEnemyBoard, myBoard, enemyBoard, data.board, data.is_my_turn);
 
             } else if (data.type === "drop_ship") {
                 wsResp.updateBoard(dispatch, myBoard, data.board, data.ships);
@@ -47,17 +48,17 @@ function Lobby(props) {
                     wsResp.isReadyToPlay(dispatch, setMyBoard, myBoard, data.is_ready) :
                     wsResp.isReadyToPlay(dispatch, setEnemyBoard, enemyBoard, data.is_ready);
 
-                    if (myBoard["is_ready"] & enemyBoard["is_ready"]) {
-                        dispatch(setAreUsersReady({areUsersReady: true}));
-                    } else {
-                        dispatch(setAreUsersReady({areUsersReady: false}));
-                    };
+                if (myBoard["is_ready"] && enemyBoard["is_ready"] && data.user_id === userId) {
+                    sendWhoStarts(props.client, props.lobbySlug);
+                };
 
             } else if (data.type === "random_replaced") {
                 wsResp.updateBoard(dispatch, myBoard, data.board, data.ships);
 
             } else if (data.type === "who_starts") {
-                console.log(data.board_id)
+                userId === data.user_id ?
+                    wsResp.determineWhoIsTurning(dispatch, data.is_my_turn, myBoard, enemyBoard) :
+                    wsResp.determineWhoIsTurning(dispatch, !data.is_my_turn, myBoard, enemyBoard);
             };
         };
     });
@@ -97,7 +98,7 @@ function Lobby(props) {
                     ship={currentShip}
                     updateShipClassName={updateShipClassName}
                 />
-                <Board board={enemyBoard} client={props.client}/>
+                <Board board={enemyBoard} client={props.client} lobbySlug={props.lobbySlug}/>
             </div>
             <Ships client={props.client} />
         </div>

@@ -58,7 +58,14 @@
     margin-left: 30px;
     width: 370px;
     height: 370px;
+}
+
+#enemy-turn {
     border: 2px solid;
+}
+
+#my-turn {
+    border: 2px solid rgb(21, 240, 21);
 }
 
 .ready {

@@ -19,9 +19,10 @@ export function sendPutShip(client, shipId, boardId, plane, shipCount, fieldName
     }));
 };
 
-export function sendShot(client, boardId, fieldName) {
+export function sendShot(client, lobbySlug, boardId, fieldName) {
     client.send(JSON.stringify({
         type: "take_shot",
+        lobby_slug: lobbySlug,
         board_id: boardId,
         field_name: fieldName,
     }));
@@ -44,12 +45,9 @@ export function sendRandomPlacement(client, boardId, board, ships) {
     }));
 };
 
-// export function sendWhoStarts(client, myBoardId, enemyBoardId, slug) {
-//     console.log("ok")
-//     client.send(JSON.stringify({
-//         type: "who_starts", 
-//         myBoardId: myBoardId,
-//         enemyBoardId: enemyBoardId,
-//         slug: slug
-//     }));
-// }
+export function sendWhoStarts(client, lobbySlug) {
+    client.send(JSON.stringify({
+        type: "who_starts", 
+        lobbySlug: lobbySlug,
+    }));
+}
