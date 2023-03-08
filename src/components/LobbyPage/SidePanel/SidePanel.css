@@ -10,24 +10,22 @@
     z-index: 99;
 }
 
-#is-ready {
+.buttons {
     width: 80%;
-    margin: 20px 5%;
+    margin: 10px 5%;
     text-align: center;
 }
 
-.ready-button {
+.ready-button, .random-placement, .give-up {
     font-size: 17px;
     padding: 3px 5px;
+    margin-top: 10px;
 }
 
-.pre-ready-button {
-    font-size: 19px;
-    opacity: 0.8;
+.give-up {
+    color: rgb(204, 53, 53);
 }
 
-.random-placement {
-    margin-left: 40px;
-    font-size: 17px;
-    padding: 3px 5px;
+#disabled {
+    color: rgb(172, 168, 168);
 }

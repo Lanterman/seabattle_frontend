@@ -7,6 +7,7 @@ import "./Ships.css";
 
 function Ships(props) {
     const dispatch = useDispatch();
+    const winner = useSelector(state => state.lobby.winner);
     const ships = useSelector(state => state.lobby.myBoard).ships;
     const currentShip = useSelector(state => state.lobby.currentShip);
 
@@ -58,10 +59,10 @@ function Ships(props) {
                     <p 
                         id={ship.plane === "vertical" ? `${ship.name}-vertical` : ship.name}
                         className={`ship ${ship.count > 0 ? "exists" : "does-not-exists"}`}
-                        draggable={ship.count > 0 ? true : false}
-                        onDragStart={(e) => ship.count > 0 && dragStartHandler(e, ship)}
-                        onDragEnd={(e) => ship.count > 0 && dragEndHandler(e)}
-                        onContextMenu={(e) => ship.count > 0 ? contextMenuHandler(e, ship) : e.preventDefault()}>
+                        draggable={ship.count > 0 && !winner ? true : false}
+                        onDragStart={(e) => ship.count > 0 && !winner && dragStartHandler(e, ship)}
+                        onDragEnd={(e) => ship.count > 0 && !winner && dragEndHandler(e)}
+                        onContextMenu={(e) => ship.count > 0 && !winner ? contextMenuHandler(e, ship) : e.preventDefault()}>
                     </p>
                 </div>
             )}

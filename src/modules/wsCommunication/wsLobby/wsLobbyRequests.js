@@ -48,6 +48,12 @@ export function sendRandomPlacement(client, boardId, board, ships) {
 export function sendWhoStarts(client, lobbySlug) {
     client.send(JSON.stringify({
         type: "who_starts", 
-        lobbySlug: lobbySlug,
+        lobby_slug: lobbySlug,
     }));
-}
+};
+
+export function determineWinner(client, lobbySlug, enemyId=null) {
+    const data = {type: "determine_winner", lobby_slug: lobbySlug};
+    if (enemyId) data.enemy_id = enemyId;
+    client.send(JSON.stringify(data));
+};

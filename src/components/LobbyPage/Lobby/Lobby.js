@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMoneyBillTransfer,  faClock, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faDollar,  faClock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResponse";
 import { setEnemyBoard, setMyBoard, setIsCanPutShip } from "../../../store/reducers/lobbyReducer";
@@ -10,14 +10,16 @@ import { Board } from "../Board/Board";
 import { Ships } from "../Ships/Ships";
 
 import "./Lobby.css";
-import { sendWhoStarts } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { sendWhoStarts, determineWinner } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 
 
 function Lobby(props) {
     const dispatch = useDispatch();
     const lobby = props.lobby;
     const userId = Number(sessionStorage.getItem("user_id"));
-    const enemy = lobby.users[0]["id"] === userId ? lobby.users[1] : lobby.users[0];
+    const [me, enemy] = lobby.users[0]["id"] === userId ? [lobby.users[0], lobby.users[1]] : 
+        [lobby.users[1], lobby.users[0]];
+    const winner = useSelector(state => state.lobby.winner);
     const myBoard = useSelector(state => state.lobby.myBoard);
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
     const currentShip = useSelector(state => state.lobby.currentShip);
@@ -36,6 +38,9 @@ function Lobby(props) {
                 userId === data.user_id ?
                     wsResp.takeShot(dispatch, setEnemyBoard, setMyBoard, enemyBoard, myBoard, data.board, data.is_my_turn) :
                     wsResp.takeShot(dispatch, setMyBoard, setEnemyBoard, myBoard, enemyBoard, data.board, data.is_my_turn);
+                if (userId === data.user_id && data.enemy_ships === 0) {
+                    determineWinner(props.client, props.lobbySlug);
+                };
 
             } else if (data.type === "drop_ship") {
                 wsResp.updateBoard(dispatch, myBoard, data.board, data.ships);
@@ -59,6 +64,8 @@ function Lobby(props) {
                 userId === data.user_id ?
                     wsResp.determineWhoIsTurning(dispatch, data.is_my_turn, myBoard, enemyBoard) :
                     wsResp.determineWhoIsTurning(dispatch, !data.is_my_turn, myBoard, enemyBoard);
+            } else if (data.type === "determine_winner") {
+                wsResp.determinedWinner(dispatch, data.winner);
             };
         };
     });
@@ -79,7 +86,7 @@ function Lobby(props) {
             <h1 className="lobby-name">{lobby.name}</h1>
             <div className="lobby-options">
                 <span className="bet">{lobby.bet}</span>
-                <FontAwesomeIcon icon={faMoneyBillTransfer}/>
+                <FontAwesomeIcon icon={faDollar}/>
 
                 <span className="time-to-move">{lobby.time_to_move}</span>
                 <FontAwesomeIcon icon={faClock}/>
@@ -89,7 +96,13 @@ function Lobby(props) {
                     <FontAwesomeIcon icon={faUser}/>
                 </Link>
             </div>
-            
+
+            {winner && (
+                <p className="winner">
+                    {winner === me.username ? <i id="won">You won!</i> : <i id="lose">You lose!</i>}
+                </p>
+            )}
+
             <div className="game-block">
                 <Board
                     client={props.client}

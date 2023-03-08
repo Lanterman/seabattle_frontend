@@ -7,6 +7,7 @@ import "./Column.css";
 
 
 function Column(props) {
+    const winner = useSelector(state => state.lobby.winner);
     const isMyTurn = useSelector(state => state.lobby.myBoard).my_turn;
     const isEnemyBoard = !props.isEnemyBoard && true;
     const isShipExists = props.ship && true;
@@ -36,13 +37,13 @@ function Column(props) {
                 <div 
                     key={fieldName}
                     name={fieldName} 
-                    id={isEnemyBoard && isMyTurn && ["miss", "hit"].indexOf(props.column[fieldName]) === -1 ?
-                        "field" : undefined} 
+                    id={isEnemyBoard && isMyTurn && !winner && 
+                        ["miss", "hit"].indexOf(props.column[fieldName]) === -1 ? "field" : undefined}
                     className={`field ${String(props.column[fieldName]).includes("space") ? "space-field" :
                         props.column[fieldName] && props.column[fieldName] !== "miss" && !isEnemyBoard ? "ship-field" :
                         "empty-field"}`}
-                    onClick={isEnemyBoard && isMyTurn && ["miss", "hit"].indexOf(props.column[fieldName]) === -1 ?
-                        takeShot : undefined} 
+                    onClick={isEnemyBoard && isMyTurn && !winner && 
+                             ["miss", "hit"].indexOf(props.column[fieldName]) === -1 ? takeShot : undefined} 
                     onDrop={(e) => {isShipExists && dropHandler(e, fieldName)}}
                     onDragOver={(e) => {isShipExists && props.ship.count && dragOverHandler(e, fieldName)}}
                     onDragLeave={(e) => {isShipExists && dragLeaveHandler(e, fieldName)}}>

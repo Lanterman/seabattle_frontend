@@ -24,31 +24,33 @@ function LobbyPage(props) {
         clientRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${slug}/?token=${token}`);
     };
 
+    function preload(resolvedLobby) {
+        const boards = resolvedLobby.boards;
+        const areUsersReady = boards[0]["is_ready"] & boards[1]["is_ready"];
+        const isChoseTurn = !boards[0]["my_turn"] & !boards[1]["my_turn"];
+        
+        dispatch(defineLobbyStateAction(
+            boards[0]["user_id"] === userId ? 
+                {myBoard: boards[0], enemyBoard: boards[1], ships: boards[0].ships, winner: resolvedLobby.winner} :
+                {myBoard: boards[1], enemyBoard: boards[0], ships: boards[1].ships, winner: resolvedLobby.winner}
+        ));
+
+        (areUsersReady & isChoseTurn) && sendWhoStarts(clientRef.current, slug);
+        return <Lobby lobby={resolvedLobby} client={clientRef.current} lobbySlug={slug} />
+    };
+
     return (
         <div>
             <div className="main-page">
                 <Suspense fallback={<h1 className="suspense">Lobby is loading...</h1>}>
                     <Await resolve={lobby}>
-                        {resolvedLobby => {
-                            const boards = resolvedLobby.boards;
-                            dispatch(defineLobbyStateAction(
-                                boards[0]["user_id"] === userId ? 
-                                    {myBoard: boards[0], enemyBoard: boards[1], ships: boards[0].ships} :
-                                    {myBoard: boards[1], enemyBoard: boards[0], ships: boards[1].ships}
-                            ));
-                            const areUsersReady = boards[0]["is_ready"] & boards[1]["is_ready"];
-                            const isChoseTurn = !boards[0]["my_turn"] & !boards[1]["my_turn"];
-                            if (areUsersReady & isChoseTurn ) {
-                                sendWhoStarts(clientRef.current, slug);
-                            };
-                            return <Lobby lobby={resolvedLobby} client={clientRef.current} lobbySlug={slug} />
-                        }}
+                        {resolvedLobby => preload(resolvedLobby)}
                     </Await>
                 </Suspense>
             </div>
             <Suspense >
                 <Await resolve={lobby}>
-                    <SidePanel client={clientRef.current} />
+                    <SidePanel client={clientRef.current} lobbySlug={slug} />
                 </Await>
             </Suspense>
         </div>

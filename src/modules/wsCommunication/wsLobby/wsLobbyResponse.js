@@ -1,4 +1,4 @@
-import { setMyBoard, setEnemyBoard } from "../../../store/reducers/lobbyReducer";
+import { setWinner, setMyBoard, setEnemyBoard } from "../../../store/reducers/lobbyReducer";
 
 export class WSResponse {
 
@@ -20,4 +20,8 @@ export class WSResponse {
         dispatch(setMyBoard(Object.assign({}, myBoard, {"my_turn": isMyTurn})));
         dispatch(setEnemyBoard(Object.assign({}, enemyBoard, {"my_turn": !isMyTurn})));
     };
+
+    determinedWinner(dispatch, winner) {
+        dispatch(setWinner(winner));
+    }
 };

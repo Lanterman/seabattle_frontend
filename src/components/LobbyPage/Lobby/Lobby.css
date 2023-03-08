@@ -37,6 +37,21 @@
     padding-right: 5px;
 }
 
+.winner {
+    margin: 15px 0px 10px 0px;
+    font-size: 20px;
+    text-align: center;
+    width: 100%;
+}
+
+.winner #won {
+    color: rgb(15, 235, 15);
+}
+
+.winner #lose {
+    color: red;
+}
+
 .game-block {
     height: 100%;
     float: left;
