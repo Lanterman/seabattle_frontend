@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRefresh, faCheck, faClock } from '@fortawesome/free-solid-svg-icons';
 
@@ -14,7 +14,8 @@ import "./Board.css";
 
 function Board(props) {
     const dispatch = useDispatch();
-    const isMyBoard = props.userId;
+    const ship = useSelector(state => state.lobby.currentShip);
+    const isMyBoard = Number(sessionStorage.getItem("user_id")) === props.board.user_id;
     const board = createBoardVariable(props.board);
     const defineClassName = new DefineShipClassName();
     const prepareSetting = new PrepareSettingShipOnBoard();
@@ -24,18 +25,18 @@ function Board(props) {
     };
 
     function dropShipOnBoard(fieldName) {
-        const fieldNameList = prepareSetting.defineShipFieldsName(fieldName, props.ship.size, 
-                                                                  props.ship.plane, columnNameList);
+        const fieldNameList = prepareSetting.defineShipFieldsName(fieldName, ship.size, 
+                                                                  ship.plane, columnNameList);
         if (prepareSetting.isCanPut(fieldNameList, board)) {
-            dispatch(setCurrentShip(Object.assign({}, props.ship, {count: props.ship.count - 1})));
-            sendPutShip(props.client, props.ship.id, props.board.id, props.ship.plane, 
-                        props.ship.count, fieldNameList, board);
+            dispatch(setCurrentShip(Object.assign({}, props.ship, {count: ship.count - 1})));
+            sendPutShip(props.client, ship.id, props.board.id, ship.plane, 
+                        ship.count, fieldNameList, board);
         };
     };
 
     function swipeOverFields(fieldName) {
-        const fieldNameList = prepareSetting.defineShipFieldsName(fieldName, props.ship.size, 
-                                                                  props.ship.plane, columnNameList);
+        const fieldNameList = prepareSetting.defineShipFieldsName(fieldName, ship.size, 
+                                                                  ship.plane, columnNameList);
         
         if (prepareSetting.isCanPut(fieldNameList, board)) {
             defineClassName.defineShipClassName(fieldNameList, "over");
@@ -46,8 +47,8 @@ function Board(props) {
     };
 
     function leaveFields(fieldName) {
-        const fieldNameList = prepareSetting.defineShipFieldsName(fieldName, props.ship.size, 
-                                                                  props.ship.plane, columnNameList);
+        const fieldNameList = prepareSetting.defineShipFieldsName(fieldName, ship.size, 
+                                                                  ship.plane, columnNameList);
         if (prepareSetting.isCanPut(fieldNameList, board)) {
             defineClassName.defineShipClassName(fieldNameList, "");
         };
@@ -76,9 +77,8 @@ function Board(props) {
                         key={columName}
                         lobbySlug={props.lobbySlug}
                         boardId={props.board.id}
-                        isEnemyBoard={isMyBoard}
+                        isMyBoard={isMyBoard}
                         column={board[columName]}
-                        ship={props.ship}
                         client={props.client}
                         dropShipOnBoard={dropShipOnBoard}
                         swipeOverFields={swipeOverFields}

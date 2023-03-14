@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 
-import { sendReadyToPlay, sendRandomPlacement, determineWinner } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { sendReadyToPlay, sendRandomPlacement, sendDetermineWinner } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import { createBoardVariable } from "../../../modules/services";
 import { Chat } from "../Chat/Chat";
 
@@ -45,7 +45,7 @@ function SidePanel(props) {
 
     function giveUpHandler(e) {
         if (window.confirm("Do you really want to give up?")) {
-            determineWinner(props.client, props.lobbySlug, enemyBoard.user_id);
+            sendDetermineWinner(props.client, props.lobbySlug, enemyBoard.user_id);
         };
     };
 

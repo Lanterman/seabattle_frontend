@@ -5,30 +5,29 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDollar,  faClock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResponse";
-import { setEnemyBoard, setMyBoard, setIsCanPutShip } from "../../../store/reducers/lobbyReducer";
+import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeToMove } from "../../../store/reducers/lobbyReducer";
 import { Board } from "../Board/Board";
 import { Ships } from "../Ships/Ships";
 
 import "./Lobby.css";
-import { sendWhoStarts, determineWinner } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { sendWhoStarts, sendDetermineWinner } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 
 
 function Lobby(props) {
     const dispatch = useDispatch();
     const lobby = props.lobby;
     const userId = Number(sessionStorage.getItem("user_id"));
-    const [me, enemy] = lobby.users[0]["id"] === userId ? [lobby.users[0], lobby.users[1]] : 
-        [lobby.users[1], lobby.users[0]];
+    const enemy = lobby.users[0]["id"] === userId ? lobby.users[1] : lobby.users[0];
     const winner = useSelector(state => state.lobby.winner);
     const myBoard = useSelector(state => state.lobby.myBoard);
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
-    const currentShip = useSelector(state => state.lobby.currentShip);
+    const timeToMove = useSelector(state => state.lobby.timeToMove);
     const isCanPutShip = useSelector(state => state.lobby.isCanPutShip);
     const wsResp = new WSResponse();
-
     // console.log("поработать над закрытием вебсокета переходе на другую страницу, на уровне соединения с вебсокетом в python")
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
 
+    // console.log("Lобавить время на расстановку кораблей и ход, если не успел расставить корабли - ставятся рандомно, не сделал ход - проиграл")
     useEffect(() => {
         props.client.onopen = (e) => console.log("Websocket started");
         props.client.onmessage = (e) => {
@@ -39,7 +38,7 @@ function Lobby(props) {
                     wsResp.takeShot(dispatch, setEnemyBoard, setMyBoard, enemyBoard, myBoard, data.board, data.is_my_turn) :
                     wsResp.takeShot(dispatch, setMyBoard, setEnemyBoard, myBoard, enemyBoard, data.board, data.is_my_turn);
                 if (userId === data.user_id && data.enemy_ships === 0) {
-                    determineWinner(props.client, props.lobbySlug);
+                    sendDetermineWinner(props.client, props.lobbySlug);
                 };
 
             } else if (data.type === "drop_ship") {
@@ -81,6 +80,24 @@ function Lobby(props) {
         };
     };
 
+    function displayGameResults() {
+        return (
+            <p className="winner">
+                {winner !== enemy.username ? <i id="won">You won!</i> : <i id="lose">You lose!</i>}
+            </p>
+        );
+    };
+
+    function countDown() {
+        dispatch(setTimeToMove(timeToMove));
+
+        return (
+            <p className="count-down">
+                {timeToMove}
+            </p>
+        );
+    };
+
     return (
         <div className="singl-lobby">
             <h1 className="lobby-name">{lobby.name}</h1>
@@ -97,21 +114,11 @@ function Lobby(props) {
                 </Link>
             </div>
 
-            {winner && (
-                <p className="winner">
-                    {winner === me.username ? <i id="won">You won!</i> : <i id="lose">You lose!</i>}
-                </p>
-            )}
+            {winner ? displayGameResults() : setInterval(countDown(), 3000)}
 
             <div className="game-block">
-                <Board
-                    client={props.client}
-                    board={myBoard}
-                    userId={userId}
-                    ship={currentShip}
-                    updateShipClassName={updateShipClassName}
-                />
-                <Board board={enemyBoard} client={props.client} lobbySlug={props.lobbySlug}/>
+                <Board client={props.client} board={myBoard} updateShipClassName={updateShipClassName} />
+                <Board client={props.client} board={enemyBoard} lobbySlug={props.lobbySlug}/>
             </div>
             <Ships client={props.client} />
         </div>

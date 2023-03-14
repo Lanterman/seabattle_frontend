@@ -8,9 +8,9 @@ import "./Column.css";
 
 function Column(props) {
     const winner = useSelector(state => state.lobby.winner);
+    const currentShip = useSelector(state => state.lobby.currentShip);
     const isMyTurn = useSelector(state => state.lobby.myBoard).my_turn;
-    const isEnemyBoard = !props.isEnemyBoard && true;
-    const isShipExists = props.ship && true;
+    const isEnemyBoard = !props.isMyBoard && true;
 
     function takeShot(e) {
         const fieldName = e.target.attributes.name.value;
@@ -44,9 +44,9 @@ function Column(props) {
                         "empty-field"}`}
                     onClick={isEnemyBoard && isMyTurn && !winner && 
                              ["miss", "hit"].indexOf(props.column[fieldName]) === -1 ? takeShot : undefined} 
-                    onDrop={(e) => {isShipExists && dropHandler(e, fieldName)}}
-                    onDragOver={(e) => {isShipExists && props.ship.count && dragOverHandler(e, fieldName)}}
-                    onDragLeave={(e) => {isShipExists && dragLeaveHandler(e, fieldName)}}>
+                    onDrop={(e) => {!isEnemyBoard && dropHandler(e, fieldName)}}
+                    onDragOver={(e) => {!isEnemyBoard && currentShip.count && dragOverHandler(e, fieldName)}}
+                    onDragLeave={(e) => {!isEnemyBoard && dragLeaveHandler(e, fieldName)}}>
                     {props.column[fieldName] === "hit" && <FontAwesomeIcon icon={faXmark} className="x-mark" />}
                     {props.column[fieldName] === "miss" && <FontAwesomeIcon icon={faCircle} className="cirle" />}
                 </div>

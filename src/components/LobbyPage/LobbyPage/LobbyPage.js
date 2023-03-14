@@ -1,10 +1,11 @@
-import { useLoaderData, Await, redirect } from "react-router-dom";
-import { Suspense, useRef } from "react";
-import { useDispatch } from "react-redux";
 import axios from "axios";
+import { Suspense, useEffect, useMemo } from "react";
+import { useDispatch } from "react-redux";
+import { useLoaderData, Await, redirect, useOutletContext } from "react-router-dom";
 
 import { sendWhoStarts } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import  { defineLobbyStateAction } from "../../../store/reducers/lobbyReducer";
+
 import { SidePanel } from "../SidePanel/SidePanel";
 import { Lobby } from "../Lobby/Lobby";
 
@@ -15,42 +16,47 @@ import "./LobbyPage.css";
 function LobbyPage(props) {
 
     const dispatch = useDispatch();
+    const {lobby, slug} = useLoaderData();
+    const outletContext = useOutletContext();
     const token = sessionStorage.getItem("auth_token");
     const userId = Number(sessionStorage.getItem("user_id"));
-    const {lobby, slug} = useLoaderData();
-    let clientRef = new useRef(null);
+    const client = useMemo(() => {
+        return new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${slug}/?token=${token}`);
+    }, [slug, token]);
 
-    if (!clientRef.current) {
-        clientRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${slug}/?token=${token}`);
-    };
+    useEffect(() => {
+        async function setPreStates() {
+            const resolvedLobby = await lobby;
+            const boards = resolvedLobby.boards;
+            const areUsersReady = boards[0]["is_ready"] & boards[1]["is_ready"];
+            const isChoseTurn = !boards[0]["my_turn"] & !boards[1]["my_turn"];
 
-    function preload(resolvedLobby) {
-        const boards = resolvedLobby.boards;
-        const areUsersReady = boards[0]["is_ready"] & boards[1]["is_ready"];
-        const isChoseTurn = !boards[0]["my_turn"] & !boards[1]["my_turn"];
-        
-        dispatch(defineLobbyStateAction(
-            boards[0]["user_id"] === userId ? 
-                {myBoard: boards[0], enemyBoard: boards[1], ships: boards[0].ships, winner: resolvedLobby.winner} :
-                {myBoard: boards[1], enemyBoard: boards[0], ships: boards[1].ships, winner: resolvedLobby.winner}
-        ));
+            dispatch(defineLobbyStateAction(
+                boards[0]["user_id"] === userId ? 
+                    {myBoard: boards[0], enemyBoard: boards[1], ships: boards[0].ships, winner: resolvedLobby.winner,
+                        timeToMove: resolvedLobby.time_to_move} :
+                    {myBoard: boards[1], enemyBoard: boards[0], ships: boards[1].ships, winner: resolvedLobby.winner,
+                        timeToMove: resolvedLobby.time_to_move}
+            ));
+            outletContext.setClient(client);
+            (areUsersReady & isChoseTurn) && sendWhoStarts(client, slug);
+        };
 
-        (areUsersReady & isChoseTurn) && sendWhoStarts(clientRef.current, slug);
-        return <Lobby lobby={resolvedLobby} client={clientRef.current} lobbySlug={slug} />
-    };
+        setPreStates();
+    }, [lobby, dispatch, userId, slug, client, outletContext]);
 
     return (
         <div>
             <div className="main-page">
                 <Suspense fallback={<h1 className="suspense">Lobby is loading...</h1>}>
                     <Await resolve={lobby}>
-                        {resolvedLobby => preload(resolvedLobby)}
+                        {resolvedLobby => <Lobby lobby={resolvedLobby} client={client} lobbySlug={slug} />}
                     </Await>
                 </Suspense>
             </div>
             <Suspense >
                 <Await resolve={lobby}>
-                    <SidePanel client={clientRef.current} lobbySlug={slug} />
+                    <SidePanel client={client} lobbySlug={slug} />
                 </Await>
             </Suspense>
         </div>
