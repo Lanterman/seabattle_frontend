@@ -5,13 +5,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDollar,  faClock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResponse";
-import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeToMove } from "../../../store/reducers/lobbyReducer";
+import { sendWhoStarts, sendDetermineWinner,
+    sendCountDownTimer } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeToMove, 
+    setTimeToPlacement } from "../../../store/reducers/lobbyReducer";
 import { Board } from "../Board/Board";
 import { Ships } from "../Ships/Ships";
 
 import "./Lobby.css";
-import { sendWhoStarts, sendDetermineWinner } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
-
+let countdownHasStarted = false;
 
 function Lobby(props) {
     const dispatch = useDispatch();
@@ -23,12 +25,18 @@ function Lobby(props) {
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
     const timeToMove = useSelector(state => state.lobby.timeToMove);
     const isCanPutShip = useSelector(state => state.lobby.isCanPutShip);
+    const timeToPlacement = useSelector(state => state.lobby.timeToPlacement);
+    const typeAction = myBoard.is_ready & enemyBoard.is_ready ? "turn" : "replacement";
+    const timeLeft = typeAction === "turn" ? timeToMove : timeToPlacement;
     const wsResp = new WSResponse();
     // console.log("поработать над закрытием вебсокета переходе на другую страницу, на уровне соединения с вебсокетом в python")
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
 
-    // console.log("Lобавить время на расстановку кораблей и ход, если не успел расставить корабли - ставятся рандомно, не сделал ход - проиграл")
+    console.log("Мб выводить в API время с редиса чтоб не было проблем с заменой и лишней нагрузки на сокет, перенести переменную в сервисы ")
+    console.log("Удалять данные с редиса после выполнения таски и делать проверку на ноль")
+    console.log("Если не успел расставить корабли - ставятся рандомно, не сделал ход - проиграл")
     useEffect(() => {
+        const timer = setInterval(() => timeLeft >= 28 && countDownTimer(), 1000);
         props.client.onopen = (e) => console.log("Websocket started");
         props.client.onmessage = (e) => {
             const data = JSON.parse(e.data);
@@ -65,8 +73,15 @@ function Lobby(props) {
                     wsResp.determineWhoIsTurning(dispatch, !data.is_my_turn, myBoard, enemyBoard);
             } else if (data.type === "determine_winner") {
                 wsResp.determinedWinner(dispatch, data.winner);
+            } else if (data.type === "countdown") {
+                data.type_action !== "replacement" ? 
+                    dispatch(setTimeToMove(data.time_left)) :
+                    dispatch(setTimeToPlacement(data.time_left));
+                    console.log(data)
+                console.log(timeToMove, timeToPlacement)
             };
         };
+        return () => clearInterval(timer);
     });
 
     function updateShipClassName(value) {
@@ -88,14 +103,11 @@ function Lobby(props) {
         );
     };
 
-    function countDown() {
-        dispatch(setTimeToMove(timeToMove));
-
-        return (
-            <p className="count-down">
-                {timeToMove}
-            </p>
-        );
+    function countDownTimer() {
+        !countdownHasStarted && sendCountDownTimer(props.client, props.lobbySlug, timeLeft, typeAction);
+        props.countdownHasStarted & typeAction === "turn" ? 
+            dispatch(setTimeToMove(timeLeft - 1)) :
+            dispatch(setTimeToPlacement(timeLeft - 1));
     };
 
     return (
@@ -114,7 +126,7 @@ function Lobby(props) {
                 </Link>
             </div>
 
-            {winner ? displayGameResults() : setInterval(countDown(), 3000)}
+            {winner ? displayGameResults() : <p className="count-down">{timeLeft}</p>}
 
             <div className="game-block">
                 <Board client={props.client} board={myBoard} updateShipClassName={updateShipClassName} />

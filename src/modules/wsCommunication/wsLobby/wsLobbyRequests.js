@@ -57,3 +57,12 @@ export function sendDetermineWinner(client, lobbySlug, enemyId=null) {
     if (enemyId) data.enemy_id = enemyId;
     client.send(JSON.stringify(data));
 };
+
+export function sendCountDownTimer(client, lobbySlug, timeLeft, typeAction) {
+    client.send(JSON.stringify({
+        type: "countdown", 
+        lobby_slug: lobbySlug,
+        time_left: timeLeft,
+        type_action: typeAction,
+    }));
+};

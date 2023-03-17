@@ -34,16 +34,16 @@ function LobbyPage(props) {
             dispatch(defineLobbyStateAction(
                 boards[0]["user_id"] === userId ? 
                     {myBoard: boards[0], enemyBoard: boards[1], ships: boards[0].ships, winner: resolvedLobby.winner,
-                        timeToMove: resolvedLobby.time_to_move} :
+                        timeToMove: resolvedLobby.time_to_move, timeToPlacement: resolvedLobby.time_to_placement} :
                     {myBoard: boards[1], enemyBoard: boards[0], ships: boards[1].ships, winner: resolvedLobby.winner,
-                        timeToMove: resolvedLobby.time_to_move}
+                        timeToMove: resolvedLobby.time_to_move, timeToPlacement: resolvedLobby.time_to_placement}
             ));
             outletContext.setClient(client);
             (areUsersReady & isChoseTurn) && sendWhoStarts(client, slug);
         };
 
         setPreStates();
-    }, [lobby, dispatch, userId, slug, client, outletContext]);
+    });
 
     return (
         <div>
