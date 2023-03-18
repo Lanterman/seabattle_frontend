@@ -25,6 +25,8 @@ function LobbyPage(props) {
     }, [slug, token]);
 
     useEffect(() => {
+        client.onopen = (e) => console.log("Websocket started");
+
         async function setPreStates() {
             const resolvedLobby = await lobby;
             const boards = resolvedLobby.boards;
@@ -33,12 +35,12 @@ function LobbyPage(props) {
 
             dispatch(defineLobbyStateAction(
                 boards[0]["user_id"] === userId ? 
-                    {myBoard: boards[0], enemyBoard: boards[1], ships: boards[0].ships, winner: resolvedLobby.winner,
+                    {myBoard: boards[0], enemyBoard: boards[1], winner: resolvedLobby.winner,
                         timeToMove: resolvedLobby.time_to_move, timeToPlacement: resolvedLobby.time_to_placement} :
-                    {myBoard: boards[1], enemyBoard: boards[0], ships: boards[1].ships, winner: resolvedLobby.winner,
+                    {myBoard: boards[1], enemyBoard: boards[0], winner: resolvedLobby.winner,
                         timeToMove: resolvedLobby.time_to_move, timeToPlacement: resolvedLobby.time_to_placement}
             ));
-            outletContext.setClient(client);
+            outletContext.client = client;
             (areUsersReady & isChoseTurn) && sendWhoStarts(client, slug);
         };
 

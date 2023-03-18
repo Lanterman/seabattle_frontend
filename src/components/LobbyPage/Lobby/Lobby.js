@@ -4,16 +4,17 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDollar,  faClock, faUser } from '@fortawesome/free-solid-svg-icons';
 
+import { timer, createBoardVariable } from "../../../modules/services";
 import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResponse";
-import { sendWhoStarts, sendDetermineWinner,
-    sendCountDownTimer } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { sendWhoStarts, sendDetermineWinner,sendCountDownTimer, sendRandomPlacement, 
+    sendReadyToPlay } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeToMove, 
     setTimeToPlacement } from "../../../store/reducers/lobbyReducer";
 import { Board } from "../Board/Board";
 import { Ships } from "../Ships/Ships";
 
 import "./Lobby.css";
-let countdownHasStarted = false;
+
 
 function Lobby(props) {
     const dispatch = useDispatch();
@@ -32,12 +33,14 @@ function Lobby(props) {
     // console.log("поработать над закрытием вебсокета переходе на другую страницу, на уровне соединения с вебсокетом в python")
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
 
-    console.log("Мб выводить в API время с редиса чтоб не было проблем с заменой и лишней нагрузки на сокет, перенести переменную в сервисы ")
-    console.log("Удалять данные с редиса после выполнения таски и делать проверку на ноль")
+    console.log("Почему-то время плохо отсчитывается, пофиксить")
+    console.log("делать проверку на ноль, удалять запись в редис после конца игры, после каждого хода обновлять время")
     console.log("Если не успел расставить корабли - ставятся рандомно, не сделал ход - проиграл")
     useEffect(() => {
-        const timer = setInterval(() => timeLeft >= 28 && countDownTimer(), 1000);
-        props.client.onopen = (e) => console.log("Websocket started");
+        const countdown = timeLeft > 0 && setInterval(() => countDownTimer(), 1000);
+        (!timer._timeIsOver & timeLeft <= 0 & !winner & (!myBoard.is_ready || myBoard.my_turn || enemyBoard.my_turn)) && 
+            timeIsOver(typeAction, enemy.id, myBoard);
+
         props.client.onmessage = (e) => {
             const data = JSON.parse(e.data);
 
@@ -62,6 +65,7 @@ function Lobby(props) {
 
                 if (myBoard["is_ready"] && enemyBoard["is_ready"] && data.user_id === userId) {
                     sendWhoStarts(props.client, props.lobbySlug);
+                    timer._countdownHasStarted = false;
                 };
 
             } else if (data.type === "random_replaced") {
@@ -77,11 +81,10 @@ function Lobby(props) {
                 data.type_action !== "replacement" ? 
                     dispatch(setTimeToMove(data.time_left)) :
                     dispatch(setTimeToPlacement(data.time_left));
-                    console.log(data)
-                console.log(timeToMove, timeToPlacement)
+                    timer.countdownHasStarted = true;
             };
         };
-        return () => clearInterval(timer);
+        return () => clearInterval(countdown);
     });
 
     function updateShipClassName(value) {
@@ -95,6 +98,26 @@ function Lobby(props) {
         };
     };
 
+    function timeIsOver(typeAction, enemyId, myBoard) {
+        if (typeAction === "turn") {
+            sendDetermineWinner(props.client, props.lobbySlug, myBoard.my_turn && enemyId);
+        } else {
+            const board = createBoardVariable(myBoard);
+            sendRandomPlacement(props.client, myBoard.id, board, myBoard.ships);
+            sendReadyToPlay(props.client, true, myBoard.id)
+            timer._timeIsOver = true;
+        };
+    };
+
+    function countDownTimer() {
+        if (!myBoard.is_ready || myBoard.my_turn || enemyBoard.my_turn) {
+            typeAction === "turn" ? dispatch(setTimeToMove(timeLeft - 1)) : dispatch(setTimeToPlacement(timeLeft - 1));
+        };
+
+        (!timer.countdownHasStarted) && 
+            sendCountDownTimer(props.client, props.lobbySlug, timeLeft, typeAction);
+    };
+
     function displayGameResults() {
         return (
             <p className="winner">
@@ -103,11 +126,17 @@ function Lobby(props) {
         );
     };
 
-    function countDownTimer() {
-        !countdownHasStarted && sendCountDownTimer(props.client, props.lobbySlug, timeLeft, typeAction);
-        props.countdownHasStarted & typeAction === "turn" ? 
-            dispatch(setTimeToMove(timeLeft - 1)) :
-            dispatch(setTimeToPlacement(timeLeft - 1));
+    function displayRunningGame() {
+        return (<p className="count-down">
+                    {typeAction === "turn" ? 
+                        myBoard.my_turn ? <i id="my-turn">You turn </i> : <i id="enemy-turn">Enemy turn </i> :
+                        <i>Preparation </i>}
+                    {timer.countdownHasStarted ? 
+                        (typeAction === "turn" & enemyBoard.my_turn ? 
+                            <i id="little-time">{timeLeft}</i> :
+                            <i id={timeLeft > 10 ? "lot-of-time" : "little-time"}>{timeLeft} </i>) :
+                        "--"}
+                </p>)
     };
 
     return (
@@ -126,7 +155,7 @@ function Lobby(props) {
                 </Link>
             </div>
 
-            {winner ? displayGameResults() : <p className="count-down">{timeLeft}</p>}
+            {winner ? displayGameResults() : displayRunningGame()}
 
             <div className="game-block">
                 <Board client={props.client} board={myBoard} updateShipClassName={updateShipClassName} />

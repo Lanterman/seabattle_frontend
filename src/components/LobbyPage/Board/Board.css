@@ -60,11 +60,11 @@
     height: 370px;
 }
 
-#enemy-turn {
+.battlefield #enemy-turn {
     border: 2px solid;
 }
 
-#my-turn {
+.battlefield #my-turn {
     border: 2px solid rgb(21, 240, 21);
 }
 

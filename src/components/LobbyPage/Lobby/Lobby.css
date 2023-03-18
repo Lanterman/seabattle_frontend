@@ -48,7 +48,7 @@
     color: rgb(15, 235, 15);
 }
 
-.winner #lose {
+.winner #lose, .count-down #little-time, .count-down #enemy-turn {
     color: red;
 }
 
