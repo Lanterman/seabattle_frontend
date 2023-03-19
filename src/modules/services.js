@@ -14,7 +14,7 @@ export let timer = {
     },
 
     get timeIsOver() {
-        return this._timeIsOverl
+        return this._timeIsOver;
     },
 
     set timeIsOver(value) {

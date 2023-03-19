@@ -9,6 +9,7 @@ import "./SidePanel.css";
 function SidePanel(props) {
     const winner = useSelector(state => state.lobby.winner);
     const myBoard = useSelector(state => state.lobby.myBoard);
+    const timeLeft = useSelector(state => state.lobby.timeLeft);
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
     const ships = myBoard.ships;
     const boardIsReady = isShipPlaced();
@@ -40,7 +41,7 @@ function SidePanel(props) {
             if (!myBoard.is_ready) {
                 e.target.disabled = false;
             };
-        }, 300);
+        }, 1000);
     };
 
     function giveUpHandler(e) {
@@ -53,9 +54,9 @@ function SidePanel(props) {
         <div className="side-panel">
             <Chat />
                 <div className="buttons">
-                    <input className="ready-button" type="button" value="Ready" 
+                    <input id="ready-button" type="button" value="Ready" 
                         onClick={(e) => readyOnClickHandler(e)} 
-                        disabled={(!enemyBoard.is_ready || !myBoard.is_ready) && boardIsReady && !winner ? 
+                        disabled={(!enemyBoard.is_ready || !myBoard.is_ready) & boardIsReady & timeLeft > 0 ? 
                                     false : true}/><br/>
                     <input type="button" className="random-placement" value="Random placement"
                         disabled={!myBoard.is_ready && !winner ? false : true}

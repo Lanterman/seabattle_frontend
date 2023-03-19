@@ -16,7 +16,7 @@
     text-align: center;
 }
 
-.ready-button, .random-placement, .give-up {
+#ready-button, .random-placement, .give-up {
     font-size: 17px;
     padding: 3px 5px;
     margin-top: 10px;

@@ -28,17 +28,15 @@ function LobbyPage(props) {
         client.onopen = (e) => console.log("Websocket started");
 
         async function setPreStates() {
-            const resolvedLobby = await lobby;
-            const boards = resolvedLobby.boards;
+            const reLobby = await lobby;
+            const boards = reLobby.boards;
             const areUsersReady = boards[0]["is_ready"] & boards[1]["is_ready"];
             const isChoseTurn = !boards[0]["my_turn"] & !boards[1]["my_turn"];
 
             dispatch(defineLobbyStateAction(
                 boards[0]["user_id"] === userId ? 
-                    {myBoard: boards[0], enemyBoard: boards[1], winner: resolvedLobby.winner,
-                        timeToMove: resolvedLobby.time_to_move, timeToPlacement: resolvedLobby.time_to_placement} :
-                    {myBoard: boards[1], enemyBoard: boards[0], winner: resolvedLobby.winner,
-                        timeToMove: resolvedLobby.time_to_move, timeToPlacement: resolvedLobby.time_to_placement}
+                    {myBoard: boards[0], enemyBoard: boards[1], winner: reLobby.winner, timeLeft: reLobby.time_left} :
+                    {myBoard: boards[1], enemyBoard: boards[0], winner: reLobby.winner, timeLeft: reLobby.time_left}
             ));
             outletContext.client = client;
             (areUsersReady & isChoseTurn) && sendWhoStarts(client, slug);

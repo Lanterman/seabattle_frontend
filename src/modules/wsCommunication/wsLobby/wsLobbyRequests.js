@@ -66,3 +66,14 @@ export function sendCountDownTimer(client, lobbySlug, timeLeft, typeAction) {
         type_action: typeAction,
     }));
 };
+
+export function sendTimeIsOver(client, lobbySlug, BoardId, timeLeft, ships, board) {
+    client.send(JSON.stringify({
+        type: "time_is_over", 
+        lobby_slug: lobbySlug,
+        board_id: BoardId,
+        time_left: timeLeft,
+        ships: ships,
+        board: board,
+    }));
+};

@@ -6,10 +6,10 @@ import { faDollar,  faClock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { timer, createBoardVariable } from "../../../modules/services";
 import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResponse";
-import { sendWhoStarts, sendDetermineWinner,sendCountDownTimer, sendRandomPlacement, 
-    sendReadyToPlay } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
-import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeToMove, 
-    setTimeToPlacement } from "../../../store/reducers/lobbyReducer";
+import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeLeft } from "../../../store/reducers/lobbyReducer";
+import { sendWhoStarts, sendDetermineWinner,sendCountDownTimer,
+     sendTimeIsOver } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+
 import { Board } from "../Board/Board";
 import { Ships } from "../Ships/Ships";
 
@@ -23,23 +23,20 @@ function Lobby(props) {
     const enemy = lobby.users[0]["id"] === userId ? lobby.users[1] : lobby.users[0];
     const winner = useSelector(state => state.lobby.winner);
     const myBoard = useSelector(state => state.lobby.myBoard);
+    const timeLeft = useSelector(state => state.lobby.timeLeft);
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
-    const timeToMove = useSelector(state => state.lobby.timeToMove);
     const isCanPutShip = useSelector(state => state.lobby.isCanPutShip);
-    const timeToPlacement = useSelector(state => state.lobby.timeToPlacement);
-    const typeAction = myBoard.is_ready & enemyBoard.is_ready ? "turn" : "replacement";
-    const timeLeft = typeAction === "turn" ? timeToMove : timeToPlacement;
+    const typeAction = myBoard.is_ready & enemyBoard.is_ready ? "turn" : "placement";
     const wsResp = new WSResponse();
-    // console.log("поработать над закрытием вебсокета переходе на другую страницу, на уровне соединения с вебсокетом в python")
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
 
-    console.log("Почему-то время плохо отсчитывается, пофиксить")
-    console.log("делать проверку на ноль, удалять запись в редис после конца игры, после каждого хода обновлять время")
-    console.log("Если не успел расставить корабли - ставятся рандомно, не сделал ход - проиграл")
+    // console.log("Убрать done from backend")
+    console.log("При ожидании ответа при попытке сдаться время останавливается, пофиксить")
+    console.log("Обновлять вреся при каждом ходе")
+    // console.log("делать проверку на ноль, удалять запись в редис после конца игры, после каждого хода обновлять время")
     useEffect(() => {
-        const countdown = timeLeft > 0 && setInterval(() => countDownTimer(), 1000);
-        (!timer._timeIsOver & timeLeft <= 0 & !winner & (!myBoard.is_ready || myBoard.my_turn || enemyBoard.my_turn)) && 
-            timeIsOver(typeAction, enemy.id, myBoard);
+        const countdown = timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
+        if (!timer.timeIsOver & timeLeft <= 0) timeIsOver(typeAction, enemy.id, myBoard);
 
         props.client.onmessage = (e) => {
             const data = JSON.parse(e.data);
@@ -63,12 +60,18 @@ function Lobby(props) {
                     wsResp.isReadyToPlay(dispatch, setMyBoard, myBoard, data.is_ready) :
                     wsResp.isReadyToPlay(dispatch, setEnemyBoard, enemyBoard, data.is_ready);
 
-                if (myBoard["is_ready"] && enemyBoard["is_ready"] && data.user_id === userId) {
+                if (myBoard["is_ready"] & enemyBoard["is_ready"] & data.user_id === userId) {
                     sendWhoStarts(props.client, props.lobbySlug);
-                    timer._countdownHasStarted = false;
+                    
                 };
+                if (myBoard["is_ready"] & enemyBoard["is_ready"]) {
+                    dispatch(setTimeLeft(lobby.time_to_move));
+                    timer.timeIsOver = false;
+                    sendCountDownTimer(props.client, props.lobbySlug, lobby.time_to_move, "turn");
+                };
+                
 
-            } else if (data.type === "random_replaced") {
+            } else if (data.type === "random_placed") {
                 wsResp.updateBoard(dispatch, myBoard, data.board, data.ships);
 
             } else if (data.type === "who_starts") {
@@ -78,10 +81,8 @@ function Lobby(props) {
             } else if (data.type === "determine_winner") {
                 wsResp.determinedWinner(dispatch, data.winner);
             } else if (data.type === "countdown") {
-                data.type_action !== "replacement" ? 
-                    dispatch(setTimeToMove(data.time_left)) :
-                    dispatch(setTimeToPlacement(data.time_left));
-                    timer.countdownHasStarted = true;
+                dispatch(setTimeLeft(data.time_left));
+                timer.countdownHasStarted = true;
             };
         };
         return () => clearInterval(countdown);
@@ -102,20 +103,20 @@ function Lobby(props) {
         if (typeAction === "turn") {
             sendDetermineWinner(props.client, props.lobbySlug, myBoard.my_turn && enemyId);
         } else {
-            const board = createBoardVariable(myBoard);
-            sendRandomPlacement(props.client, myBoard.id, board, myBoard.ships);
-            sendReadyToPlay(props.client, true, myBoard.id)
-            timer._timeIsOver = true;
+            if (!myBoard.is_ready) {
+                const board = createBoardVariable(myBoard);
+                sendTimeIsOver(props.client, props.lobbySlug, myBoard.id, lobby.time_to_move, myBoard.ships, board);
+                timer.timeIsOver = true;
+            };
         };
     };
 
     function countDownTimer() {
-        if (!myBoard.is_ready || myBoard.my_turn || enemyBoard.my_turn) {
-            typeAction === "turn" ? dispatch(setTimeToMove(timeLeft - 1)) : dispatch(setTimeToPlacement(timeLeft - 1));
-        };
-
-        (!timer.countdownHasStarted) && 
+        if (timer.countdownHasStarted) {
+            dispatch(setTimeLeft(timeLeft - 1));
+        } else {
             sendCountDownTimer(props.client, props.lobbySlug, timeLeft, typeAction);
+        };
     };
 
     function displayGameResults() {
@@ -131,11 +132,9 @@ function Lobby(props) {
                     {typeAction === "turn" ? 
                         myBoard.my_turn ? <i id="my-turn">You turn </i> : <i id="enemy-turn">Enemy turn </i> :
                         <i>Preparation </i>}
-                    {timer.countdownHasStarted ? 
-                        (typeAction === "turn" & enemyBoard.my_turn ? 
-                            <i id="little-time">{timeLeft}</i> :
-                            <i id={timeLeft > 10 ? "lot-of-time" : "little-time"}>{timeLeft} </i>) :
-                        "--"}
+                    {(typeAction === "turn" & enemyBoard.my_turn ? 
+                        <i id="red-time">{timeLeft}</i> :
+                        <i id={timeLeft > 10 ? "blue-time" : "red-time"}>{timeLeft} </i>)}
                 </p>)
     };
 
