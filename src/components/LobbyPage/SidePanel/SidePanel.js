@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 
-import { sendReadyToPlay, sendRandomPlacement, sendDetermineWinner } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { sendReadyToPlay, sendRandomPlacement, sendDetermineWinner,
+    sendCountDownTimer } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import { createBoardVariable } from "../../../modules/services";
 import { Chat } from "../Chat/Chat";
 
@@ -11,6 +12,7 @@ function SidePanel(props) {
     const myBoard = useSelector(state => state.lobby.myBoard);
     const timeLeft = useSelector(state => state.lobby.timeLeft);
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
+    const typeAction = myBoard.is_ready & enemyBoard.is_ready ? "turn" : "placement";
     const ships = myBoard.ships;
     const boardIsReady = isShipPlaced();
     const board = createBoardVariable(myBoard);
@@ -41,12 +43,14 @@ function SidePanel(props) {
             if (!myBoard.is_ready) {
                 e.target.disabled = false;
             };
-        }, 1000);
+        }, 1500);
     };
 
     function giveUpHandler(e) {
         if (window.confirm("Do you really want to give up?")) {
             sendDetermineWinner(props.client, props.lobbySlug, enemyBoard.user_id);
+        } else {
+            sendCountDownTimer(props.client, props.lobbySlug, timeLeft, typeAction);
         };
     };
 

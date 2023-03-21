@@ -35,8 +35,10 @@ function LobbyPage(props) {
 
             dispatch(defineLobbyStateAction(
                 boards[0]["user_id"] === userId ? 
-                    {myBoard: boards[0], enemyBoard: boards[1], winner: reLobby.winner, timeLeft: reLobby.time_left} :
-                    {myBoard: boards[1], enemyBoard: boards[0], winner: reLobby.winner, timeLeft: reLobby.time_left}
+                    {myBoard: boards[0], enemyBoard: boards[1], winner: reLobby.winner, timeLeft: reLobby.time_left,
+                        timeToMove: reLobby.time_to_move} :
+                    {myBoard: boards[1], enemyBoard: boards[0], winner: reLobby.winner, timeLeft: reLobby.time_left,
+                        timeToMove: reLobby.time_to_move}
             ));
             outletContext.client = client;
             (areUsersReady & isChoseTurn) && sendWhoStarts(client, slug);

@@ -1,13 +1,12 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDollar,  faClock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { timer, createBoardVariable } from "../../../modules/services";
 import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResponse";
 import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeLeft } from "../../../store/reducers/lobbyReducer";
-import { sendWhoStarts, sendDetermineWinner,sendCountDownTimer,
+import { sendWhoStarts, sendDetermineWinner, sendCountDownTimer,
      sendTimeIsOver } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 
 import { Board } from "../Board/Board";
@@ -30,10 +29,9 @@ function Lobby(props) {
     const wsResp = new WSResponse();
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
 
-    // console.log("Убрать done from backend")
-    console.log("При ожидании ответа при попытке сдаться время останавливается, пофиксить")
-    console.log("Обновлять вреся при каждом ходе")
-    // console.log("делать проверку на ноль, удалять запись в редис после конца игры, после каждого хода обновлять время")
+    console.log("Попробовать изменить цикл while на for в таске, попробовать изменить логику")
+    console.log("Добавить что-нибудь для проверки очистки доски, блокирует цикл")
+    console.log("удалять запись в редис после конца игры")
     useEffect(() => {
         const countdown = timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
         if (!timer.timeIsOver & timeLeft <= 0) timeIsOver(typeAction, enemy.id, myBoard);
@@ -59,17 +57,12 @@ function Lobby(props) {
                 userId === data.user_id ?
                     wsResp.isReadyToPlay(dispatch, setMyBoard, myBoard, data.is_ready) :
                     wsResp.isReadyToPlay(dispatch, setEnemyBoard, enemyBoard, data.is_ready);
-
-                if (myBoard["is_ready"] & enemyBoard["is_ready"] & data.user_id === userId) {
-                    sendWhoStarts(props.client, props.lobbySlug);
-                    
-                };
-                if (myBoard["is_ready"] & enemyBoard["is_ready"]) {
+                if (myBoard.is_ready & enemyBoard.is_ready) {
                     dispatch(setTimeLeft(lobby.time_to_move));
                     timer.timeIsOver = false;
                     sendCountDownTimer(props.client, props.lobbySlug, lobby.time_to_move, "turn");
+                    if (data.user_id === userId) sendWhoStarts(props.client, props.lobbySlug);
                 };
-                
 
             } else if (data.type === "random_placed") {
                 wsResp.updateBoard(dispatch, myBoard, data.board, data.ships);
@@ -105,7 +98,7 @@ function Lobby(props) {
         } else {
             if (!myBoard.is_ready) {
                 const board = createBoardVariable(myBoard);
-                sendTimeIsOver(props.client, props.lobbySlug, myBoard.id, lobby.time_to_move, myBoard.ships, board);
+                sendTimeIsOver(props.client, props.lobbySlug, myBoard.id, myBoard.ships, board);
                 timer.timeIsOver = true;
             };
         };
@@ -142,16 +135,22 @@ function Lobby(props) {
         <div className="singl-lobby">
             <h1 className="lobby-name">{lobby.name}</h1>
             <div className="lobby-options">
+                <span title="Bet">
                 <span className="bet">{lobby.bet}</span>
-                <FontAwesomeIcon icon={faDollar}/>
-
-                <span className="time-to-move">{lobby.time_to_move}</span>
-                <FontAwesomeIcon icon={faClock}/>
-
-                <Link to="/" className="enemy">
+                    <FontAwesomeIcon icon={faDollar}/>
+                </span>
+                <span title="Time to turn">
+                    <span className="time-to-move" >{lobby.time_to_move}</span>
+                    <FontAwesomeIcon icon={faClock}/>
+                </span>
+                <span className="enemy">
                     <span>{enemy.username}</span>
                     <FontAwesomeIcon icon={faUser}/>
-                </Link>
+                    <div className="enemy-info">
+                        <p className="info">First name: {enemy.first_name ? enemy.first_name : "None"}</p>
+                        <p className="info">Last name: {enemy.last_name ? enemy.last_name : "None"}</p>
+                    </div>
+                </span>
             </div>
 
             {winner ? displayGameResults() : displayRunningGame()}

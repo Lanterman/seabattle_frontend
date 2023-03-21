@@ -28,7 +28,7 @@ function Board(props) {
         const fieldNameList = prepareSetting.defineShipFieldsName(fieldName, ship.size, 
                                                                   ship.plane, columnNameList);
         if (prepareSetting.isCanPut(fieldNameList, board)) {
-            dispatch(setCurrentShip(Object.assign({}, props.ship, {count: ship.count - 1})));
+            dispatch(setCurrentShip(Object.assign({}, ship, {count: ship.count - 1})));
             sendPutShip(props.client, ship.id, props.board.id, ship.plane, 
                         ship.count, fieldNameList, board);
         };

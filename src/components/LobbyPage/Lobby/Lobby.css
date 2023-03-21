@@ -31,6 +31,7 @@
 
 .singl-lobby .enemy:hover {
     color: rgb(67, 130, 247);
+    cursor: pointer;
 }
 
 .singl-lobby .enemy span {
@@ -60,3 +61,26 @@
     height: 100%;
     float: left;
 }
+
+/* dropdown */
+.enemy-info {
+    display: none;
+    position: absolute;
+    background-color: rgb(176, 192, 233);
+    min-width: 160px;
+    padding: 5px 3px 0px 3px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    margin-left: 24.5%;
+    text-align: left;
+}
+
+.enemy-info .info {
+    padding-bottom: 3px;
+    color: rgb(88, 84, 84);
+}
+
+.enemy-info a:hover {background-color: #ddd;}
+
+/* Show the dropdown menu on hover */
+.enemy:hover .enemy-info {display: block;}
+/* dropdown */

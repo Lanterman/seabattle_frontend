@@ -19,12 +19,13 @@ export function sendPutShip(client, shipId, boardId, plane, shipCount, fieldName
     }));
 };
 
-export function sendShot(client, lobbySlug, boardId, fieldName) {
+export function sendShot(client, lobbySlug, boardId, fieldName, timeToMove) {
     client.send(JSON.stringify({
         type: "take_shot",
         lobby_slug: lobbySlug,
         board_id: boardId,
         field_name: fieldName,
+        time_to_move: timeToMove
     }));
 };
 
@@ -67,12 +68,11 @@ export function sendCountDownTimer(client, lobbySlug, timeLeft, typeAction) {
     }));
 };
 
-export function sendTimeIsOver(client, lobbySlug, BoardId, timeLeft, ships, board) {
+export function sendTimeIsOver(client, lobbySlug, BoardId, ships, board) {
     client.send(JSON.stringify({
         type: "time_is_over", 
         lobby_slug: lobbySlug,
         board_id: BoardId,
-        time_left: timeLeft,
         ships: ships,
         board: board,
     }));
