@@ -1,6 +1,6 @@
 import axios from "axios";
-import { Suspense, useEffect, useMemo } from "react";
-import { useDispatch } from "react-redux";
+import { Suspense, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useLoaderData, Await, redirect, useOutletContext } from "react-router-dom";
 
 import { sendWhoStarts } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
@@ -20,12 +20,21 @@ function LobbyPage(props) {
     const outletContext = useOutletContext();
     const token = sessionStorage.getItem("auth_token");
     const userId = Number(sessionStorage.getItem("user_id"));
+    const [isWSReady, setIsWSReady] = useState(false);
+    const myBoard = useSelector(state => state.lobby.myBoard);
     const client = useMemo(() => {
         return new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${slug}/?token=${token}`);
     }, [slug, token]);
 
     useEffect(() => {
-        client.onopen = (e) => console.log("Websocket started");
+        client.onopen = (e) => {
+            console.log("Websocket started");
+            setIsWSReady(!!client.readyState);
+        };
+
+        client.onerror = (e) => {
+            console.log(e)
+        };
 
         async function setPreStates() {
             const reLobby = await lobby;
@@ -40,14 +49,15 @@ function LobbyPage(props) {
                     {myBoard: boards[1], enemyBoard: boards[0], winner: reLobby.winner, timeLeft: reLobby.time_left,
                         timeToMove: reLobby.time_to_move}
             ));
-            outletContext.client = client;
+
+            outletContext.setClient(client);
             (areUsersReady & isChoseTurn) && sendWhoStarts(client, slug);
         };
 
-        setPreStates();
+        !isWSReady & !myBoard && setPreStates();
     });
 
-    return (
+    return isWSReady && myBoard ? (
         <div>
             <div className="main-page">
                 <Suspense fallback={<h1 className="suspense">Lobby is loading...</h1>}>
@@ -62,7 +72,7 @@ function LobbyPage(props) {
                 </Await>
             </Suspense>
         </div>
-    );
+    ): <div className="main-page"><h1 className="suspense">Lobby is loading...</h1></div>;
 };
 
 

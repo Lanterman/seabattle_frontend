@@ -29,9 +29,11 @@ function Lobby(props) {
     const wsResp = new WSResponse();
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
 
-    console.log("Попробовать изменить цикл while на for в таске, попробовать изменить логику")
-    console.log("Добавить что-нибудь для проверки очистки доски, блокирует цикл")
-    console.log("удалять запись в редис после конца игры")
+    console.log("Доработать таску на обратный отсчет, чтоб при не начинала еще одну при уже начатой и удаляла время на расстановку при ходе")
+    console.log("Проверить закрывается ли таска при определении победителя")
+    // console.log("Проверить почему иногда закрытие вебсокета с ошибкой 1006")
+    // console.log("Добавить что-нибудь для проверки очистки доски, блокирует цикл")
+
     useEffect(() => {
         const countdown = timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
         if (!timer.timeIsOver & timeLeft <= 0) timeIsOver(typeAction, enemy.id, myBoard);
@@ -71,11 +73,12 @@ function Lobby(props) {
                 userId === data.user_id ?
                     wsResp.determineWhoIsTurning(dispatch, data.is_my_turn, myBoard, enemyBoard) :
                     wsResp.determineWhoIsTurning(dispatch, !data.is_my_turn, myBoard, enemyBoard);
+
             } else if (data.type === "determine_winner") {
                 wsResp.determinedWinner(dispatch, data.winner);
+
             } else if (data.type === "countdown") {
                 dispatch(setTimeLeft(data.time_left));
-                timer.countdownHasStarted = true;
             };
         };
         return () => clearInterval(countdown);
@@ -109,6 +112,7 @@ function Lobby(props) {
             dispatch(setTimeLeft(timeLeft - 1));
         } else {
             sendCountDownTimer(props.client, props.lobbySlug, timeLeft, typeAction);
+            timer.countdownHasStarted = true;
         };
     };
 

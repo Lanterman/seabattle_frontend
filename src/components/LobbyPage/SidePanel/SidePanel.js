@@ -60,7 +60,7 @@ function SidePanel(props) {
                 <div className="buttons">
                     <input id="ready-button" type="button" value="Ready" 
                         onClick={(e) => readyOnClickHandler(e)} 
-                        disabled={(!enemyBoard.is_ready || !myBoard.is_ready) & boardIsReady & timeLeft > 0 ? 
+                        disabled={!winner & (!enemyBoard.is_ready || !myBoard.is_ready) & boardIsReady & timeLeft > 0 ?
                                     false : true}/><br/>
                     <input type="button" className="random-placement" value="Random placement"
                         disabled={!myBoard.is_ready && !winner ? false : true}
