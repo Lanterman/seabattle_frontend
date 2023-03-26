@@ -14,10 +14,7 @@ function Header(props) {
     const location = useLocation();
     const dispatch = useDispatch();
     const winner = useSelector(state => state.lobby.winner);
-    const timeLeft = useSelector(state => state.lobby.timeLeft);
-    const myBoard = useSelector(state => state.lobby.myBoard);
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
-    const typeAction = myBoard?.is_ready & enemyBoard?.is_ready ? "turn" : "placement";
 
     function beforeClosingPage(e) {
         props.client.close();
@@ -33,7 +30,7 @@ function Header(props) {
                     beforeClosingPage(e);
                 } else {
                     e.preventDefault();
-                    sendCountDownTimer(props.client, params.slug, timeLeft, typeAction);
+                    sendCountDownTimer(props.client, params.slug);
                 };
             } else {
                 beforeClosingPage();

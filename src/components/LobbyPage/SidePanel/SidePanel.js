@@ -12,7 +12,6 @@ function SidePanel(props) {
     const myBoard = useSelector(state => state.lobby.myBoard);
     const timeLeft = useSelector(state => state.lobby.timeLeft);
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
-    const typeAction = myBoard.is_ready & enemyBoard.is_ready ? "turn" : "placement";
     const ships = myBoard.ships;
     const boardIsReady = isShipPlaced();
     const board = createBoardVariable(myBoard);
@@ -50,7 +49,7 @@ function SidePanel(props) {
         if (window.confirm("Do you really want to give up?")) {
             sendDetermineWinner(props.client, props.lobbySlug, enemyBoard.user_id);
         } else {
-            sendCountDownTimer(props.client, props.lobbySlug, timeLeft, typeAction);
+            sendCountDownTimer(props.client, props.lobbySlug);
         };
     };
 

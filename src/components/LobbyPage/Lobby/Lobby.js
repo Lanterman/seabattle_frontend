@@ -28,9 +28,9 @@ function Lobby(props) {
     const typeAction = myBoard.is_ready & enemyBoard.is_ready ? "turn" : "placement";
     const wsResp = new WSResponse();
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
-
-    console.log("Доработать таску на обратный отсчет, чтоб при не начинала еще одну при уже начатой и удаляла время на расстановку при ходе")
-    console.log("Проверить закрывается ли таска при определении победителя")
+    console.log("Убрать из запросов slug, он есть в вебсокете")
+    console.log("Мб добавить на бекенде проверку началась ли игра, чтоб не происходило дублирование поиска первого хода и таймера 65-68 стр")
+    console.log("В реаду миксине делать проверку на обоюдную готовность перед удалением элемента, так как это делает дубликаты")
     // console.log("Проверить почему иногда закрытие вебсокета с ошибкой 1006")
     // console.log("Добавить что-нибудь для проверки очистки доски, блокирует цикл")
 
@@ -62,8 +62,10 @@ function Lobby(props) {
                 if (myBoard.is_ready & enemyBoard.is_ready) {
                     dispatch(setTimeLeft(lobby.time_to_move));
                     timer.timeIsOver = false;
-                    sendCountDownTimer(props.client, props.lobbySlug, lobby.time_to_move, "turn");
-                    if (data.user_id === userId) sendWhoStarts(props.client, props.lobbySlug);
+                    if (data.user_id === userId) { //Пофиксить дублирвоание
+                        sendWhoStarts(props.client, props.lobbySlug);
+                        sendCountDownTimer(props.client, props.lobbySlug, lobby.time_to_move);
+                    };
                 };
 
             } else if (data.type === "random_placed") {
@@ -111,7 +113,7 @@ function Lobby(props) {
         if (timer.countdownHasStarted) {
             dispatch(setTimeLeft(timeLeft - 1));
         } else {
-            sendCountDownTimer(props.client, props.lobbySlug, timeLeft, typeAction);
+            sendCountDownTimer(props.client, props.lobbySlug);
             timer.countdownHasStarted = true;
         };
     };

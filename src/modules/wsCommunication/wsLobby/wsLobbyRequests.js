@@ -25,7 +25,7 @@ export function sendShot(client, lobbySlug, boardId, fieldName, timeToMove) {
         lobby_slug: lobbySlug,
         board_id: boardId,
         field_name: fieldName,
-        time_to_move: timeToMove
+        time_to_turn: timeToMove
     }));
 };
 
@@ -59,12 +59,11 @@ export function sendDetermineWinner(client, lobbySlug, enemyId=null) {
     client.send(JSON.stringify(data));
 };
 
-export function sendCountDownTimer(client, lobbySlug, timeLeft, typeAction) {
+export function sendCountDownTimer(client, lobbySlug, timeToMove = null) {
     client.send(JSON.stringify({
         type: "countdown", 
         lobby_slug: lobbySlug,
-        time_left: timeLeft,
-        type_action: typeAction,
+        time_to_turn: timeToMove,
     }));
 };
 
