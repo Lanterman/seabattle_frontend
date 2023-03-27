@@ -15,7 +15,7 @@ function Column(props) {
 
     function takeShot(e) {
         const fieldName = e.target.attributes.name.value;
-        sendShot(props.client, props.lobbySlug, props.boardId, fieldName, timeToMove);
+        sendShot(props.client, props.boardId, fieldName, timeToMove);
     };
 
     function dropHandler(e, fieldName) {

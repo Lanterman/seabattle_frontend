@@ -1,4 +1,4 @@
-import { Link, NavLink, useLocation, useParams } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShip } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +10,6 @@ import "./Header.css";
 
 
 function Header(props) {
-    const params = useParams();
     const location = useLocation();
     const dispatch = useDispatch();
     const winner = useSelector(state => state.lobby.winner);
@@ -26,11 +25,11 @@ function Header(props) {
         if (location.pathname.length >= 45) {
             if (!winner) {
                 if (window.confirm("Do you really want to follow the link? \nIt will count as a loss!")) {
-                    sendDetermineWinner(props.client, params.slug, enemyBoard.user_id);
+                    sendDetermineWinner(props.client, enemyBoard.user_id);
                     beforeClosingPage(e);
                 } else {
                     e.preventDefault();
-                    sendCountDownTimer(props.client, params.slug);
+                    sendCountDownTimer(props.client);
                 };
             } else {
                 beforeClosingPage();

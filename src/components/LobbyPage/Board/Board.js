@@ -22,6 +22,13 @@ function Board(props) {
 
     function refreshTableHandler(e) {
         sendRefreshBoard(props.client, props.board.id, props.board.ships, board);
+        const refreshIcon = document.getElementById("refresh-table");
+        refreshIcon.attributes.id.value = "wait";
+        e.target.disabled = true;
+        setTimeout(() => {
+            e.target.disabled = false;
+            refreshIcon.attributes.id.value = "refresh-table";
+        }, 2500);
     };
 
     function dropShipOnBoard(fieldName) {
@@ -58,8 +65,11 @@ function Board(props) {
         <div className="battlefield">
             <p className="table-name" id={!isMyBoard ? "enemy-table": undefined}>
                 <i className="name">{isMyBoard ? "My table" : "Enemy table"}</i>
-                {isMyBoard && !props.board.is_ready && <FontAwesomeIcon className="refresh-table" icon={faRefresh} 
-                                                                           onClick={refreshTableHandler}/>}
+                {isMyBoard && !props.board.is_ready && 
+                    <span title="Clear game board" className="refresh">
+                        <FontAwesomeIcon id="refresh-table" icon={faRefresh}/>
+                        <input type="button" className="refresh-button" onClick={refreshTableHandler}/>
+                    </span>}
                 {!isMyBoard && !props.board.is_ready && <FontAwesomeIcon className="nready" icon={faClock}/>}
                 {props.board.is_ready && <FontAwesomeIcon className="ready" icon={faCheck}/>}
             </p> 

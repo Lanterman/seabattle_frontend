@@ -26,7 +26,7 @@ function SidePanel(props) {
     };
 
     function readyOnClickHandler(e) {
-        sendReadyToPlay(props.client, !myBoard.is_ready, myBoard.id);
+        sendReadyToPlay(props.client, !myBoard.is_ready, enemyBoard.is_ready, myBoard.id);
         e.target.disabled = true;
         setTimeout(() => {
             if (!enemyBoard.is_ready || !myBoard.is_ready) {
@@ -47,9 +47,9 @@ function SidePanel(props) {
 
     function giveUpHandler(e) {
         if (window.confirm("Do you really want to give up?")) {
-            sendDetermineWinner(props.client, props.lobbySlug, enemyBoard.user_id);
+            sendDetermineWinner(props.client, enemyBoard.user_id);
         } else {
-            sendCountDownTimer(props.client, props.lobbySlug);
+            sendCountDownTimer(props.client);
         };
     };
 

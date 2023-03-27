@@ -28,11 +28,7 @@ function Lobby(props) {
     const typeAction = myBoard.is_ready & enemyBoard.is_ready ? "turn" : "placement";
     const wsResp = new WSResponse();
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
-    console.log("Убрать из запросов slug, он есть в вебсокете")
-    console.log("Мб добавить на бекенде проверку началась ли игра, чтоб не происходило дублирование поиска первого хода и таймера 65-68 стр")
-    console.log("В реаду миксине делать проверку на обоюдную готовность перед удалением элемента, так как это делает дубликаты")
     // console.log("Проверить почему иногда закрытие вебсокета с ошибкой 1006")
-    // console.log("Добавить что-нибудь для проверки очистки доски, блокирует цикл")
 
     useEffect(() => {
         const countdown = timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
@@ -46,7 +42,7 @@ function Lobby(props) {
                     wsResp.takeShot(dispatch, setEnemyBoard, setMyBoard, enemyBoard, myBoard, data.board, data.is_my_turn) :
                     wsResp.takeShot(dispatch, setMyBoard, setEnemyBoard, myBoard, enemyBoard, data.board, data.is_my_turn);
                 if (userId === data.user_id && data.enemy_ships === 0) {
-                    sendDetermineWinner(props.client, props.lobbySlug);
+                    sendDetermineWinner(props.client);
                 };
 
             } else if (data.type === "drop_ship") {
@@ -62,9 +58,9 @@ function Lobby(props) {
                 if (myBoard.is_ready & enemyBoard.is_ready) {
                     dispatch(setTimeLeft(lobby.time_to_move));
                     timer.timeIsOver = false;
-                    if (data.user_id === userId) { //Пофиксить дублирвоание
-                        sendWhoStarts(props.client, props.lobbySlug);
-                        sendCountDownTimer(props.client, props.lobbySlug, lobby.time_to_move);
+                    if (data.user_id === userId) {
+                        sendWhoStarts(props.client);
+                        sendCountDownTimer(props.client, lobby.time_to_move);
                     };
                 };
 
@@ -99,11 +95,11 @@ function Lobby(props) {
 
     function timeIsOver(typeAction, enemyId, myBoard) {
         if (typeAction === "turn") {
-            sendDetermineWinner(props.client, props.lobbySlug, myBoard.my_turn && enemyId);
+            sendDetermineWinner(props.client, myBoard.my_turn && enemyId);
         } else {
             if (!myBoard.is_ready) {
                 const board = createBoardVariable(myBoard);
-                sendTimeIsOver(props.client, props.lobbySlug, myBoard.id, myBoard.ships, board);
+                sendTimeIsOver(props.client, myBoard.id, myBoard.ships, board);
                 timer.timeIsOver = true;
             };
         };
@@ -113,7 +109,7 @@ function Lobby(props) {
         if (timer.countdownHasStarted) {
             dispatch(setTimeLeft(timeLeft - 1));
         } else {
-            sendCountDownTimer(props.client, props.lobbySlug);
+            sendCountDownTimer(props.client);
             timer.countdownHasStarted = true;
         };
     };

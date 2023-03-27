@@ -19,20 +19,20 @@ export function sendPutShip(client, shipId, boardId, plane, shipCount, fieldName
     }));
 };
 
-export function sendShot(client, lobbySlug, boardId, fieldName, timeToMove) {
+export function sendShot(client, boardId, fieldName, timeToMove) {
     client.send(JSON.stringify({
         type: "take_shot",
-        lobby_slug: lobbySlug,
         board_id: boardId,
         field_name: fieldName,
         time_to_turn: timeToMove
     }));
 };
 
-export function sendReadyToPlay(client, isReady, boardId) {
+export function sendReadyToPlay(client, isReady, isEnemyReady, boardId) {
     client.send(JSON.stringify({
         type: "is_ready_to_play", 
         is_ready: isReady, 
+        is_enemy_ready: isEnemyReady,
         board_id: boardId,
     }));
 };
@@ -46,31 +46,28 @@ export function sendRandomPlacement(client, boardId, board, ships) {
     }));
 };
 
-export function sendWhoStarts(client, lobbySlug) {
+export function sendWhoStarts(client) {
     client.send(JSON.stringify({
         type: "who_starts", 
-        lobby_slug: lobbySlug,
     }));
 };
 
-export function sendDetermineWinner(client, lobbySlug, enemyId=null) {
-    const data = {type: "determine_winner", lobby_slug: lobbySlug};
+export function sendDetermineWinner(client, enemyId=null) {
+    const data = {type: "determine_winner"};
     if (enemyId) data.enemy_id = enemyId;
     client.send(JSON.stringify(data));
 };
 
-export function sendCountDownTimer(client, lobbySlug, timeToMove = null) {
+export function sendCountDownTimer(client, timeToMove = null) {
     client.send(JSON.stringify({
         type: "countdown", 
-        lobby_slug: lobbySlug,
         time_to_turn: timeToMove,
     }));
 };
 
-export function sendTimeIsOver(client, lobbySlug, BoardId, ships, board) {
+export function sendTimeIsOver(client, BoardId, ships, board) {
     client.send(JSON.stringify({
         type: "time_is_over", 
-        lobby_slug: lobbySlug,
         board_id: BoardId,
         ships: ships,
         board: board,
