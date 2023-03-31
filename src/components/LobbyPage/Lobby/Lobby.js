@@ -5,9 +5,10 @@ import { faDollar,  faClock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { timer, createBoardVariable } from "../../../modules/services";
 import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResponse";
-import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeLeft } from "../../../store/reducers/lobbyReducer";
-import { sendWhoStarts, sendDetermineWinner, sendCountDownTimer,
-     sendTimeIsOver } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeLeft, 
+    addUserToLobby } from "../../../store/reducers/lobbyReducer";
+import { sendWhoStarts, sendDetermineWinner, sendCountDownTimer, sendTimeIsOver, 
+    sendAddUserToGame } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 
 import { Board } from "../Board/Board";
 import { Ships } from "../Ships/Ships";
@@ -19,19 +20,22 @@ function Lobby(props) {
     const dispatch = useDispatch();
     const lobby = props.lobby;
     const userId = Number(sessionStorage.getItem("user_id"));
-    const enemy = lobby.users[0]["id"] === userId ? lobby.users[1] : lobby.users[0];
     const winner = useSelector(state => state.lobby.winner);
     const myBoard = useSelector(state => state.lobby.myBoard);
     const timeLeft = useSelector(state => state.lobby.timeLeft);
+    const users = useSelector(state => state.lobby.users);
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
     const isCanPutShip = useSelector(state => state.lobby.isCanPutShip);
+    const enemy = users[0]["id"] === userId ? users[1] : users[0];
     const typeAction = myBoard.is_ready & enemyBoard.is_ready ? "turn" : "placement";
     const wsResp = new WSResponse();
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
     // console.log("Проверить почему иногда закрытие вебсокета с ошибкой 1006")
+    // console.log("Предложить сыграть еще, базовая реализация чата, а потом мб тесты")
 
     useEffect(() => {
-        const countdown = timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
+        const countdown = users.length === 2 & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
+        if (users.length === 1 & users[0].id !== userId) sendAddUserToGame(props.client, myBoard.id);
         if (!timer.timeIsOver & timeLeft <= 0) timeIsOver(typeAction, enemy.id, myBoard);
 
         props.client.onmessage = (e) => {
@@ -77,6 +81,11 @@ function Lobby(props) {
 
             } else if (data.type === "countdown") {
                 dispatch(setTimeLeft(data.time_left));
+            } else if (data.type === "add_user_to_game") {
+                dispatch(addUserToLobby([...users, data.user]));
+                userId === data.user.id ?
+                    dispatch(setMyBoard(Object.assign({}, myBoard, {user_id: data.user.id}))) :
+                    dispatch(setEnemyBoard(Object.assign({}, enemyBoard, {user_id: data.user.id})));
             };
         };
         return () => clearInterval(countdown);
@@ -146,22 +155,29 @@ function Lobby(props) {
                     <FontAwesomeIcon icon={faClock}/>
                 </span>
                 <span className="enemy">
-                    <span>{enemy.username}</span>
-                    <FontAwesomeIcon icon={faUser}/>
-                    <div className="enemy-info">
-                        <p className="info">First name: {enemy.first_name ? enemy.first_name : "None"}</p>
-                        <p className="info">Last name: {enemy.last_name ? enemy.last_name : "None"}</p>
-                    </div>
+                    {enemy && <span>
+                        <span>{enemy.username}</span>
+                        <FontAwesomeIcon icon={faUser}/>
+                        <div className="enemy-info">
+                            <p className="info">First name: {enemy.first_name ? enemy.first_name : "None"}</p>
+                            <p className="info">Last name: {enemy.last_name ? enemy.last_name : "None"}</p>
+                        </div>
+                    </span>}
                 </span>
             </div>
 
             {winner ? displayGameResults() : displayRunningGame()}
 
             <div className="game-block">
-                <Board client={props.client} board={myBoard} updateShipClassName={updateShipClassName} />
-                <Board client={props.client} board={enemyBoard} lobbySlug={props.lobbySlug}/>
+                <Board 
+                    client={props.client} 
+                    board={myBoard} 
+                    enemyId={enemy?.id} 
+                    updateShipClassName={updateShipClassName} />
+                <Board client={props.client} board={enemyBoard} enemyId={enemy?.id} lobbySlug={props.lobbySlug}/>
             </div>
             <Ships client={props.client} />
+            {users.length !== 2 && <div className="waiting"><i>Waiting for a enemy...</i></div>}
         </div>
     );
 };

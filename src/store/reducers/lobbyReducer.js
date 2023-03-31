@@ -1,5 +1,6 @@
 const defaultState = {
     myBoard: null, enemyBoard: null, currentShip: null, isCanPutShip: true, winner: null, timeLeft: null, timeToMove: null,
+    users: null,
 };
 
 const PRELOAD = "PRELOAD";
@@ -9,6 +10,7 @@ const SET_MY_BOARD = "SET_MY_BOARD";
 const SET_TIME_LEFT = "SET_TIME_LEFT";
 const SET_ENEMY_BOARD = "SET_ENEMY_BOARD";
 const SET_CURRENT_SHIP = "SET_CURRENT_SHIP";
+const ADD_USER_TO_LOBBY = "ADD_USER_TO_LOBBY";
 const SET_IS_CAN_PUT_SHIP = "SET_IS_CAN_PUT_SHIP";
 
 export const lobbyReducer = (state = defaultState, action) => {
@@ -20,7 +22,8 @@ export const lobbyReducer = (state = defaultState, action) => {
                 timeToMove: action.payload.timeToMove,
                 winner: action.payload.winner,
                 myBoard: action.payload.myBoard, 
-                enemyBoard: action.payload.enemyBoard, 
+                enemyBoard: action.payload.enemyBoard,
+                users: action.payload.users,
             };
         case CLEAR_STATE:
             return defaultState;
@@ -34,6 +37,8 @@ export const lobbyReducer = (state = defaultState, action) => {
             return {...state, timeLeft: action.payload};
         case SET_CURRENT_SHIP:
             return {...state, currentShip: action.payload};
+        case ADD_USER_TO_LOBBY:
+            return {...state, users: action.payload};
         case SET_IS_CAN_PUT_SHIP:
             return {...state, isCanPutShip: action.payload};
         default: 
@@ -46,7 +51,8 @@ export const defineLobbyStateAction = (payload) => ({type: PRELOAD, payload});
 export const clearState = () => ({type: CLEAR_STATE});
 export const setWinner = (payload) => ({type: SET_WINNER, payload});
 export const setMyBoard = (payload) => ({type: SET_MY_BOARD, payload});
-export const setEnemyBoard = (payload) => ({type: SET_ENEMY_BOARD, payload});
 export const setTimeLeft = (payload) => ({type: SET_TIME_LEFT, payload});
+export const setEnemyBoard = (payload) => ({type: SET_ENEMY_BOARD, payload});
 export const setCurrentShip = (payload) => ({type: SET_CURRENT_SHIP, payload});
+export const addUserToLobby = (payload) => ({type: ADD_USER_TO_LOBBY, payload});
 export const setIsCanPutShip = (payload) => ({type: SET_IS_CAN_PUT_SHIP, payload});

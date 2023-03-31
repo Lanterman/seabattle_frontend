@@ -15,8 +15,9 @@ import "./Board.css";
 function Board(props) {
     const dispatch = useDispatch();
     const ship = useSelector(state => state.lobby.currentShip);
-    const isMyBoard = Number(sessionStorage.getItem("user_id")) === props.board.user_id;
     const board = createBoardVariable(props.board);
+    const boardOwner = props.board.user_id;
+    const isMyBoard = props.enemyId !== boardOwner && boardOwner;
     const defineClassName = new DefineShipClassName();
     const prepareSetting = new PrepareSettingShipOnBoard();
 

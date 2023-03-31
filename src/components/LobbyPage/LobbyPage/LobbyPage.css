@@ -1,5 +1,10 @@
-.suspense {
+.suspense, .is-full {
     text-align: center;
     font-size: 35px;
     margin-top: 20%;
+}
+
+.is-full {
+    color: red;
+    opacity: 0.7;
 }

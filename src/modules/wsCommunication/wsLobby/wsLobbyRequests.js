@@ -73,3 +73,10 @@ export function sendTimeIsOver(client, BoardId, ships, board) {
         board: board,
     }));
 };
+
+export function sendAddUserToGame(client, boardId) {
+    client.send(JSON.stringify({
+        type: "add_user_to_game", 
+        board_id: boardId,
+    }));
+};

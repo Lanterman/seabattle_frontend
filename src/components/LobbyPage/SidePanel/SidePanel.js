@@ -12,6 +12,7 @@ function SidePanel(props) {
     const myBoard = useSelector(state => state.lobby.myBoard);
     const timeLeft = useSelector(state => state.lobby.timeLeft);
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
+    const users = useSelector(state => state.lobby.users);
     const ships = myBoard.ships;
     const boardIsReady = isShipPlaced();
     const board = createBoardVariable(myBoard);
@@ -66,7 +67,7 @@ function SidePanel(props) {
                         onClick={(e) => randomPlacementOnClickHandler(e)} /><br/>
                     <input className="give-up" type="button" value="Give up"
                         id={winner && "disabled"}
-                        disabled={!winner ? false : true}
+                        disabled={users.length === 2 & !winner ? false : true}
                         onClick={(e) => giveUpHandler(e)} />
                 </div>
         </div>

@@ -84,3 +84,20 @@
 /* Show the dropdown menu on hover */
 .enemy:hover .enemy-info {display: block;}
 /* dropdown */
+
+.waiting {
+    z-index: 998;
+    font-size: 25px;
+    position: absolute;
+    width: 82%;
+    height: 120%;
+    background-color: rgb(211, 216, 228);
+    opacity: 0.8;
+    margin-top: -21.8%;
+}
+
+.waiting i {
+    margin: 38% 24%;
+    width: 300px;
+    position: absolute;
+}
