@@ -26,8 +26,8 @@ function Header(props) {
     
     function onClickHandler(e, url) {
         e.preventDefault();
-        if (location.pathname.length >= 45 && users.length === 2) {
-            if (!winner) {
+        if (location.pathname.length >= 45) {
+            if (!winner && users.length === 2) {
                 if (window.confirm("Do you really want to follow the link? \nIt will count as a loss!")) {
                     sendDetermineWinner(props.client, enemyBoard.user_id);
                     beforeClosingPage(url);

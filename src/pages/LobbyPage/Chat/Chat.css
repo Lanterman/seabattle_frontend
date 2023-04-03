@@ -7,12 +7,12 @@
 
 .panel {
     width: 80%;
-    height: 100px;
+    height: 66px;
     background-color: aqua;
     margin: 0px 15% 10px 5%;
 }
 
-.message-input {
+#message-input {
     resize: none;
     width: 80%;
     font-size: 15px;
@@ -25,5 +25,5 @@
     float: right;
     font-size: 15px;
     padding: 3px 15px;
-    margin: 55px 0 10px 5px;
+    margin: 39px 0 10px 5px;
 }

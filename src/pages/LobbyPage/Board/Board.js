@@ -17,7 +17,8 @@ function Board(props) {
     const ship = useSelector(state => state.lobby.currentShip);
     const board = createBoardVariable(props.board);
     const boardOwner = props.board.user_id;
-    const isMyBoard = props.enemyId !== boardOwner && boardOwner;
+    const userId = Number(sessionStorage.getItem("user_id"));
+    const isMyBoard = userId === boardOwner;
     const defineClassName = new DefineShipClassName();
     const prepareSetting = new PrepareSettingShipOnBoard();
 

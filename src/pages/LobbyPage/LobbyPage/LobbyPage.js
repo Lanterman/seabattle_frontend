@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLoaderData, Await, redirect, useOutletContext, useNavigate } from "react-router-dom";
 
 import { sendWhoStarts } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
-import  { defineLobbyStateAction } from "../../../store/reducers/lobbyReducer";
+import  { defineLobbyStateAction, clearState } from "../../../store/reducers/lobbyReducer";
 
 import { SidePanel } from "../SidePanel/SidePanel";
 import { Lobby } from "../Lobby/Lobby";
@@ -61,6 +61,12 @@ function LobbyPage(props) {
             setTimeout(() => navigate("/lobbies/"), 1000);
         };
     });
+
+    window.onpopstate = () => {
+        client.close();
+        outletContext.setClient(null);
+        dispatch(clearState());
+    }
 
     return client ? 
         (isWSReady && myBoard ? (

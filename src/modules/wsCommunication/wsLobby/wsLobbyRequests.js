@@ -80,3 +80,10 @@ export function sendAddUserToGame(client, boardId) {
         board_id: boardId,
     }));
 };
+
+export function sendMessage(client, message) {
+    client.send(JSON.stringify({
+        type: "send_message",
+        message: message,
+    }))
+};
