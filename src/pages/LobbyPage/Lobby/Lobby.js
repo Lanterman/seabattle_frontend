@@ -5,7 +5,7 @@ import { faDollar,  faClock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { timer, createBoardVariable } from "../../../modules/services";
 import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResponse";
-import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeLeft, 
+import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeLeft, addMessage,
     addUserToLobby } from "../../../store/reducers/lobbyReducer";
 import { sendWhoStarts, sendDetermineWinner, sendCountDownTimer, sendTimeIsOver, 
     sendAddUserToGame } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
@@ -24,6 +24,7 @@ function Lobby(props) {
     const myBoard = useSelector(state => state.lobby.myBoard);
     const timeLeft = useSelector(state => state.lobby.timeLeft);
     const users = useSelector(state => state.lobby.users);
+    const messages = useSelector(state => state.lobby.messages);
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
     const isCanPutShip = useSelector(state => state.lobby.isCanPutShip);
     const enemy = users[0]["id"] === userId ? users[1] : users[0];
@@ -31,9 +32,9 @@ function Lobby(props) {
     const wsResp = new WSResponse();
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
     // console.log("Проверить почему иногда закрытие вебсокета с ошибкой 1006")
-    console.log("Сделать базовый чат, потом предлагать сыграть еще раз, а потом мб тесты")
-
-    console.log("В дальнейшем при выходе из лобби, если только 1 пользователь, удалять ее")
+    // console.log("Сделать базовый чат, потом предлагать сыграть еще раз, а потом мб тесты")
+    // console.log("В чате при добавлении сообщения делать проверку, если дата не совпадает с текущей, вначале добавить дату")
+    // console.log("В дальнейшем при выходе из лобби, если только 1 пользователь, удалять ее")
 
     useEffect(() => {
         const countdown = users.length === 2 & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
@@ -83,11 +84,15 @@ function Lobby(props) {
 
             } else if (data.type === "countdown") {
                 dispatch(setTimeLeft(data.time_left));
+
             } else if (data.type === "add_user_to_game") {
                 dispatch(addUserToLobby([...users, data.user]));
                 userId === data.user.id ?
                     dispatch(setMyBoard(Object.assign({}, myBoard, {user_id: data.user.id}))) :
                     dispatch(setEnemyBoard(Object.assign({}, enemyBoard, {user_id: data.user.id})));
+
+            } else if (data.type === "send_message") {
+                dispatch(addMessage([data.message, ...messages]));
             };
         };
         return () => clearInterval(countdown);

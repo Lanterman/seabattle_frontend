@@ -81,9 +81,10 @@ export function sendAddUserToGame(client, boardId) {
     }));
 };
 
-export function sendMessage(client, message) {
+export function sendMessage(client, lobbyId, message) {
     client.send(JSON.stringify({
         type: "send_message",
         message: message,
+        lobby_id: lobbyId,
     }))
 };

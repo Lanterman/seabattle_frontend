@@ -1,14 +1,46 @@
-.dialog {
-    background-color: rgb(235, 240, 245);
+#dialog {
+    background-color: rgb(231, 234, 243);
+    border: 1px solid rgb(204, 198, 198);
     width: 80%;
+    height: 400px;
     margin: 0px 15% 10px 5%;
     resize: none;
+    overflow: auto;
+}
+
+.right-block-message, .left-block-message {
+    margin: 5px 35% 5px 35%;
+    padding: 10px;
+    border-radius: 10%;
+}
+
+.left-block-message {
+    float: left;
+    margin-left: 5px;
+    background-color: rgb(164, 204, 204);
+}
+
+.right-block-message {
+    float: right;
+    margin-right: 5px;
+    background-color: rgb(122, 191, 212);
+}
+
+#dialog .message {
+    word-break: break-all;
+    font-size: 18px;
+    float: left;
+}
+
+.created-in {
+    float: right;
+    font-size: 15px;
+    margin: 8px 0px 0px 10px;
 }
 
 .panel {
     width: 80%;
     height: 66px;
-    background-color: aqua;
     margin: 0px 15% 10px 5%;
 }
 

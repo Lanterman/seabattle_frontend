@@ -56,7 +56,7 @@ function SidePanel(props) {
 
     return (
         <div className="side-panel">
-            <Chat client={props.client} />
+            <Chat client={props.client} lobbyId={props.lobbyId} />
                 <div className="buttons">
                     <input id="ready-button" type="button" value="Ready" 
                         onClick={(e) => readyOnClickHandler(e)} 

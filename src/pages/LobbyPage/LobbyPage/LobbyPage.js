@@ -47,9 +47,9 @@ function LobbyPage(props) {
                 dispatch(defineLobbyStateAction(
                     boards[0]["user_id"] === userId ? 
                         {myBoard: boards[0], enemyBoard: boards[1], winner: data.winner, timeLeft: data.time_left,
-                            timeToMove: data.time_to_move, users: data.users} :
+                            timeToMove: data.time_to_move, users: data.users, messages: data.messages} :
                         {myBoard: boards[1], enemyBoard: boards[0], winner: data.winner, timeLeft: data.time_left,
-                            timeToMove: data.time_to_move, users: data.users}
+                            timeToMove: data.time_to_move, users: data.users, messages: data.messages}
                 ));
 
                 outletContext.setClient(client);
@@ -80,7 +80,7 @@ function LobbyPage(props) {
                 </div>
                 <Suspense >
                     <Await resolve={lobby}>
-                        <SidePanel client={client} lobbySlug={slug} />
+                        <SidePanel client={client} lobbySlug={slug} lobbyId={lobby.data.id}/>
                     </Await>
                 </Suspense>
             </div>
