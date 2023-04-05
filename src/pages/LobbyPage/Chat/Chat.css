@@ -8,21 +8,28 @@
     overflow: auto;
 }
 
-.right-block-message, .left-block-message {
-    margin: 5px 35% 5px 35%;
-    padding: 10px;
-    border-radius: 10%;
+.last-message-of-day {
+    float: left;
+    padding: 6px 15px;
+    border-radius: 45%;
+    text-align: center;
+    margin: 20px 38% -5px 38%;
+    background-color: rgb(222, 225, 233);
 }
 
 .left-block-message {
     float: left;
-    margin-left: 5px;
+    padding: 10px;
+    border-radius: 10%;
+    margin: 5px 35% 5px 5px;
     background-color: rgb(164, 204, 204);
 }
 
 .right-block-message {
     float: right;
-    margin-right: 5px;
+    padding: 10px;
+    border-radius: 10%;
+    margin: 5px 5px 5px 35%;
     background-color: rgb(122, 191, 212);
 }
 

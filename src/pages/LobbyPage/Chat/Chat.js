@@ -1,4 +1,6 @@
 import { useSelector } from "react-redux";
+
+import { determineDate } from "../../../modules/determneDate";
 import { sendMessage } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 
 import "./Chat.css";
@@ -22,12 +24,19 @@ function Chat(props) {
         <div>
             <div id="dialog">
                 {messages.map((message, number) => {
+                    const [date, time] = message.created_in.split(" ");
+                    const dateOfPreviosMessage = messages[number - 1]?.created_in.split(" ")[0];
+                    const isNewDay = !(date === dateOfPreviosMessage);
                     return (
-                        <div key={number}
-                            className={username === message.owner ? "right-block-message" : "left-block-message"}>
-                            <input id={number} type="hidden" value={message.created_in.split(" ")[0]} />
-                            <p className="message">{message.message}</p>
-                            <i className="created-in">{message.created_in.split(" ")[1].slice(0, 5)}</i>
+                        <div key={number}>
+
+                            {number > 0 && isNewDay && determineDate(date, dateOfPreviosMessage)}
+
+                            <div
+                                className={username === message.owner ? "right-block-message" : "left-block-message"}>
+                                <p className="message">{message.message}</p>
+                                <i className="created-in">{time.slice(0, 5)}</i>
+                            </div>
                         </div>
                     );
                 })}
