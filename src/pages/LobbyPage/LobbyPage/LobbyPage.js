@@ -1,7 +1,7 @@
 import axios from "axios";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLoaderData, Await, redirect, useOutletContext, useNavigate } from "react-router-dom";
+import { useLoaderData, redirect, useOutletContext, useNavigate } from "react-router-dom";
 
 import { sendWhoStarts } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import  { defineLobbyStateAction, clearState } from "../../../store/reducers/lobbyReducer";
@@ -72,17 +72,9 @@ function LobbyPage(props) {
         (isWSReady && myBoard ? (
             <div>
                 <div className="main-page">
-                    <Suspense fallback={<h1 className="suspense">Lobby is loading...</h1>}>
-                        <Await resolve={lobby}>
-                            {resolvedLobby => <Lobby lobby={resolvedLobby.data} client={client} lobbySlug={slug} />}
-                        </Await>
-                    </Suspense>
+                    {<Lobby lobby={lobby.data} client={client} lobbySlug={slug} />}
                 </div>
-                <Suspense >
-                    <Await resolve={lobby}>
-                        <SidePanel client={client} lobbySlug={slug} lobbyId={lobby.data.id}/>
-                    </Await>
-                </Suspense>
+                <SidePanel client={client} lobbySlug={slug} lobbyId={lobby.data.id}/>
             </div>
             ) : <div className="main-page"><h1 className="suspense">Lobby is loading...</h1></div>) :
         <div className="main-page"><h1 className="is-full">The lobby is crowded</h1></div>;
@@ -110,12 +102,24 @@ async function getLobbyBySlug(slug, token) {
 const lobbyLoader = async ({params}) => {
     const slug = params.slug;
     const token = sessionStorage.getItem("auth_token");
+    const userId = Number(sessionStorage.getItem("user_id"))
 
     if (!token) {
         return redirect(`/login?next=/lobbies/${slug}`);
     };
 
-    return {lobby: await getLobbyBySlug(slug, token), slug: slug};
+    const lobby = await getLobbyBySlug(slug, token);
+
+    if (lobby.status === 200 && lobby.data.password && lobby.data.users.length === 1 && 
+        !(lobby.data.users[0].id === userId)) {
+        const password = prompt("Enter password");
+        if (!(lobby.data.password === password)) {
+            alert("Wrong password");
+            return redirect("/lobbies/");
+        };
+    };
+
+    return {lobby: lobby, slug: slug};
 };
 
 
