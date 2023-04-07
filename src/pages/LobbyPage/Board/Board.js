@@ -83,7 +83,7 @@ function Board(props) {
             <div className="fields-name">
                 {fieldNumberList.map(number => {return <span key={number} className="field-name">{number}</span>})}
             </div>
-            <div className="game-fields" id={props.board.my_turn ? "my-turn" : "enemy-turn"}>
+            <div className="game-fields" id={props.board.is_my_turn ? "my-turn" : "enemy-turn"}>
                 {columnNameList.map((columName) => {
                     return <Column 
                         key={columName}

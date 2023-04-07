@@ -10,7 +10,7 @@ function Column(props) {
     const winner = useSelector(state => state.lobby.winner);
     const timeToMove = useSelector(state => state.lobby.timeToMove)
     const currentShip = useSelector(state => state.lobby.currentShip);
-    const isMyTurn = useSelector(state => state.lobby.myBoard).my_turn;
+    const isMyTurn = useSelector(state => state.lobby.myBoard).is_my_turn;
     const isEnemyBoard = !props.isMyBoard && true;
 
     function takeShot(e) {

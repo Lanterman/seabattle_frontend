@@ -5,9 +5,8 @@ import { faDollar,  faClock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { timer, createBoardVariable } from "../../../modules/services";
 import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResponse";
-import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeLeft, addMessage,
-    addUserToLobby } from "../../../store/reducers/lobbyReducer";
-import { sendWhoStarts, sendDetermineWinner, sendCountDownTimer, sendTimeIsOver, 
+import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeLeft } from "../../../store/reducers/lobbyReducer";
+import { sendWhoStarts, sendDetermineWinner, sendCountDownTimer, sendTimeIsOver, sendPlayAgain,
     sendAddUserToGame } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 
 import { Board } from "../Board/Board";
@@ -32,13 +31,18 @@ function Lobby(props) {
     const wsResp = new WSResponse();
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
     // console.log("Проверить почему иногда закрытие вебсокета с ошибкой 1006")
-    // console.log("Предлагать сыграть еще раз, проверка на приватность, а потом мб тесты")
+    console.log("Доделать CSS ожидания ответа противника, если оба согласны - создать и перенаправить на новую, иначе ничего")
+    console.log("Потом тесты")
 
     // console.log("В дальнейшем при выходе из лобби, если только 1 пользователь, удалять ее")
     // console.log("Удалять таски селери из редис")
 
     useEffect(() => {
         const countdown = users.length === 2 & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
+        if (winner && myBoard.is_play_again === null) {
+            const answer = window.confirm("Do you want to play again?");
+            sendPlayAgain(props.client, myBoard.id, answer);
+        };
         if (users.length === 1 & users[0].id !== userId) sendAddUserToGame(props.client, myBoard.id);
         if (!timer.timeIsOver & timeLeft <= 0) timeIsOver(typeAction, enemy.id, myBoard);
 
@@ -61,8 +65,8 @@ function Lobby(props) {
 
             } else if (data.type === "is_ready_to_play") {
                 userId === data.user_id ?
-                    wsResp.isReadyToPlay(dispatch, setMyBoard, myBoard, data.is_ready) :
-                    wsResp.isReadyToPlay(dispatch, setEnemyBoard, enemyBoard, data.is_ready);
+                    wsResp.setIsReadyToPlay(dispatch, setMyBoard, myBoard, data.is_ready) :
+                    wsResp.setIsReadyToPlay(dispatch, setEnemyBoard, enemyBoard, data.is_ready);
                 if (myBoard.is_ready & enemyBoard.is_ready) {
                     dispatch(setTimeLeft(lobby.time_to_move));
                     timer.timeIsOver = false;
@@ -84,16 +88,21 @@ function Lobby(props) {
                 wsResp.determinedWinner(dispatch, data.winner);
 
             } else if (data.type === "countdown") {
-                dispatch(setTimeLeft(data.time_left));
+                wsResp.setTimeLeft(dispatch, data.time_left);
 
             } else if (data.type === "add_user_to_game") {
-                dispatch(addUserToLobby([...users, data.user]));
                 userId === data.user.id ?
-                    dispatch(setMyBoard(Object.assign({}, myBoard, {user_id: data.user.id}))) :
-                    dispatch(setEnemyBoard(Object.assign({}, enemyBoard, {user_id: data.user.id})));
+                    wsResp.addUserToGame(dispatch, setMyBoard, myBoard, data.user, users) :
+                    wsResp.addUserToGame(dispatch, setEnemyBoard, enemyBoard, data.user, users);
 
             } else if (data.type === "send_message") {
-                dispatch(addMessage([data.message, ...messages]));
+                wsResp.sendMessage(dispatch, data.message, messages);
+
+            } else if (data.type === "is_play_again") {
+                console.log(data)
+                userId === data.user_id ?
+                    wsResp.setIsPlayAgain(dispatch, setMyBoard, myBoard, data.is_play_again) :
+                    wsResp.setIsPlayAgain(dispatch, setEnemyBoard, enemyBoard, data.is_play_again);
             };
         };
         return () => clearInterval(countdown);
@@ -112,7 +121,7 @@ function Lobby(props) {
 
     function timeIsOver(typeAction, enemyId, myBoard) {
         if (typeAction === "turn") {
-            sendDetermineWinner(props.client, myBoard.my_turn && enemyId);
+            sendDetermineWinner(props.client, myBoard.is_my_turn && enemyId);
         } else {
             if (!myBoard.is_ready) {
                 const board = createBoardVariable(myBoard);
@@ -142,9 +151,9 @@ function Lobby(props) {
     function displayRunningGame() {
         return (<p className="count-down">
                     {typeAction === "turn" ? 
-                        myBoard.my_turn ? <i id="my-turn">You turn </i> : <i id="enemy-turn">Enemy turn </i> :
+                        myBoard.is_my_turn ? <i id="my-turn">You turn </i> : <i id="enemy-turn">Enemy turn </i> :
                         <i>Preparation </i>}
-                    {(typeAction === "turn" & enemyBoard.my_turn ? 
+                    {(typeAction === "turn" & enemyBoard.is_my_turn ? 
                         <i id="red-time">{timeLeft}</i> :
                         <i id={timeLeft > 10 ? "blue-time" : "red-time"}>{timeLeft} </i>)}
                 </p>)
@@ -186,6 +195,7 @@ function Lobby(props) {
             </div>
             <Ships client={props.client} />
             {users.length !== 2 && <div className="waiting"><i>Waiting for a enemy...</i></div>}
+            {winner &&enemyBoard.is_play_again === null && <div className="waiting-new-game">Waiting for a enemy...</div>}
         </div>
     );
 };

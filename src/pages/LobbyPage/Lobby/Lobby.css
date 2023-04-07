@@ -101,3 +101,13 @@
     width: 300px;
     position: absolute;
 }
+
+.waiting-new-game {
+    float: left;
+    position: relative;
+    margin-top: 20%;
+    height: 100px;
+    text-align: center;
+    background-color: aqua;
+
+}

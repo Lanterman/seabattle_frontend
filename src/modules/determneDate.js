@@ -20,11 +20,11 @@ export function determineDate(dateOfLastMes, dateOfPreviosMes) {
 
     if (splitDateOfPreviosMes[2] === splitDateOfLastMes[2]) {
         if (!(splitDateOfPreviosMes[1] === splitDateOfLastMes[1])) {
-            date = `${months[splitDateOfLastMes[1]]}, ${splitDateOfLastMes[1]}`;
+            date = `${months[splitDateOfLastMes[1]]}, ${splitDateOfLastMes[0]}`;
         } else if (splitDateOfPreviosMes[0] - splitDateOfLastMes[0] === 1) {
             date = "Yesterday";
         } else {
-            date = `${months[splitDateOfLastMes[1]]}, ${splitDateOfLastMes[1]}`;
+            date = `${months[splitDateOfLastMes[1]]}, ${splitDateOfLastMes[0]}`;
         };
     };
 

@@ -86,5 +86,13 @@ export function sendMessage(client, lobbyId, message) {
         type: "send_message",
         message: message,
         lobby_id: lobbyId,
+    }));
+};
+
+export function sendPlayAgain(client, boardId, answer) {
+    client.send(JSON.stringify({
+        type: "is_play_again",
+        board_id: boardId,
+        answer: answer,
     }))
 };
