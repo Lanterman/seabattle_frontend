@@ -12,14 +12,14 @@
 
 .buttons {
     width: 80%;
-    margin: 10px 5%;
-    text-align: center;
+    margin: 20px 5%;
 }
 
 #ready-button, .random-placement, .give-up {
     font-size: 17px;
     padding: 3px 5px;
-    margin-top: 10px;
+    margin: 10px auto;
+    display: block;
 }
 
 .give-up {

@@ -31,8 +31,8 @@ function Lobby(props) {
     const wsResp = new WSResponse();
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
     // console.log("Проверить почему иногда закрытие вебсокета с ошибкой 1006")
-    console.log("Доделать CSS ожидания ответа противника, если оба согласны - создать и перенаправить на новую, иначе ничего")
-    console.log("Потом тесты")
+    // console.log("Доделать CSS ожидания ответа противника, если оба согласны - создать и перенаправить на новую, иначе ничего")
+    // console.log("Потом тесты")
 
     // console.log("В дальнейшем при выходе из лобби, если только 1 пользователь, удалять ее")
     // console.log("Удалять таски селери из редис")
@@ -80,6 +80,7 @@ function Lobby(props) {
                 wsResp.updateBoard(dispatch, myBoard, data.board, data.ships);
 
             } else if (data.type === "who_starts") {
+                console.log(data)
                 userId === data.user_id ?
                     wsResp.determineWhoIsTurning(dispatch, data.is_my_turn, myBoard, enemyBoard) :
                     wsResp.determineWhoIsTurning(dispatch, !data.is_my_turn, myBoard, enemyBoard);
@@ -99,7 +100,6 @@ function Lobby(props) {
                 wsResp.sendMessage(dispatch, data.message, messages);
 
             } else if (data.type === "is_play_again") {
-                console.log(data)
                 userId === data.user_id ?
                     wsResp.setIsPlayAgain(dispatch, setMyBoard, myBoard, data.is_play_again) :
                     wsResp.setIsPlayAgain(dispatch, setEnemyBoard, enemyBoard, data.is_play_again);
@@ -171,16 +171,18 @@ function Lobby(props) {
                     <span className="time-to-move" >{lobby.time_to_move}</span>
                     <FontAwesomeIcon icon={faClock}/>
                 </span>
-                <span className="enemy">
-                    {enemy && <span>
+
+                {enemy && <span className="enemy">
+                    <span>
                         <span>{enemy.username}</span>
                         <FontAwesomeIcon icon={faUser}/>
                         <div className="enemy-info">
                             <p className="info">First name: {enemy.first_name ? enemy.first_name : "None"}</p>
                             <p className="info">Last name: {enemy.last_name ? enemy.last_name : "None"}</p>
                         </div>
-                    </span>}
-                </span>
+                    </span>
+                </span>}
+
             </div>
 
             {winner ? displayGameResults() : displayRunningGame()}
@@ -194,8 +196,8 @@ function Lobby(props) {
                 <Board client={props.client} board={enemyBoard} enemyId={enemy?.id} lobbySlug={props.lobbySlug}/>
             </div>
             <Ships client={props.client} />
-            {users.length !== 2 && <div className="waiting"><i>Waiting for a enemy...</i></div>}
-            {winner &&enemyBoard.is_play_again === null && <div className="waiting-new-game">Waiting for a enemy...</div>}
+            {users.length !== 2 && <div className="waiting"><i>Waiting for an enemy...</i></div>}
+            {winner && enemyBoard.is_play_again === null && <div className="waiting-new-game">Waiting for an enemy...</div>}
         </div>
     );
 };

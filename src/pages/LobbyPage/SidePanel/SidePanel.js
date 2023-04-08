@@ -56,15 +56,15 @@ function SidePanel(props) {
 
     return (
         <div className="side-panel">
-            <Chat client={props.client} lobbyId={props.lobbyId} />
+            <Chat client={props.client} lobbyId={props.lobbyId} users={users} />
                 <div className="buttons">
                     <input id="ready-button" type="button" value="Ready" 
                         onClick={(e) => readyOnClickHandler(e)} 
-                        disabled={!winner & (!enemyBoard.is_ready || !myBoard.is_ready) & boardIsReady & timeLeft > 0 ?
-                                    false : true}/><br/>
+                        disabled={(users.length === 2 & !winner & (!enemyBoard.is_ready || !myBoard.is_ready) & 
+                            boardIsReady & timeLeft > 0 )? false : true}/>
                     <input type="button" className="random-placement" value="Random placement"
-                        disabled={!myBoard.is_ready && !winner ? false : true}
-                        onClick={(e) => randomPlacementOnClickHandler(e)} /><br/>
+                        disabled={users.length === 2 & !myBoard.is_ready && !winner ? false : true}
+                        onClick={(e) => randomPlacementOnClickHandler(e)} />
                     <input className="give-up" type="button" value="Give up"
                         id={winner && "disabled"}
                         disabled={users.length === 2 & !winner ? false : true}

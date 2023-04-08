@@ -4,8 +4,8 @@ import { setWinner, setMyBoard, setEnemyBoard, addMessage, setTimeLeft,
 export class WSResponse {
 
     takeShot(dispatch, firstMethod, secondMethod, firstBoard, secondBoard, newBoard, isMyTurn) {
-        dispatch(firstMethod(Object.assign({}, firstBoard, newBoard, {"my_turn": !isMyTurn})));
-        dispatch(secondMethod(Object.assign({}, secondBoard, {"my_turn": isMyTurn})));
+        dispatch(firstMethod(Object.assign({}, firstBoard, newBoard, {"is_my_turn": !isMyTurn})));
+        dispatch(secondMethod(Object.assign({}, secondBoard, {"is_my_turn": isMyTurn})));
     };
 
     updateBoard(dispatch, board, newBoard, ships) {
@@ -18,8 +18,8 @@ export class WSResponse {
     };
 
     determineWhoIsTurning(dispatch, isMyTurn, myBoard, enemyBoard) {
-        dispatch(setMyBoard(Object.assign({}, myBoard, {"my_turn": isMyTurn})));
-        dispatch(setEnemyBoard(Object.assign({}, enemyBoard, {"my_turn": !isMyTurn})));
+        dispatch(setMyBoard(Object.assign({}, myBoard, {"is_my_turn": isMyTurn})));
+        dispatch(setEnemyBoard(Object.assign({}, enemyBoard, {"is_my_turn": !isMyTurn})));
     };
 
     determinedWinner(dispatch, winner) {

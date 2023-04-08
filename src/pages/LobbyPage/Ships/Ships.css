@@ -1,8 +1,8 @@
 .initial-ships {
-    width: 90%;
+    width: 100%;
     height: auto;
-	margin: 10px 0px 0px 80px;
 	float: left;
+	padding-left: 11%;
 }   
 
 .initial-ships .shipBlock {

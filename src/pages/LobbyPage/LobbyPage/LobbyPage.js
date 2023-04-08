@@ -41,8 +41,8 @@ function LobbyPage(props) {
             async function setPreStates() {
                 const data = lobby.data
                 const boards = data.boards;
-                const areUsersReady = boards[0]["is_ready"] & boards[1]["is_ready"];
-                const isChoseTurn = !boards[0]["my_turn"] & !boards[1]["my_turn"];
+                // const areUsersReady = boards[0]["is_ready"] & boards[1]["is_ready"];
+                // const isChoseTurn = !boards[0]["my_turn"] & !boards[1]["my_turn"];
 
                 dispatch(defineLobbyStateAction(
                     boards[0]["user_id"] === userId ? 
@@ -53,7 +53,7 @@ function LobbyPage(props) {
                 ));
 
                 outletContext.setClient(client);
-                (areUsersReady & isChoseTurn) && sendWhoStarts(client, slug);
+                // (areUsersReady & boards[0]["is_my_turn"] & boards[1]["is_my_turn"]) && console.log("ok");
             };
 
             !isWSReady & !myBoard && setPreStates();

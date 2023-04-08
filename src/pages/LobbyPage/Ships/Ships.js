@@ -14,7 +14,7 @@ function Ships(props) {
     function replacePlaneOfShip(currentShip, ship) {
         if (ship.plane === "vertical" & (ship.name !== currentShip.name)) {
             ship.plane = "horizontal";
-            document.getElementById(`${ship.name}-vertical`).attributes.class.value = "ship";
+            document.getElementById(`${ship.name}-vertical`).attributes.class.value = "ship exists";
         };
     };
 

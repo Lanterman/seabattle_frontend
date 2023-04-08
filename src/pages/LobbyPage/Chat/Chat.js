@@ -42,8 +42,9 @@ function Chat(props) {
                 })}
             </div>
             <div className="panel">
-                <textarea id="message-input" rows="3" required />
-                <input className="send" type="button" value="send" onClick={(e) => onClickHandler(e)}/>
+                <textarea id="message-input" rows="3" required disabled={props.users.length === 2 ? false : true}/>
+                <input className="send" type="button" value="send" disabled={props.users.length === 2 ? false : true} 
+                    onClick={(e) => onClickHandler(e)}/>
             </div>
         </div>
     );
