@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLoaderData, redirect, useOutletContext, useNavigate } from "react-router-dom";
 
-import { sendWhoStarts } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import  { defineLobbyStateAction, clearState } from "../../../store/reducers/lobbyReducer";
 
 import { SidePanel } from "../SidePanel/SidePanel";
@@ -41,8 +40,6 @@ function LobbyPage(props) {
             async function setPreStates() {
                 const data = lobby.data
                 const boards = data.boards;
-                // const areUsersReady = boards[0]["is_ready"] & boards[1]["is_ready"];
-                // const isChoseTurn = !boards[0]["my_turn"] & !boards[1]["my_turn"];
 
                 dispatch(defineLobbyStateAction(
                     boards[0]["user_id"] === userId ? 
@@ -53,7 +50,6 @@ function LobbyPage(props) {
                 ));
 
                 outletContext.setClient(client);
-                // (areUsersReady & boards[0]["is_my_turn"] & boards[1]["is_my_turn"]) && console.log("ok");
             };
 
             !isWSReady & !myBoard && setPreStates();
@@ -66,13 +62,13 @@ function LobbyPage(props) {
         client.close();
         outletContext.setClient(null);
         dispatch(clearState());
-    }
+    };
 
     return client ? 
         (isWSReady && myBoard ? (
             <div>
                 <div className="main-page">
-                    {<Lobby lobby={lobby.data} client={client} lobbySlug={slug} />}
+                    {<Lobby lobby={lobby.data} client={client} lobbySlug={slug} navigate={navigate} />}
                 </div>
                 <SidePanel client={client} lobbySlug={slug} lobbyId={lobby.data.id}/>
             </div>

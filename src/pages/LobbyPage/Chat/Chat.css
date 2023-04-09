@@ -8,6 +8,11 @@
     overflow: auto;
 }
 
+.bot-message {
+    font-size: 19px;
+    color: rgb(35, 18, 192);
+}
+
 .last-message-of-day {
     float: left;
     padding: 6px 15px;

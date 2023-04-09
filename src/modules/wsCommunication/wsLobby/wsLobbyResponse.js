@@ -18,8 +18,9 @@ export class WSResponse {
     };
 
     determineWhoIsTurning(dispatch, isMyTurn, myBoard, enemyBoard) {
-        dispatch(setMyBoard(Object.assign({}, myBoard, {"is_my_turn": isMyTurn})));
-        dispatch(setEnemyBoard(Object.assign({}, enemyBoard, {"is_my_turn": !isMyTurn})));
+        isMyTurn ? 
+            dispatch(setMyBoard(Object.assign({}, myBoard, {"is_my_turn": isMyTurn}))) :
+            dispatch(setEnemyBoard(Object.assign({}, enemyBoard, {"is_my_turn": !isMyTurn})));
     };
 
     determinedWinner(dispatch, winner) {

@@ -85,7 +85,7 @@
 .enemy:hover .enemy-info {display: block;}
 /* dropdown */
 
-.waiting {
+.waiting, .waiting-new-game {
     z-index: 998;
     font-size: 25px;
     position: fixed;
@@ -96,17 +96,9 @@
     margin-top: -21.8%;
 }
 
-.waiting i {
+.waiting i, .waiting-new-game i {
     margin-top: 60%;
     width: 100%;
     text-align: center;
     position: absolute;
-}
-
-.waiting-new-game {
-    position: fixed;
-    margin-top: 20%;
-    margin: 10% 22%;
-    background-color: aqua;
-
 }

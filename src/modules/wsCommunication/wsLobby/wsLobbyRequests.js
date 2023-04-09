@@ -74,9 +74,10 @@ export function sendTimeIsOver(client, BoardId, ships, board) {
     }));
 };
 
-export function sendAddUserToGame(client, boardId) {
+export function sendAddUserToGame(client, lobbyId, boardId) {
     client.send(JSON.stringify({
-        type: "add_user_to_game", 
+        type: "add_user_to_game",
+        lobby_id: lobbyId,
         board_id: boardId,
     }));
 };
@@ -89,9 +90,10 @@ export function sendMessage(client, lobbyId, message) {
     }));
 };
 
-export function sendPlayAgain(client, boardId, answer) {
+export function sendPlayAgain(client, lobbyId, boardId, answer) {
     client.send(JSON.stringify({
         type: "is_play_again",
+        lobby_id: lobbyId,
         board_id: boardId,
         answer: answer,
     }))

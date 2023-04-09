@@ -5,7 +5,8 @@ import { faDollar,  faClock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { timer, createBoardVariable } from "../../../modules/services";
 import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResponse";
-import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeLeft } from "../../../store/reducers/lobbyReducer";
+import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeLeft, 
+    clearState } from "../../../store/reducers/lobbyReducer";
 import { sendWhoStarts, sendDetermineWinner, sendCountDownTimer, sendTimeIsOver, sendPlayAgain,
     sendAddUserToGame } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 
@@ -31,7 +32,11 @@ function Lobby(props) {
     const wsResp = new WSResponse();
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
     // console.log("Проверить почему иногда закрытие вебсокета с ошибкой 1006")
-    // console.log("Доделать CSS ожидания ответа противника, если оба согласны - создать и перенаправить на новую, иначе ничего")
+
+    // console.log("Предложение о повторной игре: если оба согласны - создать и перенаправить на новую, иначе ничего")
+    // console.log("Объеденить ответы сокетов в один для каждого события, так как мб не успевает он обрабатывать или слишком много состояний")
+    // console.log("Некорректно срабатывает сообщение о конекте игрока - иногда 2 сообщения")
+    // console.log(" выбор хода - вроде решил, предложение о повторной игре не всегда выскакивает")
     // console.log("Потом тесты")
 
     // console.log("В дальнейшем при выходе из лобби, если только 1 пользователь, удалять ее")
@@ -39,12 +44,16 @@ function Lobby(props) {
 
     useEffect(() => {
         const countdown = users.length === 2 & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
-        if (winner && myBoard.is_play_again === null) {
+        if (!timer.isAnswered && winner && myBoard.is_play_again === null) {
+            console.log(!timer.isAnswered && winner && myBoard.is_play_again === null, "play again")
             const answer = window.confirm("Do you want to play again?");
-            sendPlayAgain(props.client, myBoard.id, answer);
+            sendPlayAgain(props.client, lobby.id, myBoard.id, answer);
+            timer.isAnswered = true;
         };
-        if (users.length === 1 & users[0].id !== userId) sendAddUserToGame(props.client, myBoard.id);
-        if (!timer.timeIsOver & timeLeft <= 0) timeIsOver(typeAction, enemy.id, myBoard);
+
+        if (users.length === 1 && users[0].id !== userId) sendAddUserToGame(props.client, lobby.id, myBoard.id);
+
+        if (!timer.isTimeIsOver && timeLeft <= 0) timeIsOver(typeAction, enemy.id, myBoard);
 
         props.client.onmessage = (e) => {
             const data = JSON.parse(e.data);
@@ -69,7 +78,8 @@ function Lobby(props) {
                     wsResp.setIsReadyToPlay(dispatch, setEnemyBoard, enemyBoard, data.is_ready);
                 if (myBoard.is_ready & enemyBoard.is_ready) {
                     dispatch(setTimeLeft(lobby.time_to_move));
-                    timer.timeIsOver = false;
+                    timer.isTimeIsOver = false;
+                    console.log(data, userId, "who start")
                     if (data.user_id === userId) {
                         sendWhoStarts(props.client);
                         sendCountDownTimer(props.client, lobby.time_to_move);
@@ -92,9 +102,16 @@ function Lobby(props) {
                 wsResp.setTimeLeft(dispatch, data.time_left);
 
             } else if (data.type === "add_user_to_game") {
-                userId === data.user.id ?
-                    wsResp.addUserToGame(dispatch, setMyBoard, myBoard, data.user, users) :
-                    wsResp.addUserToGame(dispatch, setEnemyBoard, enemyBoard, data.user, users);
+                console.log(data, userId, "user connected")
+                if (data.user) {
+                    userId === data.user.id ?
+                        wsResp.addUserToGame(dispatch, setMyBoard, myBoard, data.user, users) :
+                        wsResp.addUserToGame(dispatch, setEnemyBoard, enemyBoard, data.user, users);
+                } else {
+                    props.client.close();
+                    dispatch(clearState());
+                    props.navigate("/lobbies/");
+                };
 
             } else if (data.type === "send_message") {
                 wsResp.sendMessage(dispatch, data.message, messages);
@@ -126,17 +143,17 @@ function Lobby(props) {
             if (!myBoard.is_ready) {
                 const board = createBoardVariable(myBoard);
                 sendTimeIsOver(props.client, myBoard.id, myBoard.ships, board);
-                timer.timeIsOver = true;
+                timer.isTimeIsOver = true;
             };
         };
     };
 
     function countDownTimer() {
-        if (timer.countdownHasStarted) {
+        if (timer.isCountdownHasStarted) {
             dispatch(setTimeLeft(timeLeft - 1));
         } else {
             sendCountDownTimer(props.client);
-            timer.countdownHasStarted = true;
+            timer.isCountdownHasStarted = true;
         };
     };
 
@@ -196,8 +213,10 @@ function Lobby(props) {
                 <Board client={props.client} board={enemyBoard} enemyId={enemy?.id} lobbySlug={props.lobbySlug}/>
             </div>
             <Ships client={props.client} />
+
             {users.length !== 2 && <div className="waiting"><i>Waiting for an enemy...</i></div>}
-            {winner && enemyBoard.is_play_again === null && <div className="waiting-new-game">Waiting for an enemy...</div>}
+            {winner && enemyBoard.is_play_again === null && 
+                <div className="waiting"><i>Waiting for an enemy...</i></div>}
         </div>
     );
 };

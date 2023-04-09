@@ -34,6 +34,7 @@ function Chat(props) {
 
                             <div
                                 className={username === message.owner ? "right-block-message" : "left-block-message"}>
+                                {message.is_bot && <p className="bot-message">Bot</p>}
                                 <p className="message">{message.message}</p>
                                 <i className="created-in">{time.slice(0, 5)}</i>
                             </div>
