@@ -35,7 +35,7 @@ function Lobby(props) {
 
     // console.log("Предложение о повторной игре: если оба согласны - создать и перенаправить на новую, иначе ничего")
     // console.log("Потом тесты")
-    console.log("Ответы сокетов соеденить в один - добавить пользователя и ответ")
+    
     // console.log("В дальнейшем при выходе из лобби, если только 1 пользователь, удалять ее")
     // console.log("Удалять таски селери из редис")
 
@@ -70,6 +70,9 @@ function Lobby(props) {
 
             } else if (data.type === "clear_board") {
                 wsResp.updateBoard(dispatch, myBoard, data.board, data.ships);
+            
+            } else if (data.type === "random_placed") {
+                wsResp.updateBoard(dispatch, myBoard, data.board, data.ships);
 
             } else if (data.type === "is_ready_to_play") {
                 userId === data.user_id ?
@@ -84,9 +87,6 @@ function Lobby(props) {
                     };
                 };
 
-            } else if (data.type === "random_placed") {
-                wsResp.updateBoard(dispatch, myBoard, data.board, data.ships);
-
             } else if (data.type === "who_starts") {
                 userId === data.user_id ?
                     wsResp.determineWhoIsTurning(dispatch, data.is_my_turn, myBoard, enemyBoard) :
@@ -100,6 +100,7 @@ function Lobby(props) {
 
             } else if (data.type === "add_user_to_game") {
                 if (data.user) {
+                    wsResp.sendMessage(dispatch, data.message, messages);
                     userId === data.user.id ?
                         wsResp.addUserToGame(dispatch, setMyBoard, myBoard, data.user, users) :
                         wsResp.addUserToGame(dispatch, setEnemyBoard, enemyBoard, data.user, users);
@@ -113,7 +114,7 @@ function Lobby(props) {
                 wsResp.sendMessage(dispatch, data.message, messages);
 
             } else if (data.type === "is_play_again") {
-                console.log(data)
+                wsResp.sendMessage(dispatch, data.message, messages);
                 if (userId === data.user_id) {
                     wsResp.setIsPlayAgain(dispatch, setMyBoard, myBoard, data.is_play_again);
                     console.log(myBoard.is_play_again, enemyBoard.is_play_again)
