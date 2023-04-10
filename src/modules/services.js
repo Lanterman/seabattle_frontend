@@ -5,6 +5,7 @@ export let timer = {
     _isCountdownHasStarted: false,
     _isTimeIsOver: false,
     _isAnswered: false,
+    _isEnemyConnected: false,
 
     get isCountdownHasStarted() {
         return this._isCountdownHasStarted;
@@ -28,6 +29,14 @@ export let timer = {
 
     set isAnswered(value) {
         this._isAnswered = value;
+    },
+
+    get isEnemyConnected() {
+        return this._isEnemyConnected;
+    },
+
+    set isEnemyConnected(value) {
+        this._isEnemyConnected = value;
     }
 };
 

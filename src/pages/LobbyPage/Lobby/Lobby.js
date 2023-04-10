@@ -27,31 +27,30 @@ function Lobby(props) {
     const messages = useSelector(state => state.lobby.messages);
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
     const isCanPutShip = useSelector(state => state.lobby.isCanPutShip);
-    const enemy = users[0]["id"] === userId ? users[1] : users[0];
+    const [me, enemy] = users[0]["id"] === userId ? [users[0], users[1]] : [users[1], users[0]];
     const typeAction = myBoard.is_ready & enemyBoard.is_ready ? "turn" : "placement";
     const wsResp = new WSResponse();
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
     // console.log("Проверить почему иногда закрытие вебсокета с ошибкой 1006")
 
     // console.log("Предложение о повторной игре: если оба согласны - создать и перенаправить на новую, иначе ничего")
-    // console.log("Объеденить ответы сокетов в один для каждого события, так как мб не успевает он обрабатывать или слишком много состояний")
-    // console.log("Некорректно срабатывает сообщение о конекте игрока - иногда 2 сообщения")
-    // console.log(" выбор хода - вроде решил, предложение о повторной игре не всегда выскакивает")
     // console.log("Потом тесты")
-
+    console.log("Ответы сокетов соеденить в один - добавить пользователя и ответ")
     // console.log("В дальнейшем при выходе из лобби, если только 1 пользователь, удалять ее")
     // console.log("Удалять таски селери из редис")
 
     useEffect(() => {
         const countdown = users.length === 2 & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
         if (!timer.isAnswered && winner && myBoard.is_play_again === null) {
-            console.log(!timer.isAnswered && winner && myBoard.is_play_again === null, "play again")
             const answer = window.confirm("Do you want to play again?");
             sendPlayAgain(props.client, lobby.id, myBoard.id, answer);
             timer.isAnswered = true;
         };
 
-        if (users.length === 1 && users[0].id !== userId) sendAddUserToGame(props.client, lobby.id, myBoard.id);
+        if (!timer.isEnemyConnected && users.length === 1 && me?.id !== userId) {
+            sendAddUserToGame(props.client, lobby.id, !enemyBoard.user_id ? enemyBoard.id: myBoard.id);
+            timer.isEnemyConnected = true;
+        };
 
         if (!timer.isTimeIsOver && timeLeft <= 0) timeIsOver(typeAction, enemy.id, myBoard);
 
@@ -79,7 +78,6 @@ function Lobby(props) {
                 if (myBoard.is_ready & enemyBoard.is_ready) {
                     dispatch(setTimeLeft(lobby.time_to_move));
                     timer.isTimeIsOver = false;
-                    console.log(data, userId, "who start")
                     if (data.user_id === userId) {
                         sendWhoStarts(props.client);
                         sendCountDownTimer(props.client, lobby.time_to_move);
@@ -90,7 +88,6 @@ function Lobby(props) {
                 wsResp.updateBoard(dispatch, myBoard, data.board, data.ships);
 
             } else if (data.type === "who_starts") {
-                console.log(data)
                 userId === data.user_id ?
                     wsResp.determineWhoIsTurning(dispatch, data.is_my_turn, myBoard, enemyBoard) :
                     wsResp.determineWhoIsTurning(dispatch, !data.is_my_turn, myBoard, enemyBoard);
@@ -102,7 +99,6 @@ function Lobby(props) {
                 wsResp.setTimeLeft(dispatch, data.time_left);
 
             } else if (data.type === "add_user_to_game") {
-                console.log(data, userId, "user connected")
                 if (data.user) {
                     userId === data.user.id ?
                         wsResp.addUserToGame(dispatch, setMyBoard, myBoard, data.user, users) :
@@ -117,9 +113,13 @@ function Lobby(props) {
                 wsResp.sendMessage(dispatch, data.message, messages);
 
             } else if (data.type === "is_play_again") {
-                userId === data.user_id ?
-                    wsResp.setIsPlayAgain(dispatch, setMyBoard, myBoard, data.is_play_again) :
+                console.log(data)
+                if (userId === data.user_id) {
+                    wsResp.setIsPlayAgain(dispatch, setMyBoard, myBoard, data.is_play_again);
+                    console.log(myBoard.is_play_again, enemyBoard.is_play_again)
+                } else {
                     wsResp.setIsPlayAgain(dispatch, setEnemyBoard, enemyBoard, data.is_play_again);
+                };
             };
         };
         return () => clearInterval(countdown);
