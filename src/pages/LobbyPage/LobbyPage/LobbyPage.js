@@ -68,7 +68,8 @@ function LobbyPage(props) {
         (isWSReady && myBoard ? (
             <div>
                 <div className="main-page">
-                    {<Lobby lobby={lobby.data} client={client} lobbySlug={slug} navigate={navigate} />}
+                    {<Lobby lobby={lobby.data} client={client} lobbySlug={slug} navigate={navigate} 
+                        setIsWSReady={setIsWSReady}/>}
                 </div>
                 <SidePanel client={client} lobbySlug={slug} lobbyId={lobby.data.id}/>
             </div>

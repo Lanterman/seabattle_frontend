@@ -7,7 +7,7 @@ import { timer, createBoardVariable } from "../../../modules/services";
 import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResponse";
 import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeLeft, 
     clearState } from "../../../store/reducers/lobbyReducer";
-import { sendWhoStarts, sendDetermineWinner, sendCountDownTimer, sendTimeIsOver, sendPlayAgain,
+import { sendWhoStarts, sendDetermineWinner, sendCountDownTimer, sendTimeIsOver, sendPlayAgain, sendCreateNewGame,
     sendAddUserToGame } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 
 import { Board } from "../Board/Board";
@@ -33,14 +33,16 @@ function Lobby(props) {
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
     // console.log("Проверить почему иногда закрытие вебсокета с ошибкой 1006")
 
-    // console.log("Предложение о повторной игре: если оба согласны - создать и перенаправить на новую, иначе ничего")
+    console.log("Почему-то пользователь к доске не цепляется, не является хозяеном")
+    console.log("Выскакивает ошибка при авто переходе в новую игру.")
     // console.log("Потом тесты")
-    
+
     // console.log("В дальнейшем при выходе из лобби, если только 1 пользователь, удалять ее")
     // console.log("Удалять таски селери из редис")
 
     useEffect(() => {
         const countdown = users.length === 2 & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
+
         if (!timer.isAnswered && winner && myBoard.is_play_again === null) {
             const answer = window.confirm("Do you want to play again?");
             sendPlayAgain(props.client, lobby.id, myBoard.id, answer);
@@ -54,6 +56,12 @@ function Lobby(props) {
 
         if (!timer.isTimeIsOver && timeLeft <= 0) timeIsOver(typeAction, enemy.id, myBoard);
 
+        if (timer.isAnswered && myBoard.is_play_again && enemyBoard.is_play_again && users[0]?.id === userId) {
+            sendCreateNewGame(props.client, lobby.bet, lobby.name, lobby.time_to_move, lobby.time_to_placement, 
+                users[1].id);
+                timer.isAnswered = false;
+        };
+
         props.client.onmessage = (e) => {
             const data = JSON.parse(e.data);
 
@@ -65,13 +73,7 @@ function Lobby(props) {
                     sendDetermineWinner(props.client);
                 };
 
-            } else if (data.type === "drop_ship") {
-                wsResp.updateBoard(dispatch, myBoard, data.board, data.ships);
-
-            } else if (data.type === "clear_board") {
-                wsResp.updateBoard(dispatch, myBoard, data.board, data.ships);
-            
-            } else if (data.type === "random_placed") {
+            } else if (["drop_ship", "clear_board", "random_placed"].includes(data.type)) {
                 wsResp.updateBoard(dispatch, myBoard, data.board, data.ships);
 
             } else if (data.type === "is_ready_to_play") {
@@ -115,12 +117,15 @@ function Lobby(props) {
 
             } else if (data.type === "is_play_again") {
                 wsResp.sendMessage(dispatch, data.message, messages);
-                if (userId === data.user_id) {
-                    wsResp.setIsPlayAgain(dispatch, setMyBoard, myBoard, data.is_play_again);
-                    console.log(myBoard.is_play_again, enemyBoard.is_play_again)
-                } else {
+                userId === data.user_id ?
+                    wsResp.setIsPlayAgain(dispatch, setMyBoard, myBoard, data.is_play_again) :
                     wsResp.setIsPlayAgain(dispatch, setEnemyBoard, enemyBoard, data.is_play_again);
-                };
+
+            } else if(data.type === "new_group") {
+                props.client.close();
+                dispatch(clearState());
+                dispatch(props.setIsWSReady(false));
+                setTimeout(() => props.navigate(`/lobbies/${data.lobby_slug}/`), 1000);
             };
         };
         return () => clearInterval(countdown);
@@ -218,6 +223,7 @@ function Lobby(props) {
             {users.length !== 2 && <div className="waiting"><i>Waiting for an enemy...</i></div>}
             {winner && enemyBoard.is_play_again === null && 
                 <div className="waiting"><i>Waiting for an enemy...</i></div>}
+            
         </div>
     );
 };
