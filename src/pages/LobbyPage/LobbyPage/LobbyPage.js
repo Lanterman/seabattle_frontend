@@ -38,15 +38,21 @@ function LobbyPage(props) {
             };
 
             async function setPreStates() {
-                const data = lobby.data
+                const data = lobby.data;
                 const boards = data.boards;
 
                 dispatch(defineLobbyStateAction(
-                    boards[0]["user_id"] === userId ? 
-                        {myBoard: boards[0], enemyBoard: boards[1], winner: data.winner, timeLeft: data.time_left,
-                            timeToMove: data.time_to_move, users: data.users, messages: data.messages} :
-                        {myBoard: boards[1], enemyBoard: boards[0], winner: data.winner, timeLeft: data.time_left,
-                            timeToMove: data.time_to_move, users: data.users, messages: data.messages}
+                    boards[0].user_id ?
+                        (boards[0].user_id === userId ?
+                            {myBoard: boards[0], enemyBoard: boards[1], winner: data.winner, timeLeft: data.time_left,
+                                timeToMove: data.time_to_move, users: data.users, messages: data.messages} :
+                            {myBoard: boards[1], enemyBoard: boards[0], winner: data.winner, timeLeft: data.time_left,
+                                timeToMove: data.time_to_move, users: data.users, messages: data.messages}) :
+                        (boards[1].user_id === userId ?
+                            {myBoard: boards[1], enemyBoard: boards[0], winner: data.winner, timeLeft: data.time_left,
+                                timeToMove: data.time_to_move, users: data.users, messages: data.messages} :
+                            {myBoard: boards[0], enemyBoard: boards[1], winner: data.winner, timeLeft: data.time_left,
+                                timeToMove: data.time_to_move, users: data.users, messages: data.messages})
                 ));
 
                 outletContext.setClient(client);

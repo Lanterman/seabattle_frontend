@@ -32,8 +32,8 @@ export class WSResponse {
     };
 
     addUserToGame(dispatch, method, board, user, users) {
-        dispatch(addUserToLobby([...users, user]))
         dispatch(method(Object.assign({}, board, {user_id: user.id})));
+        dispatch(addUserToLobby([...users, user]));
     };
 
     sendMessage(dispatch, message, messages) {
