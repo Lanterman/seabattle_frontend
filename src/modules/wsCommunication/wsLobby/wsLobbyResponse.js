@@ -3,8 +3,9 @@ import { setWinner, setMyBoard, setEnemyBoard, addMessage, setTimeLeft,
 
 export class WSResponse {
 
-    takeShot(dispatch, firstMethod, secondMethod, firstBoard, secondBoard, newBoard, isMyTurn) {
-        dispatch(firstMethod(Object.assign({}, firstBoard, newBoard, {"is_my_turn": !isMyTurn})));
+    takeShot(dispatch, firstMethod, secondMethod, firstBoard, secondBoard, fieldNameDict, isMyTurn) {
+        Object.keys(fieldNameDict).map((fieldName) => firstBoard[fieldName[0]][fieldName] = fieldNameDict[fieldName]);
+        dispatch(firstMethod(Object.assign({}, firstBoard, {"is_my_turn": !isMyTurn})));
         dispatch(secondMethod(Object.assign({}, secondBoard, {"is_my_turn": isMyTurn})));
     };
 

@@ -30,7 +30,6 @@ function Lobby(props) {
     const [me, enemy] = users[0]["id"] === userId ? [users[0], users[1]] : [users[1], users[0]];
     const typeAction = myBoard.is_ready & enemyBoard.is_ready ? "turn" : "placement";
     const wsResp = new WSResponse();
-    // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
     // console.log("Проверить почему иногда закрытие вебсокета с ошибкой 1006")
     // console.log("Удалять таски селери из редис")
 
@@ -66,8 +65,10 @@ function Lobby(props) {
 
             if (data.type === "send_shot") {
                 userId === data.user_id ?
-                    wsResp.takeShot(dispatch, setEnemyBoard, setMyBoard, enemyBoard, myBoard, data.board, data.is_my_turn) :
-                    wsResp.takeShot(dispatch, setMyBoard, setEnemyBoard, myBoard, enemyBoard, data.board, data.is_my_turn);
+                    wsResp.takeShot(dispatch, setEnemyBoard, setMyBoard, enemyBoard, myBoard, 
+                        data.field_name_dict, data.is_my_turn) :
+                    wsResp.takeShot(dispatch, setMyBoard, setEnemyBoard, myBoard, enemyBoard, 
+                        data.field_name_dict, data.is_my_turn);
                 if (userId === data.user_id && data.enemy_ships === 0) {
                     sendDetermineWinner(props.client);
                 };
