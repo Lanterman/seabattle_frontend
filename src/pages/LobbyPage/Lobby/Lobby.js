@@ -32,15 +32,15 @@ function Lobby(props) {
     const wsResp = new WSResponse();
     // console.log("выводится информация о поле противника в инструменте разработчика, пофиксить это, мб выводить не доску, а поля")
     // console.log("Проверить почему иногда закрытие вебсокета с ошибкой 1006")
+    // console.log("Удалять таски селери из редис")
 
-    // console.log("Выскакивает ошибка при авто переходе в новую игру.")
     // console.log("Потом тесты")
 
     // console.log("В дальнейшем при выходе из лобби, если только 1 пользователь, удалять ее")
-    // console.log("Удалять таски селери из редис")
+    // console.log("Переработать переход на новую игру при обоюдном согласии о еще партии, временно перезагружает страницу")
 
     useEffect(() => {
-        const countdown = users.length === 2 & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
+        const countdown = users.length === 2 & timeLeft > 30 & !winner && setInterval(() => countDownTimer(), 1000);
 
         if (!timer.isAnswered && winner && myBoard.is_play_again === null) {
             const answer = window.confirm("Do you want to play again?");
@@ -120,11 +120,8 @@ function Lobby(props) {
                     wsResp.setIsPlayAgain(dispatch, setMyBoard, myBoard, data.is_play_again) :
                     wsResp.setIsPlayAgain(dispatch, setEnemyBoard, enemyBoard, data.is_play_again);
 
-            } else if(data.type === "new_group") {
-                props.client.close();
-                dispatch(clearState());
-                dispatch(props.setIsWSReady(false));
-                setTimeout(() => props.navigate(`/lobbies/${data.lobby_slug}/`), 1000);
+            } else if (data.type === "new_group") {
+                setTimeout(() => document.location.href = `/lobbies/${data.lobby_slug}/`, 1000);
             };
         };
         return () => clearInterval(countdown);

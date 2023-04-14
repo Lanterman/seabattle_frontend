@@ -11,11 +11,12 @@ function Column(props) {
     const timeToMove = useSelector(state => state.lobby.timeToMove)
     const currentShip = useSelector(state => state.lobby.currentShip);
     const isMyTurn = useSelector(state => state.lobby.myBoard).is_my_turn;
+    const myBoardId = useSelector(state => state.lobby.myBoard).id; 
     const isEnemyBoard = !props.isMyBoard && true;
 
     function takeShot(e) {
         const fieldName = e.target.attributes.name.value;
-        sendShot(props.client, props.boardId, fieldName, timeToMove);
+        sendShot(props.client, props.boardId, myBoardId, fieldName, timeToMove);
     };
 
     function dropHandler(e, fieldName) {

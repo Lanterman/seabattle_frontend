@@ -19,10 +19,11 @@ export function sendPutShip(client, shipId, boardId, plane, shipCount, fieldName
     }));
 };
 
-export function sendShot(client, boardId, fieldName, timeToMove) {
+export function sendShot(client, boardId, myBoardId, fieldName, timeToMove) {
     client.send(JSON.stringify({
         type: "take_shot",
         board_id: boardId,
+        my_board_id: myBoardId,
         field_name: fieldName,
         time_to_turn: timeToMove
     }));
