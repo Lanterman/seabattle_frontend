@@ -31,7 +31,6 @@ function Lobby(props) {
     const typeAction = myBoard.is_ready & enemyBoard.is_ready ? "turn" : "placement";
     const wsResp = new WSResponse();
     // console.log("Проверить почему иногда закрытие вебсокета с ошибкой 1006")
-    // console.log("Удалять таски селери из редис")
 
     // console.log("Потом тесты")
 
@@ -39,7 +38,7 @@ function Lobby(props) {
     // console.log("Переработать переход на новую игру при обоюдном согласии о еще партии, временно перезагружает страницу")
 
     useEffect(() => {
-        const countdown = users.length === 2 & timeLeft > 30 & !winner && setInterval(() => countDownTimer(), 1000);
+        const countdown = users.length === 2 & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
 
         if (!timer.isAnswered && winner && myBoard.is_play_again === null) {
             const answer = window.confirm("Do you want to play again?");
@@ -69,6 +68,9 @@ function Lobby(props) {
                         data.field_name_dict, data.is_my_turn) :
                     wsResp.takeShot(dispatch, setMyBoard, setEnemyBoard, myBoard, enemyBoard, 
                         data.field_name_dict, data.is_my_turn);
+                
+                wsResp.setTimeLeft(dispatch, data.time_left);
+
                 if (userId === data.user_id && data.enemy_ships === 0) {
                     sendDetermineWinner(props.client);
                 };
