@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLoaderData, redirect, useOutletContext, useNavigate } from "react-router-dom";
 
+import { timer } from "../../../modules/services";
 import  { defineLobbyStateAction, clearState } from "../../../store/reducers/lobbyReducer";
 
 import { SidePanel } from "../SidePanel/SidePanel";
@@ -31,6 +32,10 @@ function LobbyPage(props) {
             client.onopen = (e) => {
                 console.log("Websocket started");
                 setIsWSReady(!!client.readyState);
+            };
+
+            client.onclose = (e) => {
+                timer.isAnswered = false;
             };
 
             client.onerror = (e) => {

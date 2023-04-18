@@ -30,9 +30,8 @@ function Lobby(props) {
     const [me, enemy] = users[0]["id"] === userId ? [users[0], users[1]] : [users[1], users[0]];
     const typeAction = myBoard.is_ready & enemyBoard.is_ready ? "turn" : "placement";
     const wsResp = new WSResponse();
-    // console.log("Проверить почему иногда закрытие вебсокета с ошибкой 1006")
 
-    // console.log("Потом тесты")
+    // console.log("удалять селери таску при новом ходе и все данные с редиса о данной игре при победителе")
 
     // console.log("В дальнейшем при выходе из лобби, если только 1 пользователь, удалять ее")
     // console.log("Переработать переход на новую игру при обоюдном согласии о еще партии, временно перезагружает страницу")
@@ -53,10 +52,9 @@ function Lobby(props) {
 
         if (!timer.isTimeIsOver && timeLeft <= 0) timeIsOver(typeAction, enemy.id, myBoard);
 
-        if (timer.isAnswered && myBoard.is_play_again && enemyBoard.is_play_again && users[0]?.id === userId) {
+        if (timer.isAnswered && myBoard.is_play_again && enemyBoard.is_play_again && winner === me.username) {
             sendCreateNewGame(props.client, lobby.bet, lobby.name, lobby.time_to_move, lobby.time_to_placement, 
-                users[1].id);
-                timer.isAnswered = false;
+                enemy.id);
         };
 
         props.client.onmessage = (e) => {
