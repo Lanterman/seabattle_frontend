@@ -1,0 +1,73 @@
+#dialog {
+    background-color: rgb(231, 234, 243);
+    border: 1px solid rgb(204, 198, 198);
+    width: 80%;
+    height: 400px;
+    margin: 0px 15% 10px 5%;
+    resize: none;
+    overflow: auto;
+}
+
+.bot-message {
+    font-size: 19px;
+    color: rgb(35, 18, 192);
+}
+
+.last-message-of-day {
+    float: left;
+    padding: 6px 15px;
+    border-radius: 45%;
+    text-align: center;
+    margin: 20px 38% -5px 38%;
+    background-color: rgb(222, 225, 233);
+}
+
+.left-block-message {
+    float: left;
+    padding: 10px;
+    border-radius: 10%;
+    margin: 5px 35% 5px 5px;
+    background-color: rgb(164, 204, 204);
+}
+
+.right-block-message {
+    float: right;
+    padding: 10px;
+    border-radius: 10%;
+    margin: 5px 5px 5px 35%;
+    background-color: rgb(122, 191, 212);
+}
+
+#dialog .message {
+    word-break: break-all;
+    font-size: 18px;
+    float: left;
+}
+
+.created-in {
+    float: right;
+    font-size: 15px;
+    margin: 8px 0px 0px 10px;
+}
+
+.panel {
+    width: 80%;
+    height: 66px;
+    margin: 0px 15% 10px 5%;
+}
+
+#message-input {
+    resize: none;
+    width: 80%;
+    font-size: 15px;
+    padding: 5px;
+
+}
+
+.send {
+    position: absolute;
+    float: right;
+    font-size: 15px;
+    padding: 3px 15px;
+    margin: 39px 0 10px 5px;
+}

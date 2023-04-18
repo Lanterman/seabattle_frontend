@@ -1,0 +1,86 @@
+.battlefield {
+    float: left;
+    width: 404px;
+	height: 450px;
+	margin: 20px 0px 0px 70px;
+}
+
+.table-name {
+    text-align: center;
+    margin: 0px 0px 30px 30px;
+    font-size: 20px;
+}
+
+#enemy-table {
+    color: rgb(209, 58, 58);
+}
+
+.battlefield #refresh-table, .battlefield #wait {
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.battlefield #wait {
+    color: gray;
+}
+
+.battlefield .refresh-button {
+    background: none;
+    border: none;
+    margin: 0px 0px -5px -22px;
+    padding: 5px 13px 3px 10px;
+}
+
+.columns-name {
+    margin-left: 33px;
+    width: 371px;
+    height: 23px;
+}
+
+.column-name {
+    float: left;
+    text-align: center;
+    font-size: 18px;
+    width: 37px;
+    height: 23px;
+}
+
+.fields-name {
+    margin-top: 9px;
+    padding-right: 10px;
+    float: left;
+    width: 20px;
+    height: 365px;
+}
+
+.field-name {
+    float: left;
+    width: 20px;
+    height: 37px;
+    text-align: right;
+    font-size: 18px;
+}
+
+.game-fields {
+    margin-left: 30px;
+    width: 370px;
+    height: 370px;
+}
+
+.battlefield #enemy-turn {
+    border: 2px solid;
+}
+
+.battlefield #my-turn {
+    border: 2px solid rgb(21, 240, 21);
+}
+
+.ready {
+    color: rgb(47, 255, 57);
+    margin-left: 10px;
+}
+
+.nready {
+    color: rgb(190, 147, 149);
+    margin-left: 10px;
+}

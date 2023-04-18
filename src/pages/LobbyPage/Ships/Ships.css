@@ -1,0 +1,75 @@
+.initial-ships {
+    width: 100%;
+    height: auto;
+	float: left;
+	padding-left: 11%;
+}   
+
+.initial-ships .shipBlock {
+	display: inline-block;
+	margin-top: 8%;
+}
+
+.initial-ships .ship-label {
+	margin-left: 10px;
+	font-size: 19px;
+}
+
+.initial-ships .exists {
+	background-color: #4382f7;
+}
+
+.initial-ships .does-not-exists, .initial-ships .action {
+	background-color: #b7b9c7;
+}
+
+.initial-ships .not-put {
+	background-color: red;
+}
+
+.initial-ships .ship {
+	cursor: grab;
+	border: 1px solid black;
+	float: left;
+	margin: -8px 0px 0px 30px;
+}
+
+.initial-ships #fourdeck {
+	width: 144px;
+	height: 37px;
+}
+
+.initial-ships #tripledeck {
+	width: 111px;
+	height: 37px;
+}
+
+.initial-ships #doubledeck {
+	width: 74px;
+	height: 37px;
+}
+
+.initial-ships #singledeck {
+	width: 37px;
+	height: 37px;
+}
+
+.initial-ships #fourdeck-vertical  {
+	width: 37px;
+	height: 144px;
+}
+
+.initial-ships #tripledeck-vertical  {
+	width: 37px;
+	height: 111px;
+}
+
+.initial-ships #doubledeck-vertical {
+	width: 37px;
+	height: 74px;
+}
+
+.initial-ships #singledeck-vertical  {
+	width: 37px;
+	height: 37px;
+}
