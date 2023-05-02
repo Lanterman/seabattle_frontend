@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShip } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from "react-redux";
 
-import { sendDetermineWinner, sendCountDownTimer } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
-import { clearState } from "../../../store/reducers/lobbyReducer";
+import { sendDetermineWinner, sendCountDownTimer } from "../../modules/wsCommunication/wsLobby/wsLobbyRequests"
+import { clearState } from "../../store/reducers/lobbyReducer";
 
 import "./Header.css";
 

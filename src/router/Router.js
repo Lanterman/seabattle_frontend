@@ -1,7 +1,7 @@
 import { Route, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
 
-import Layout from "../pages/BasePage/Layout/Layout";
-import NotFoundPage from "../pages/BasePage/NotFoundPage/NotFoundPage";
+import Layout from "../components/Layout/Layout";
+import NotFoundPage from "../components/NotFoundPage/NotFoundPage";
 
 import { LoginPage } from "../pages/LoginPage/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage/RegisterPage";
