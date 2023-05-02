@@ -66,7 +66,7 @@ function SidePanel(props) {
                         disabled={users.length === 2 & !myBoard.is_ready && !winner ? false : true}
                         onClick={(e) => randomPlacementOnClickHandler(e)} />
                     <input className="give-up" type="button" value="Give up"
-                        disabled={users.length === 2 & !winner ? false : true}
+                        disabled={users.length === 2 & !winner && enemyBoard.user_id ? false : true}
                         onClick={(e) => giveUpHandler(e)} />
                 </div>
         </div>

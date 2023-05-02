@@ -22,6 +22,7 @@ function LobbyPage(props) {
     const token = sessionStorage.getItem("auth_token");
     const userId = Number(sessionStorage.getItem("user_id"));
     const [isWSReady, setIsWSReady] = useState(false);
+    const [isOpenModal, setIsOpenModal] = useState(false);
     const myBoard = useSelector(state => state.lobby.myBoard);
     const client = useMemo(() => {
         return lobby.status === 200 ? new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${slug}/?token=${token}`) : null;
