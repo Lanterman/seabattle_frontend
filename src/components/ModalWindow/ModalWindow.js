@@ -3,9 +3,8 @@ import { useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faQuestion } from '@fortawesome/free-solid-svg-icons';
 
-import { sendDetermineWinner } from "../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { sendDetermineWinner, sendPlayAgain } from "../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import { clearState } from "../../store/reducers/lobbyReducer";
-
 
 import "./ModalWindow.css";
 
@@ -15,15 +14,31 @@ function ModalWindow(props) {
     const dispatch = useDispatch();
 
     function modalAgreeHandler() {
-        sendDetermineWinner(props.client, props.content.user_id);
-        props.client.close();
-        props.setClient(null);
-        dispatch(clearState());
+        if (props.type === "give-up") {
+            giveUpHandler();
+        } else if (props.type === "play-again") {
+            playAgainHandler(true)
+        };
         props.setIsOpenModal(false);
-        navigate(props.content.url);
+    };
+
+    function giveUpHandler() {
+        sendDetermineWinner(props.client, props.content.userId);
+        if (props.content.url) {
+            playAgainHandler(false);
+            props.client.close();
+            props.setClient(null);
+            dispatch(clearState());
+            navigate(props.content.url);
+        };
+    };
+
+    function playAgainHandler(answer) {
+        sendPlayAgain(props.client, props.content.lobbyId, props.content.boardId, answer);
     };
 
     function modalCloseHandler() {
+        props.type === "play-again" && playAgainHandler(false);
         props.setIsOpenModal(false);
     };
 

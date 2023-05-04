@@ -19,6 +19,7 @@ export const lobbyReducer = (state = defaultState, action) => {
         case PRELOAD:
             return {
                 ...state,
+                lobbyId: action.payload.lobbyId,
                 timeLeft: action.payload.timeLeft,
                 timeToMove: action.payload.timeToMove,
                 winner: action.payload.winner,

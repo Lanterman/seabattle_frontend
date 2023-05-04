@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDollar,  faClock, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -7,11 +7,12 @@ import { timer, createBoardVariable } from "../../../modules/services";
 import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResponse";
 import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeLeft, 
     clearState } from "../../../store/reducers/lobbyReducer";
-import { sendWhoStarts, sendDetermineWinner, sendCountDownTimer, sendTimeIsOver, sendPlayAgain, sendCreateNewGame,
+import { sendWhoStarts, sendDetermineWinner, sendCountDownTimer, sendTimeIsOver, sendCreateNewGame,
     sendAddUserToGame } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 
 import { Board } from "../Board/Board";
 import { Ships } from "../Ships/Ships";
+import { ModalWindow } from "../../../components/ModalWindow/ModalWindow";
 
 import "./Lobby.css";
 
@@ -27,11 +28,17 @@ function Lobby(props) {
     const messages = useSelector(state => state.lobby.messages);
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
     const isCanPutShip = useSelector(state => state.lobby.isCanPutShip);
+    const [isOpenModal, setIsOpenModal] = useState(false);
     const [me, enemy] = users[0]["id"] === userId ? [users[0], users[1]] : [users[1], users[0]];
     const typeAction = myBoard.is_ready & enemyBoard.is_ready ? "turn" : "placement";
     const wsResp = new WSResponse();
+    console.log()
 
-    // console.log("Заменить модальные окна alert на собственные, так как alert может быть заблокировано или просто не выскочить")
+    if (!timer.isAnswered && winner && myBoard.is_play_again === null) {
+        setIsOpenModal(true);
+        timer.isAnswered = true;
+    };
+
     // console.log("удалять селери таску при новом ходе и все данные с редиса о данной игре при победителе")
     // console.log("Заменить про редис на тестовый в тестах")
     // console.log("Подстроится под обратный отсчет на беке, возвращал ответ при нуле, если ход и определять победителя тем самым")
@@ -41,13 +48,6 @@ function Lobby(props) {
 
     useEffect(() => {
         const countdown = users.length === 2 & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
-
-        if (!timer.isAnswered && winner && myBoard.is_play_again === null) {
-            const answer = window.confirm("Do you want to play again?");
-            sendPlayAgain(props.client, lobby.id, myBoard.id, answer);
-            timer.isAnswered = true;
-        };
-
         if (!timer.isEnemyConnected && users.length === 1 && me?.id !== userId) {
             sendAddUserToGame(props.client, lobby.id, !enemyBoard.user_id ? enemyBoard.id: myBoard.id);
             timer.isEnemyConnected = true;
@@ -223,7 +223,12 @@ function Lobby(props) {
             {users.length !== 2 && <div className="waiting"><i>Waiting for an enemy...</i></div>}
             {winner && enemyBoard.is_play_again === null && 
                 <div className="waiting"><i>Waiting for an enemy...</i></div>}
-            
+            {isOpenModal && <ModalWindow 
+                                type="play-again" 
+                                msg="Do you want to play again?"
+                                client={props.client}
+                                setIsOpenModal={setIsOpenModal}
+                                content={{userId: enemyBoard?.user_id, lobbyId: lobby.id, boardId: myBoard.id}}/>}
         </div>
     );
 };

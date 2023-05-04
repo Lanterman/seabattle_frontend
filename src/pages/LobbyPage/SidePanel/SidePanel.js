@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { useSelector } from "react-redux";
 
-import { sendReadyToPlay, sendRandomPlacement, sendDetermineWinner,
-    sendCountDownTimer } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { sendReadyToPlay, sendRandomPlacement }from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import { createBoardVariable } from "../../../modules/services";
 import { Chat } from "../Chat/Chat";
+import { ModalWindow } from "../../../components/ModalWindow/ModalWindow";
 
 import "./SidePanel.css";
 
@@ -16,6 +17,7 @@ function SidePanel(props) {
     const ships = myBoard.ships;
     const boardIsReady = isShipPlaced();
     const board = createBoardVariable(myBoard);
+    const [isOpenModal, setIsOpenModal] = useState(false);
 
     function isShipPlaced() {
         for (let ship in ships) {
@@ -46,14 +48,6 @@ function SidePanel(props) {
         }, 1500);
     };
 
-    function giveUpHandler(e) {
-        if (window.confirm("Do you really want to give up?")) {
-            sendDetermineWinner(props.client, enemyBoard.user_id);
-        } else {
-            sendCountDownTimer(props.client);
-        };
-    };
-
     return (
         <div className="side-panel">
             <Chat client={props.client} lobbyId={props.lobbyId} users={users} />
@@ -67,8 +61,17 @@ function SidePanel(props) {
                         onClick={(e) => randomPlacementOnClickHandler(e)} />
                     <input className="give-up" type="button" value="Give up"
                         disabled={users.length === 2 & !winner && enemyBoard.user_id ? false : true}
-                        onClick={(e) => giveUpHandler(e)} />
+                        onClick={() => setIsOpenModal(true)} />
                 </div>
+
+                {isOpenModal && <ModalWindow 
+                                    type="give-up" 
+                                    msg="Do you really want to give up?"
+                                    client={props.client}
+                                    setClient={props.setClient}
+                                    setIsOpenModal={setIsOpenModal}
+                                    content={{userId: enemyBoard?.user_id}}/>}
+
         </div>
     );
 };
