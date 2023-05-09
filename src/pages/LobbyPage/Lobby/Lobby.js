@@ -39,9 +39,9 @@ function Lobby(props) {
         timer.isAnswered = true;
     };
 
-    // console.log("удалять селери таску при новом ходе и все данные с редиса о данной игре при победителе")
+    console.log("Удаляет через время таски с редиса, просто не сохранять, удалять пользовательский ключ с редиса(лобби) при победе")
+    console.log("Переделать сохранение кораблей")
     // console.log("Заменить про редис на тестовый в тестах")
-    // console.log("Подстроится под обратный отсчет на беке, возвращал ответ при нуле, если ход и определять победителя тем самым")
 
     // console.log("В дальнейшем при выходе из лобби, если только 1 пользователь, удалять ее")
     // console.log("Переработать переход на новую игру при обоюдном согласии о еще партии, временно перезагружает страницу")
@@ -52,6 +52,14 @@ function Lobby(props) {
             sendAddUserToGame(props.client, lobby.id, !enemyBoard.user_id ? enemyBoard.id: myBoard.id);
             timer.isEnemyConnected = true;
         };
+
+        if (timeLeft === 0 && !winner && myBoard.is_ready && !enemyBoard.is_ready) {
+            setTimeout(() => {
+                if (timeLeft === 0 && !winner && myBoard.is_ready && !enemyBoard.is_ready) {
+                    wsResp.setWinnerAndUpdateAnswerToBoards(dispatch, me.username, myBoard, enemyBoard);
+                };
+            }, 3000);
+        }
 
         if (!timer.isTimeIsOver && timeLeft <= 0) timeIsOver(typeAction, enemy.id, myBoard);
 
@@ -166,7 +174,7 @@ function Lobby(props) {
     function displayGameResults() {
         return (
             <p className="winner">
-                {winner !== enemy.username ? <i id="won">You won!</i> : <i id="lose">You lose!</i>}
+                {winner === me.username ? <i id="won">You won!</i> : <i id="lose">You lose!</i>}
             </p>
         );
     };

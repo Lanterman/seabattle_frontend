@@ -1,4 +1,4 @@
-import { setWinner, setMyBoard, setEnemyBoard, addMessage, setTimeLeft,
+import { setWinner, setMyBoard, setEnemyBoard, addMessage, setTimeLeft, updateAnswerToBoards,
     addUserToLobby } from "../../../store/reducers/lobbyReducer";
 
 export class WSResponse {
@@ -50,5 +50,13 @@ export class WSResponse {
 
     setIsPlayAgain(dispatch, method, board, is_play_again) {
         dispatch(method(Object.assign({}, board, {is_play_again: is_play_again})));
+    };
+
+    setWinnerAndUpdateAnswerToBoards(dispatch, username, myBoard, enemyBoard) {
+        dispatch(setWinner(username));
+        dispatch(updateAnswerToBoards({
+            myBoard: Object.assign(myBoard, {is_play_again: false}),
+            enemyBoard: Object.assign(enemyBoard, {is_play_again: false})
+        }));
     };
 };
