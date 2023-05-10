@@ -13,12 +13,14 @@ const SET_ENEMY_BOARD = "SET_ENEMY_BOARD";
 const SET_CURRENT_SHIP = "SET_CURRENT_SHIP";
 const ADD_USER_TO_LOBBY = "ADD_USER_TO_LOBBY";
 const SET_IS_CAN_PUT_SHIP = "SET_IS_CAN_PUT_SHIP";
+const UPDATE_ANSWER_TO_BOARDS = "UPDATE_ANSWER_TO_BOARDS";
 
 export const lobbyReducer = (state = defaultState, action) => {
     switch (action.type) {
         case PRELOAD:
             return {
                 ...state,
+                lobbyId: action.payload.lobbyId,
                 timeLeft: action.payload.timeLeft,
                 timeToMove: action.payload.timeToMove,
                 winner: action.payload.winner,
@@ -45,6 +47,8 @@ export const lobbyReducer = (state = defaultState, action) => {
             return {...state, users: action.payload};
         case SET_IS_CAN_PUT_SHIP:
             return {...state, isCanPutShip: action.payload};
+        case UPDATE_ANSWER_TO_BOARDS:
+            return {...state, myBoard: action.payload.myBoard, enemyBoard: action.payload.enemyBoard}
         default: 
             return state;
     }
@@ -61,3 +65,4 @@ export const setEnemyBoard = (payload) => ({type: SET_ENEMY_BOARD, payload});
 export const setCurrentShip = (payload) => ({type: SET_CURRENT_SHIP, payload});
 export const addUserToLobby = (payload) => ({type: ADD_USER_TO_LOBBY, payload});
 export const setIsCanPutShip = (payload) => ({type: SET_IS_CAN_PUT_SHIP, payload});
+export const updateAnswerToBoards = (payload) =>({type: UPDATE_ANSWER_TO_BOARDS, payload});

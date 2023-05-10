@@ -86,7 +86,6 @@
 /* dropdown */
 
 .waiting, .waiting-new-game {
-    z-index: 998;
     font-size: 25px;
     position: fixed;
     width: 53%;

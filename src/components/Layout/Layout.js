@@ -10,7 +10,7 @@ function Layout(props) {
     // console.log("На главном вебсокете сделть проверку завершенных игр, если есть не завершенная, предложить догирать")
     return (
         <div className="app">
-            <Header client={client} setClient={setClient} />
+            <Header client={client} setClient={setClient}/>
             <Advertising />
             <Aside />
             <Outlet context={{setClient: setClient}}/>
