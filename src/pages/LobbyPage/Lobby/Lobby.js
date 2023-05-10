@@ -38,14 +38,11 @@ function Lobby(props) {
         setIsOpenModal(true);
         timer.isAnswered = true;
     };
-
-    console.log("Удаляет через время таски с редиса, просто не сохранять, удалять пользовательский ключ с редиса(лобби) при победе")
-    console.log("Переделать сохранение кораблей")
-    // console.log("Заменить про редис на тестовый в тестах")
-
+    
     // console.log("В дальнейшем при выходе из лобби, если только 1 пользователь, удалять ее")
     // console.log("Переработать переход на новую игру при обоюдном согласии о еще партии, временно перезагружает страницу")
-
+    // console.log("Заменить прод редис на тестовый в тестах")
+    
     useEffect(() => {
         const countdown = users.length === 2 & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
         if (!timer.isEnemyConnected && users.length === 1 && me?.id !== userId) {
@@ -229,7 +226,7 @@ function Lobby(props) {
             <Ships client={props.client} />
 
             {users.length !== 2 && <div className="waiting"><i>Waiting for an enemy...</i></div>}
-            {winner && enemyBoard.is_play_again === null && 
+            {winner && (enemyBoard.is_play_again === null || myBoard.is_play_again === null) &&
                 <div className="waiting"><i>Waiting for an enemy...</i></div>}
             {isOpenModal && <ModalWindow 
                                 type="play-again" 
