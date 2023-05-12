@@ -12,7 +12,7 @@ import { sendWhoStarts, sendDetermineWinner, sendCountDownTimer, sendTimeIsOver,
 
 import { Board } from "../Board/Board";
 import { Ships } from "../Ships/Ships";
-import { ModalWindow } from "../../../components/ModalWindow/ModalWindow";
+import { LobbyWindow } from "../../../components/ModalWindows/LobbyWindow/LobbyWindow";
 
 import "./Lobby.css";
 
@@ -228,7 +228,7 @@ function Lobby(props) {
             {users.length !== 2 && <div className="waiting"><i>Waiting for an enemy...</i></div>}
             {winner && (enemyBoard.is_play_again === null || myBoard.is_play_again === null) &&
                 <div className="waiting"><i>Waiting for an enemy...</i></div>}
-            {isOpenModal && <ModalWindow 
+            {isOpenModal && <LobbyWindow 
                                 type="play-again" 
                                 msg="Do you want to play again?"
                                 client={props.client}

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 
 import { clearState } from "../../store/reducers/lobbyReducer";
-import { ModalWindow } from "../ModalWindow/ModalWindow";
+import { LobbyWindow } from "../ModalWindows/LobbyWindow/LobbyWindow";
 
 import "./Header.css";
 
@@ -53,7 +53,7 @@ function Header(props) {
                 <Link to="/" onClick={(e) => onClickHandler(e, "/")}>GitHub</Link>
             </div>
 
-            {isOpenModal && <ModalWindow 
+            {isOpenModal && <LobbyWindow 
                                 type="give-up" 
                                 msg="Do you really want to follow the link? It will count as a loss!"
                                 client={props.client}

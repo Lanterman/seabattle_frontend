@@ -1,11 +1,13 @@
 import React from "react";
 
+import "./FilterTable.css";
+
 
 class FilterTable extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="filter">
                 FilterTable
             </div>
         );

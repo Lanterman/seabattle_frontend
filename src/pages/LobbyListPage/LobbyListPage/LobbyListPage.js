@@ -11,8 +11,8 @@ function LobbyListPage(props) {
     return (
         <div className="main-page">
             <SearchLobby />
-            <FilterTable />
             <CreateLobby />
+            <FilterTable />
             <LobbyList />
         </div>
     );
