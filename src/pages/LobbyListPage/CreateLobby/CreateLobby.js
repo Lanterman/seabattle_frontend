@@ -13,12 +13,13 @@ function CreateLobby(props) {
     };
 
     return (
-        <div>
+        <div className="create">
             <input className="create-button" type="button" value="Create lobby" onClick={() => onClickHandler()}/>
 
-            {isOpenModal && <CreateLobbyWindow 
-                type="give-up" 
-                msg="Do you really want to give up?"/>}
+            {isOpenModal && <CreateLobbyWindow
+                isProcessing={props.isProcessing}
+                setIsOpenModal={setIsOpenModal}
+                />}
         </div>
     );
 };

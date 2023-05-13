@@ -1,4 +1,12 @@
-.create-button {
+.create {
+    width: 130px;
+    margin: 15px 10px;
+    position: fixed;
+    background-color: antiquewhite;
+}
+
+.create .create-button {
     font-size: 17px;
-    margin: 15px 45%;
+    width: 100%;
+    padding: 3px;
 }

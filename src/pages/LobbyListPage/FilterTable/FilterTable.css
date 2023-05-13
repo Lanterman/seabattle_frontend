@@ -1,5 +1,13 @@
 .filter {
-    text-align: center;
-    padding: 20px;
-    background-color: rgb(57, 147, 226);
+    margin-left: 150px;
+    margin-top: 15px;
+    width: 70px;
+    position: fixed;
+    background-color: rgb(145, 98, 38);
+}
+
+.filter .filter-button {
+    font-size: 17px;
+    width: 100%;
+    padding: 3px;
 }
