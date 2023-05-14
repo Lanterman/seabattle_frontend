@@ -1,9 +1,8 @@
 .filter {
     margin-left: 150px;
-    margin-top: 15px;
+    padding: 35px 10px;
     width: 70px;
     position: fixed;
-    background-color: rgb(145, 98, 38);
 }
 
 .filter .filter-button {

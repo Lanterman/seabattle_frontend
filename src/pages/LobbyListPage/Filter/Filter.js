@@ -1,11 +1,11 @@
 import { useState } from "react";
 
-import { CreateLobbyWindow } from "../../../components/ModalWindows/CreateLobbyWindow/CreateLobbyWindow";
+import { FilterWindow } from "../../../components/ModalWindows/FilterWindow/FilterWindow";
 
 
-import "./FilterTable.css";
+import "./Filter.css";
 
-function FilterTable(props) {
+function Filter(props) {
     const [isOpenModal, setIsOpenModal] = useState(false);
 
     function onClickHandler() {
@@ -16,7 +16,7 @@ function FilterTable(props) {
         <div className="filter">
             <input className="filter-button" type="button" value="Filter" onClick={() => onClickHandler()}/>
 
-            {isOpenModal && <CreateLobbyWindow
+            {isOpenModal && <FilterWindow
                 isProcessing={props.isProcessing}
                 setIsOpenModal={setIsOpenModal}
                 />}
@@ -24,4 +24,4 @@ function FilterTable(props) {
     );
 };
 
-export default FilterTable;
+export default Filter;

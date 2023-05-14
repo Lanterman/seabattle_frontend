@@ -20,6 +20,7 @@ function CreateLobbyWindow(props) {
                     <p className="title">Create lobby</p>
                 </div>
                 <Form className="form" method="post">
+                    <input name="type" readOnly hidden value="create"/>
                     <div className="block">
                         <span className="label">Name:</span>
                         <input className="value" name="name" placeholder="Name" required/>

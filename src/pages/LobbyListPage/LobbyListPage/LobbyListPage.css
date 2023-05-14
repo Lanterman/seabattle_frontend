@@ -1,8 +1,6 @@
 .main-page .settings {
-    padding-top: 20px;
-    margin-bottom: -40px;
     background-color: rgba(194, 202, 192, 0.9);
-    height: 80px;
+    height: 100px;
     width: 100%;
     border-bottom: 1px solid gray;
 }

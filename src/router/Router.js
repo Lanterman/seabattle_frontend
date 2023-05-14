@@ -6,7 +6,7 @@ import NotFoundPage from "../components/NotFoundPage/NotFoundPage";
 import { LoginPage } from "../pages/LoginPage/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage/RegisterPage";
 import ProfilePage from '../pages/ProfilePage/ProfilePage';
-import { LobbyListPage, createLobbyAction, lobbyListLoader } from '../pages/LobbyListPage/LobbyListPage/LobbyListPage';
+import { LobbyListPage, lobbyAction, lobbyListLoader } from '../pages/LobbyListPage/LobbyListPage/LobbyListPage';
 import { LobbyPage, lobbyLoader } from '../pages/LobbyPage/LobbyPage/LobbyPage';
 import LeadBoardPage from '../pages/LeadBoardPage/LeadBoardPage';
 import AboutMePage from '../pages/AboutMePage/AboutMePage';
@@ -18,7 +18,7 @@ const router = createBrowserRouter(createRoutesFromElements(
         <Route index element={<ProfilePage />} />
         <Route path="login/" element={<LoginPage />} />
         <Route path="register/" element={<RegisterPage />} />
-        <Route path="lobbies/" element={<LobbyListPage />} loader={lobbyListLoader} action={createLobbyAction}/>
+        <Route path="lobbies/" element={<LobbyListPage />} loader={lobbyListLoader} action={lobbyAction}/>
         <Route path="lobbies/:slug/" element={<LobbyPage />} loader={lobbyLoader} />
         <Route path="leadboard/" element={<LeadBoardPage />} />
         <Route path="about/" element={<AboutMePage />} />

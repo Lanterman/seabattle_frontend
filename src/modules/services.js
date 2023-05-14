@@ -47,3 +47,14 @@ export function createBoardVariable(board) {
     ));
     return columnBoard;
 };
+
+export function createQueryParameters(formData) {
+    let queryParameters = "";
+    for (let key in formData) {
+        if (formData[key]) {
+            queryParameters += queryParameters ? `&${key}=${formData[key]}` : `${key}=${formData[key]}`; 
+        };
+    };
+    
+    return queryParameters ? `?${queryParameters}` : queryParameters;
+};

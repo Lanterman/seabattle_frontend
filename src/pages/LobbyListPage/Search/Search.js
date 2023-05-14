@@ -1,6 +1,6 @@
-import "./SearchLobby.css";
+import "./Search.css";
 
-function SearchLobby(props) {
+function Search(props) {
 
     return (
         <form autoComplete="off" className="search">
@@ -10,4 +10,4 @@ function SearchLobby(props) {
     );
 };
 
-export default SearchLobby;
+export default Search;

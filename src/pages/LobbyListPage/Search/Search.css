@@ -1,9 +1,9 @@
 .search {
     text-align: center;
-    padding: 15px;
-    width: 39.5%;
+    padding: 35px 15px;
+    width: 32.8%;
     position: fixed;
-    margin-left: 220px;
+    margin-left: 250px;
 }
 
 .search .value {
