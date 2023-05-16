@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import axios from "axios";
-import { Await, redirect, useLoaderData } from "react-router-dom";
+import { Await, redirect, useLoaderData, useActionData } from "react-router-dom";
 
 import { Lobby } from "../Lobby/Lobby";
 
@@ -9,15 +9,21 @@ import "./LobbyList.css";
 function LobbyList(props) {
 
     const {lobbyList} = useLoaderData();
+    const lobbyListAction = useActionData();
 
     return (
         <div className="lobbyList">
             <h1 className="title">Lobbies</h1>
-            <Suspense fallback={<h1 className="suspense">Loading...</h1>}>
-                <Await resolve={lobbyList}>
-                    {resolvedLobbyList => resolvedLobbyList.results.map((lobby) => <Lobby lobby={lobby} key={lobby.slug} />)}
-                </Await>
-            </Suspense>
+
+            {lobbyListAction && lobbyListAction.map((lobby) => <Lobby lobby={lobby} key={lobby.slug} />)}
+
+            {!lobbyListAction && (
+                <Suspense fallback={<h1 className="suspense">Loading...</h1>}>
+                    <Await resolve={lobbyList}>
+                        {resolved => resolved.results.map((lobby) => <Lobby lobby={lobby} key={lobby.slug} />)}
+                    </Await>
+                </Suspense>
+            )}
         </div>
     );
 };

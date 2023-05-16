@@ -12,7 +12,7 @@ import "./LobbyListPage.css";
 
 
 function LobbyListPage(props) {
-    const navigation = useNavigation()
+    const navigation = useNavigation();
 
     return (
         <div className="main-page">
@@ -37,8 +37,8 @@ async function filter(formData) {
     if (response.statusText !== "OK") {
         throw new Response("", {status: response.status, statusText: "Bad request!"});
     };
-    console.log(response.data)
-    return response.data.result;
+
+    return response.data.results;
 };
 
 
@@ -50,7 +50,7 @@ async function createLobby(formData) {
     if (response.statusText !== "Created") {
         throw new Response("", {status: response.status, statusText: "Bad request!"});
     };
-    
+
     return response.data.slug;
 };
 

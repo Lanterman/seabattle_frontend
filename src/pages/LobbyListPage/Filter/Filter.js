@@ -2,11 +2,11 @@ import { useState } from "react";
 
 import { FilterWindow } from "../../../components/ModalWindows/FilterWindow/FilterWindow";
 
-
 import "./Filter.css";
 
 function Filter(props) {
     const [isOpenModal, setIsOpenModal] = useState(false);
+    props.isProcessing && isOpenModal && setIsOpenModal(false);
 
     function onClickHandler() {
         setIsOpenModal(true);
