@@ -34,7 +34,7 @@ function FilterWindow(props) {
                     <FontAwesomeIcon icon={faClose} className="close-icon" onClick={() => modalCloseHandler()} />
                     <p className="title">Filter</p>
                 </div>
-                <Form className="form" method="post" action="/lobbies/">
+                <Form className="form" method="get" action="/lobbies/" >
                     <input name="type" readOnly hidden value="filter"/>
 
                     <div className="block">
@@ -113,7 +113,7 @@ function FilterWindow(props) {
                 </Form>
             </div>
         </div>
-    );
+    );  
 };
 
 export { FilterWindow };

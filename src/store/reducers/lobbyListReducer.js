@@ -6,7 +6,8 @@ const defaultState = {
     timeToMoveMin: "", 
     timeToPlacementMax: "",
     timeToPlacementMin: "", 
-    isPrivate: "both"
+    isPrivate: "both",
+    search: "",
 };
 
 const SET_NAME ="SET_NAME";
@@ -17,6 +18,7 @@ const SET_TIME_TO_MOVE_MIN = "SET_TIME_TO_MOVE_MIN";
 const SET_TIME_TO_PLACEMENT_MAX = "SET_TIME_TO_PLACEMENT_MAX";
 const SET_TIME_TO_PLACEMENT_MIN = "SET_TIME_TO_PLACEMENT_MIN";
 const SET_IS_PRIVATE = "SET_IS_PRIVATE";
+const SET_SEARCH = "SET_SEARCH";
 
 export const lobbyListReducer = (state = defaultState, action) => {
     switch (action.type) {
@@ -36,6 +38,8 @@ export const lobbyListReducer = (state = defaultState, action) => {
             return {...state, timeToPlacementMin: action.payload};
         case SET_IS_PRIVATE:
             return {...state, isPrivate: action.payload};
+        case SET_SEARCH:
+            return {...state, search: action.payload};
         default: 
             return state;
     };
@@ -50,3 +54,4 @@ export const setTimeToMoveMinAction = (payload) => ({type: SET_TIME_TO_MOVE_MIN,
 export const setTimeToPlacementMaxAction = (payload) => ({type: SET_TIME_TO_PLACEMENT_MAX, payload});
 export const setTimeToPlacementMinAction = (payload) => ({type: SET_TIME_TO_PLACEMENT_MIN, payload});
 export const setIsPrivateAction = (payload) => ({type: SET_IS_PRIVATE, payload});
+export const setSearch = (payload) => ({type: SET_SEARCH, payload});

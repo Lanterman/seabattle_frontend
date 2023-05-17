@@ -29,9 +29,9 @@ function LobbyList(props) {
 };
 
 
-async function getLobbyList(token) {
+async function getLobbyList(token, queryParams) {
     const baseURL = "http://127.0.0.1:8000/api/v1";
-    const response = await axios.get(`${baseURL}/lobbies/`, {headers: {"Authorization": `Token ${token}`}});
+    const response = await axios.get(`${baseURL}/lobbies/${queryParams}`, {headers: {"Authorization": `Token ${token}`}});
 
     if (response.statusText !== "OK") {
         throw new Response("", {status: response.status, statusText: "Not found"});
@@ -41,14 +41,15 @@ async function getLobbyList(token) {
 };
 
 
-const lobbyListLoader = async () => {
+const lobbyListLoader = async ({request}) => {
     const token = sessionStorage.getItem("auth_token");
+    const queryParams = request.url.split("?")[1];
 
     if (!token) {
         return redirect("/login?next=/lobbies");
     };
 
-    return {lobbyList: getLobbyList(token)};
+    return {lobbyList: getLobbyList(token, `?${queryParams}`)};
 };
 
 
