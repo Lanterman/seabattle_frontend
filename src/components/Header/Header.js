@@ -8,6 +8,7 @@ import { clearState } from "../../store/reducers/lobbyReducer";
 import { LobbyWindow } from "../ModalWindows/LobbyWindow/LobbyWindow";
 
 import "./Header.css";
+import { sendDeleteGame } from "../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 
 
 function Header(props) {
@@ -29,6 +30,7 @@ function Header(props) {
                 setContent(Object.assign({url: url}, {userId: enemyBoard.user_id, lobbyId: lobbyId, boardId: myBoard.id}));
                 setIsOpenModal(true);
             } else {
+                users.length !== 2 && sendDeleteGame(props.client);
                 props.client.close();
                 props.setClient(null);
                 dispatch(clearState());

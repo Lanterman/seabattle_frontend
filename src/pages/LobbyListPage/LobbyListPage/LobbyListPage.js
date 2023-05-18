@@ -17,7 +17,7 @@ function LobbyListPage(props) {
         <div className="main-page">
             <div className="settings">
                 <Search />
-                <Filter />
+                <Filter isProcessing={navigation.state === "loading"} />
                 <CreateLobby isProcessing={["submitting", "loading"].includes(navigation.state)}/>
             </div>
             <LobbyList />

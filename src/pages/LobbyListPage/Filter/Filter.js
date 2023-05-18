@@ -17,7 +17,6 @@ function Filter(props) {
             <input className="filter-button" type="button" value="Filter" onClick={() => onClickHandler()}/>
 
             {isOpenModal && <FilterWindow
-                isProcessing={props.isProcessing}
                 setIsOpenModal={setIsOpenModal}
                 />}
         </div>

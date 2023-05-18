@@ -11,6 +11,7 @@ import { Lobby } from "../Lobby/Lobby";
 
 
 import "./LobbyPage.css";
+import { sendDeleteGame } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 
 
 function LobbyPage(props) {
@@ -74,22 +75,25 @@ function LobbyPage(props) {
     });
 
     window.onpopstate = () => {
+        lobby.data.users.length !== 2 && sendDeleteGame(client);
         client.close();
         outletContext.setClient(null);
         dispatch(clearState());
     };
 
-    return client ? 
-        (isWSReady && myBoard ? (
-            <div>
-                <div className="main-page">
-                    {<Lobby lobby={lobby.data} client={client} lobbySlug={slug} navigate={navigate} 
-                        setIsWSReady={setIsWSReady}/>}
+    return lobby.status === 404 ? 
+        <div className="main-page"><h1 className="is-full">The lobby has been removed</h1></div> :
+        (lobby.status === 403 ?
+            <div className="main-page"><h1 className="is-full">The lobby is crowded</h1></div> :
+            (isWSReady && myBoard ? (
+                <div>
+                    <div className="main-page">
+                        {<Lobby lobby={lobby.data} client={client} lobbySlug={slug} navigate={navigate} 
+                            setIsWSReady={setIsWSReady}/>}
+                    </div>
+                    <SidePanel client={client} lobbySlug={slug} lobbyId={lobby.data.id}/>
                 </div>
-                <SidePanel client={client} lobbySlug={slug} lobbyId={lobby.data.id}/>
-            </div>
-            ) : <div className="main-page"><h1 className="suspense">Lobby is loading...</h1></div>) :
-        <div className="main-page"><h1 className="is-full">The lobby is crowded</h1></div>;
+                ) : <div className="main-page"><h1 className="suspense">Lobby is loading...</h1></div>));
 };
 
 
@@ -105,6 +109,8 @@ async function getLobbyBySlug(slug, token) {
         return response;
     } catch (error) {
         if (error.response.status === 403) {
+            return error.response;
+        } else if (error.response.status === 404) {
             return error.response;
         };
     };

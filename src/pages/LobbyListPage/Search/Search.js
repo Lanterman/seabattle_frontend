@@ -14,7 +14,7 @@ function Search(props) {
             <input className="value" type="search" name="search" placeholder="Search ..." value={search} 
                 onChange={(e) => dispath(setSearch(e.target.value))}
             />
-            <input className="button" type="submit" value="Search" disabled={props.isProcessing}/>
+            <input className="button" type="submit" value="Search" />
         </Form>
     );
 };

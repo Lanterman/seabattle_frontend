@@ -109,3 +109,9 @@ export function sendCreateNewGame(client, bet, name, timeToMove, timeToPlacement
         enemy_id: enemyId,
     }));
 };
+
+export function sendDeleteGame(client) {
+    client.send(JSON.stringify({
+        type: "delete_game",
+    }));
+};
