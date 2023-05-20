@@ -1,17 +1,22 @@
-import React from "react";
+import { Suspense } from "react";
 import axios from "axios";
-import { redirect, useNavigation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useNavigation, Await, useLoaderData, redirect, useOutletContext } from "react-router-dom";
 
 import Filter from "../Filter/Filter";
 import Search from "../Search/Search";
 import CreateLobby from "../CreateLobby/CreateLobby";
-import { LobbyList, lobbyListLoader } from "../LobbyList/LobbyList";
+import { LobbyList } from "../LobbyList/LobbyList";
+
 
 import "./LobbyListPage.css";
 
 
 function LobbyListPage(props) {
     const navigation = useNavigation();
+    const {lobbyList} = useLoaderData();
+    const outletContext = useOutletContext();
+    const lobbies = useSelector(state => state.lobbyList.lobbyList);
 
     return (
         <div className="main-page">
@@ -20,7 +25,16 @@ function LobbyListPage(props) {
                 <Filter isProcessing={navigation.state === "loading"} />
                 <CreateLobby isProcessing={["submitting", "loading"].includes(navigation.state)}/>
             </div>
-            <LobbyList />
+            <Suspense fallback={<h1 className="suspense">Loading...</h1>}>
+                <Await resolve={lobbyList}>
+                    {resolved => (
+                        <LobbyList 
+                            mainClient={outletContext.mainClient} 
+                            lobbyList={lobbies ? lobbies : resolved.results}
+                            />
+                    )}
+                </Await>
+            </Suspense>
         </div>
     );
 };
@@ -39,6 +53,30 @@ async function createLobby(formData) {
 };
 
 
+async function getLobbyList(token, queryParams) {
+    const baseURL = "http://127.0.0.1:8000/api/v1";
+    const response = await axios.get(`${baseURL}/lobbies/${queryParams}`, {headers: {"Authorization": `Token ${token}`}});
+
+    if (response.statusText !== "OK") {
+        throw new Response("", {status: response.status, statusText: "Not found"});
+    };
+
+    return response.data;
+};
+
+
+const lobbyListLoader = async ({request}) => {
+    const token = sessionStorage.getItem("auth_token");
+    const queryParams = request.url.split("?")[1];
+
+    if (!token) {
+        return redirect("/login?next=/lobbies");
+    };
+
+    return {lobbyList: getLobbyList(token, `?${queryParams}`)};
+};
+
+
 async function lobbyAction({request}) {
     const formData = await request.formData();
     const inputData = {
@@ -50,7 +88,7 @@ async function lobbyAction({request}) {
     };
     
     const slugOfNewLobby = await createLobby(inputData)
-    return redirect(`/lobbies/${slugOfNewLobby}/`);
+    return slugOfNewLobby;
 };
 
 

@@ -1,4 +1,5 @@
 const defaultState = {
+    lobbyList: null,
     name: "", 
     betMax: "", 
     betMin: "", 
@@ -10,6 +11,7 @@ const defaultState = {
     search: "",
 };
 
+const SET_LOBBY_LIST = "SET_LOBBY_LIST";
 const SET_NAME ="SET_NAME";
 const SET_BET_MAX = "SET_BET_MAX";
 const SET_BET_MIN = "SET_BET_MIN";
@@ -22,6 +24,8 @@ const SET_SEARCH = "SET_SEARCH";
 
 export const lobbyListReducer = (state = defaultState, action) => {
     switch (action.type) {
+        case SET_LOBBY_LIST:
+            return {...state, lobbyList: action.payload}
         case SET_NAME:
             return {...state, name: action.payload};
         case SET_BET_MAX:
@@ -46,6 +50,7 @@ export const lobbyListReducer = (state = defaultState, action) => {
 };
 
 
+export const setLobbyList = (payload) => ({type: SET_LOBBY_LIST, payload});
 export const setNameAction = (payload) => ({type: SET_NAME, payload});
 export const setBetMaxAction = (payload) => ({type: SET_BET_MAX, payload});
 export const setBetMinAction = (payload) => ({type: SET_BET_MIN, payload});

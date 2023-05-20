@@ -1,6 +1,6 @@
 const defaultState = {
     myBoard: null, enemyBoard: null, currentShip: null, isCanPutShip: true, winner: null, timeLeft: null, timeToMove: null,
-    users: null, messages: null,
+    users: null, messages: null, lobbyId: null,
 };
 
 const PRELOAD = "PRELOAD";

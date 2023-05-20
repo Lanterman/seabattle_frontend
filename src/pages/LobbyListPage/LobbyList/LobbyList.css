@@ -8,8 +8,10 @@
     font-size: 35px;
 }
 
-.lobbyList .suspense {
+.lobbyList .no-games {
     text-align: center;
-    font-size: 35px;
+    font-size: 30px;
     margin-top: 20%;
+    color: rgb(133, 131, 131);
+    z-index: 1;
 }

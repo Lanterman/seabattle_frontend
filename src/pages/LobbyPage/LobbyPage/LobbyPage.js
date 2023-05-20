@@ -12,6 +12,7 @@ import { Lobby } from "../Lobby/Lobby";
 
 import "./LobbyPage.css";
 import { sendDeleteGame } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { sendNotifDeletedGame } from "../../../modules/wsCommunication/wsApp/wsMainRequests";
 
 
 function LobbyPage(props) {
@@ -24,6 +25,7 @@ function LobbyPage(props) {
     const userId = Number(sessionStorage.getItem("user_id"));
     const [isWSReady, setIsWSReady] = useState(false);
     const myBoard = useSelector(state => state.lobby.myBoard);
+    const users = useSelector(state => state.lobby.users);
     const client = useMemo(() => {
         return lobby.status === 200 ? new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${slug}/?token=${token}`) : null;
     }, [slug, token, lobby.status]);
@@ -75,7 +77,11 @@ function LobbyPage(props) {
     });
 
     window.onpopstate = () => {
-        lobby.data.users.length !== 2 && sendDeleteGame(client);
+        if (users.length !== 2) {
+            sendDeleteGame(client);
+            sendNotifDeletedGame(outletContext.mainClient, lobby.data.id);
+        };
+
         client.close();
         outletContext.setClient(null);
         dispatch(clearState());

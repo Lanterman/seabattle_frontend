@@ -9,6 +9,7 @@ import { LobbyWindow } from "../ModalWindows/LobbyWindow/LobbyWindow";
 
 import "./Header.css";
 import { sendDeleteGame } from "../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { sendNotifDeletedGame } from "../../modules/wsCommunication/wsApp/wsMainRequests";
 
 
 function Header(props) {
@@ -30,12 +31,17 @@ function Header(props) {
                 setContent(Object.assign({url: url}, {userId: enemyBoard.user_id, lobbyId: lobbyId, boardId: myBoard.id}));
                 setIsOpenModal(true);
             } else {
-                users.length !== 2 && sendDeleteGame(props.client);
+                if (users.length !== 2) {
+                    sendDeleteGame(props.client);
+                    sendNotifDeletedGame(props.mainClient, lobbyId);
+                };
+
                 props.client.close();
                 props.setClient(null);
                 dispatch(clearState());
                 navigate(url);
             };
+
         } else {
             navigate(url);
         };
