@@ -9,6 +9,7 @@ import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeLeft,
     clearState } from "../../../store/reducers/lobbyReducer";
 import { sendWhoStarts, sendDetermineWinner, sendCountDownTimer, sendTimeIsOver, sendCreateNewGame,
     sendAddUserToGame } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { sendNotifAddUserToGame } from "../../../modules/wsCommunication/wsApp/wsMainRequests";
 
 import { Board } from "../Board/Board";
 import { Ships } from "../Ships/Ships";
@@ -46,6 +47,7 @@ function Lobby(props) {
         const countdown = users.length === 2 & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
         if (!timer.isEnemyConnected && users.length === 1 && me?.id !== userId) {
             sendAddUserToGame(props.client, lobby.id, !enemyBoard.user_id ? enemyBoard.id: myBoard.id);
+            sendNotifAddUserToGame(props.mainClient, lobby.id);
             timer.isEnemyConnected = true;
         };
 

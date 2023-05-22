@@ -95,7 +95,7 @@ function LobbyPage(props) {
                 <div>
                     <div className="main-page">
                         {<Lobby lobby={lobby.data} client={client} lobbySlug={slug} navigate={navigate} 
-                            setIsWSReady={setIsWSReady}/>}
+                            setIsWSReady={setIsWSReady} mainClient={outletContext.mainClient}/>}
                     </div>
                     <SidePanel client={client} lobbySlug={slug} lobbyId={lobby.data.id}/>
                 </div>

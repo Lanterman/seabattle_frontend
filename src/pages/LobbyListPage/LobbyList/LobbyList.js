@@ -12,6 +12,7 @@ import "./LobbyList.css";
 function LobbyList(props) {
     const dispath = useDispatch();
     const mainAction = useActionData();
+    const userId = sessionStorage.getItem("user_id");
     const lobbyList = props.lobbyList;
 
     useEffect(() => {
@@ -22,18 +23,30 @@ function LobbyList(props) {
 
         props.mainClient.onmessage = (e) => {
             const data = JSON.parse(e.data);
+            const location = window.location;
 
             if (data.type === "created_game") {
-                if (["/lobbies/", "/lobbies"].includes(window.location.pathname)) {
+                if (["/lobbies/", "/lobbies"].includes(location.pathname) && 
+                        data.user_id !== userId && !location.search) {
                     dispath(setLobbyList([...lobbyList, data.lobby]));
                 };
 
             } else if (data.type === "deleted_game") {
-                if (["/lobbies/", "/lobbies"].includes(window.location.pathname)) {
+                if (["/lobbies/", "/lobbies"].includes(location.pathname)) {
                     lobbyList.map((lobby, number) => {
-                        console.log(lobby["id"], data)
                         if (lobby["id"] === data.lobby_id) {
-                            console.log(lobby)
+                            lobbyList.splice(number, 1);
+                        };
+                    dispath(setLobbyList([...lobbyList]));
+                    return lobbyList;
+                    });
+                };
+
+            } else if (data.type === "add_user_to_game") {
+                if (["/lobbies/", "/lobbies"].includes(location.pathname) &&
+                        data.user_id !== userId && !location.search) {
+                    lobbyList.map((lobby, number) => {
+                        if (lobby["id"] === data.lobby_id) {
                             lobbyList.splice(number, 1);
                         };
                     dispath(setLobbyList([...lobbyList]));
