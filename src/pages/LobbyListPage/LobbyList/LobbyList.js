@@ -37,9 +37,9 @@ function LobbyList(props) {
                         if (lobby["id"] === data.lobby_id) {
                             lobbyList.splice(number, 1);
                         };
-                    dispath(setLobbyList([...lobbyList]));
-                    return lobbyList;
+                        return lobbyList;
                     });
+                    dispath(setLobbyList([...lobbyList]));
                 };
 
             } else if (data.type === "add_user_to_game") {
