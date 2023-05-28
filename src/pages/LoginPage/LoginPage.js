@@ -30,7 +30,7 @@ function LoginPage(props) {
             <input placeholder="username" required type="text" onChange={(e) => setUsername(e.target.value)}/>
             <input placeholder="password" required type="password" onChange={(e) => setPassword(e.target.value)}/>
             <input type="submit" value="sign-in"/>
-            {isAuth && <Navigate to={redirectURL ? redirectURL : "/"} />}
+            {isAuth && <Navigate to={redirectURL ? redirectURL : `/profile/${username}/`} />}
 
             <Link to="/register" >Sign on</Link>
         </form>

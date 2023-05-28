@@ -33,13 +33,13 @@ function Lobby(props) {
     const [me, enemy] = users[0]["id"] === userId ? [users[0], users[1]] : [users[1], users[0]];
     const typeAction = myBoard.is_ready & enemyBoard.is_ready ? "turn" : "placement";
     const wsResp = new WSResponse();
-    console.log()
 
     if (!timer.isAnswered && winner && myBoard.is_play_again === null) {
         setIsOpenModal(true);
         timer.isAnswered = true;
     };
     
+    // console.log("Пофиксить многоразовый рендеринг LobbyListPage страницы")
     // console.log("Переработать переход на новую игру при обоюдном согласии о еще партии, временно перезагружает страницу")
     // console.log("Заменить прод редис на тестовый в тестах")
     
