@@ -1,0 +1,89 @@
+.photo-block {
+    background-color: rgb(225, 228, 235);
+    width: 350px;
+    height: 440px;
+    margin: 50px;
+    position: fixed;
+    border: 2px solid gray;
+}
+
+.photo-block .photo {
+    width: 100%;
+    height: 100%;
+}
+
+.photo-block .no-photo {
+    margin-top: 52%;
+    margin-left: 42%;
+    font-size: 60px;
+    opacity: 0.5;
+}
+
+
+.info {
+    padding: 20px;
+    width: 490px;
+    position: fixed;
+    margin-left: 450px;
+    margin-top: 80px;
+}
+
+.info div {
+    margin-bottom: 20px;
+}
+
+.info .key {
+    font-size: 20px;
+}
+
+.info .value {
+    font-size: 20px;
+    margin-left: 50px;
+}
+
+.info .usename .value {
+    margin-left: 92px;
+}
+
+.info .first-name .value {
+    margin-left: 88px;
+}
+
+.info .last-name .value {
+    margin-left: 91px;
+}
+
+.info .email .value {
+    margin-left: 126px;
+}
+
+.info .cash .value {
+    margin-left: 133px;
+}
+
+.info .rating .value {
+    margin-left: 120px;
+}
+
+.info .rating .star {
+    margin-left: 3px;
+    color: yellowgreen;
+}
+
+.info .create-in .value {
+    margin-left: 91px;
+}
+
+.info .update-in .value {
+    margin-left: 85px;
+}
+
+.profile-buts {
+    position: fixed;
+    margin: 510px 0px 0px 100px;
+}
+
+.profile-buts .update, .profile-buts .delete {
+    font-size: 17px;
+    margin-left: 15px;
+}

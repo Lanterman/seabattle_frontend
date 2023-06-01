@@ -5,7 +5,7 @@ import NotFoundPage from "../components/NotFoundPage/NotFoundPage";
 
 import { LoginPage } from "../pages/LoginPage/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage/RegisterPage";
-import { ProfilePage, userInfoLoader } from '../pages/ProfilePage/ProfilePage';
+import { ProfilePage, userInfoLoader } from '../pages/ProfilePage/Profile/ProfilePage';
 import { LobbyListPage, lobbyAction, lobbyListLoader } from '../pages/LobbyListPage/LobbyListPage/LobbyListPage';
 import { LobbyPage, lobbyLoader } from '../pages/LobbyPage/LobbyPage/LobbyPage';
 import LeadBoardPage from '../pages/LeadBoardPage/LeadBoardPage';

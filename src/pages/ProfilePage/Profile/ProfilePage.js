@@ -2,22 +2,22 @@ import { React, Suspense } from "react";
 import axios from "axios";
 import { Navigate, redirect, useLoaderData, Await } from "react-router-dom";
 
+import { UserInfo } from "../UserInfo/UserInfo";
+
 import "./ProfilePage.css";
 
 
 function ProfilePage(props) {
     
     const token = sessionStorage.getItem("auth_token");
-    // const myUsername = sessionStorage.getItem("username");
     const {userInfo} = useLoaderData();
 
     return token ? (
-        <div className="profile">
-            <p>Profile</p>
+        <div className="main-page">
             <Suspense fallback={<h1 className="suspense">Loading...</h1>}>
                 <Await resolve={userInfo}>
                     {resolved => (
-                        console.log(resolved)
+                        <UserInfo info={resolved} />
                     )}
                 </Await>
             </Suspense>
