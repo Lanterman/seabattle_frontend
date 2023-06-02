@@ -4,9 +4,14 @@ import thunk from "redux-thunk";
 
 import { lobbyReducer } from "./reducers/lobbyReducer";
 import { lobbyListReducer } from "./reducers/lobbyListReducer";
+import { profileReducer } from "./reducers/profileReducer";
 
 
-const rootReducer = combineReducers({lobby: lobbyReducer, lobbyList: lobbyListReducer});
+const rootReducer = combineReducers({
+    lobby: lobbyReducer, 
+    lobbyList: lobbyListReducer, 
+    profile: profileReducer
+});
 
 const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
 
