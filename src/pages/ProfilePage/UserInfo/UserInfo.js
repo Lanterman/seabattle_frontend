@@ -27,9 +27,7 @@ function UserInfo(props) {
     const isProcessing = ["submitting", "loading"].includes(navigation.state);
 
     isProcessing && typeModal && setTypeModal(null);
-    console.log("Отправлять фото на сервер, удалять фото")
-    // console.log(props.info)
-    // console.log("Проверить профиль и сделать экшен на сервер")
+
     useEffect(() => {
         props.info.updated_in !== updatedIn && dispath(defineProfileStateAction(props.info));
     });

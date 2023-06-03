@@ -46,8 +46,12 @@ async function updateInfo(formData) {
     const token = sessionStorage.getItem("auth_token");
     const username = sessionStorage.getItem("username");
     const baseURL = `http://127.0.0.1:8000/api/v1/auth/profile/${username}/`;
-    const response = await axios.patch(baseURL, formData, {headers: {"Authorization": `Token ${token}`}});
+    const headers = {"Authorization": `Token ${token}`};
 
+    if (formData.photo) headers['Content-Type'] = 'multipart/form-data';
+
+    const response = await axios.patch(baseURL, formData, {headers: headers});
+    
     if (response.statusText !== "OK") {
         throw new Response("", {status: response.status, statusText: "Bad request!"});
     };
@@ -72,7 +76,7 @@ const userInfoLoader = async ({request}) => {
 async function profileAction({request}) {
     const formData = await request.formData();
     let inputData = {};
-    console.log(formData.get("photo"))
+
     if (formData.get("type") === "Update information") {
         inputData = {
             first_name: formData.get("firstName"),
@@ -83,9 +87,6 @@ async function profileAction({request}) {
     
     } else if (formData.get("type") === "Update photo") {
         inputData = {photo: formData.get("photo")};
-    
-    } else if (formData.get("type") === "Delete photo") {
-        inputData = {photo: ""};
     };
 
     const updatedInfo = await updateInfo(inputData);

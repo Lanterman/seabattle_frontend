@@ -76,7 +76,17 @@ function ProfileWindow(props) {
                         <div className="block">
                             <p className="recommendation">It is recommended to use photo 350x440!</p>
                             <p className="warning">Only JPEG, PNG, ICO files are accepted!!</p>
-                            <input className="value-photo" name="photo" placeholder="Photo" required type="file" />
+                            <input className="value-photo" name="photo" placeholder="Photo" required type="file" 
+                                onChange={(e) => {
+                                    const pathSplit = e.target.value.split(".");
+                                    const button = document.getElementsByClassName("submit")[0];
+                                    if (!["jpeg", "jpg", "png", "ico"].includes(pathSplit[pathSplit.length - 1])) {
+                                        button.disabled = true;
+                                    } else {
+                                        if (button.disabled) button.disabled = false;
+                                    };
+                                }}
+                            />
                         </div>
                     }
 
