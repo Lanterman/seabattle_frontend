@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faStar } from '@fortawesome/free-solid-svg-icons';
 
@@ -11,6 +12,7 @@ import "./UserInfo.css";
 
 function UserInfo(props) {
     const dispath = useDispatch();
+    const navigation = useNavigation();
     const [typeModal, setTypeModal] = useState(null);
     const username = useSelector(state => state.profile.username);
     const firstName = useSelector(state => state.profile.firstName);
@@ -22,12 +24,14 @@ function UserInfo(props) {
     const createdIn = useSelector(state => state.profile.createdIn);
     const updatedIn = useSelector(state => state.profile.updatedIn);
     const photo = useSelector(state => state.profile.photo);
-    console.log(props.info);
-    // console.log("Пофиксить useEffect, добавить ограничение")
-    // console.log("Подкорректировать модальное окно, доделать все")
+    const isProcessing = ["submitting", "loading"].includes(navigation.state);
+
+    isProcessing && typeModal && setTypeModal(null);
+    console.log("Отправлять фото на сервер, удалять фото")
+    // console.log(props.info)
     // console.log("Проверить профиль и сделать экшен на сервер")
     useEffect(() => {
-        dispath(defineProfileStateAction(props.info));
+        props.info.updated_in !== updatedIn && dispath(defineProfileStateAction(props.info));
     });
 
     return (
@@ -100,7 +104,7 @@ function UserInfo(props) {
             </div>}
 
             {typeModal && <ProfileWindow
-                isProcessing={props.isProcessing}
+                isProcessing={isProcessing}
                 setTypeModal={setTypeModal}
                 typeModal={typeModal}
                 />}

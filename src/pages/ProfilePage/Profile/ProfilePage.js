@@ -42,6 +42,20 @@ async function getUserInfo(token, username) {
 };
 
 
+async function updateInfo(formData) {
+    const token = sessionStorage.getItem("auth_token");
+    const username = sessionStorage.getItem("username");
+    const baseURL = `http://127.0.0.1:8000/api/v1/auth/profile/${username}/`;
+    const response = await axios.patch(baseURL, formData, {headers: {"Authorization": `Token ${token}`}});
+
+    if (response.statusText !== "OK") {
+        throw new Response("", {status: response.status, statusText: "Bad request!"});
+    };
+
+    return response.data;
+};
+
+
 const userInfoLoader = async ({request}) => {
     const token = sessionStorage.getItem("auth_token");
     const splitURL = request.url.slice(0, request.url.length - 1).split("/");
@@ -55,4 +69,29 @@ const userInfoLoader = async ({request}) => {
 };
 
 
-export { ProfilePage, userInfoLoader };
+async function profileAction({request}) {
+    const formData = await request.formData();
+    let inputData = {};
+    console.log(formData.get("photo"))
+    if (formData.get("type") === "Update information") {
+        inputData = {
+            first_name: formData.get("firstName"),
+            last_name: formData.get("lastName"),
+            email: formData.get("email"),
+            mobile_number: formData.get("mobileNumber"),
+        };
+    
+    } else if (formData.get("type") === "Update photo") {
+        inputData = {photo: formData.get("photo")};
+    
+    } else if (formData.get("type") === "Delete photo") {
+        inputData = {photo: ""};
+    };
+
+    const updatedInfo = await updateInfo(inputData);
+
+    return updatedInfo;
+};
+
+
+export { ProfilePage, userInfoLoader, profileAction };
