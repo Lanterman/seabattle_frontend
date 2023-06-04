@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faQuestion } from '@fortawesome/free-solid-svg-icons';
 
@@ -12,6 +12,7 @@ import "./LobbyWindow.css";
 function LobbyWindow(props) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const bet = useSelector(state => state.lobby.bet);
 
     function modalAgreeHandler() {
         if (props.type === "give-up") {
@@ -23,7 +24,7 @@ function LobbyWindow(props) {
     };
 
     function giveUpHandler() {
-        sendDetermineWinner(props.client, props.content.userId);
+        sendDetermineWinner(props.client, bet, props.content.userId);
         if (props.content.url) {
             playAgainHandler(false);
             props.client.close();

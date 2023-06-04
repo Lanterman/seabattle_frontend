@@ -6,7 +6,7 @@ import { useState } from "react";
 
 import { clearState } from "../../store/reducers/lobbyReducer";
 import { LobbyWindow } from "../ModalWindows/LobbyWindow/LobbyWindow";
-import { sendDeleteGame } from "../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { sendDeleteGame, sendPlayAgain } from "../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import { sendNotifDeletedGame } from "../../modules/wsCommunication/wsApp/wsMainRequests";
 
 import "./Header.css";
@@ -27,6 +27,8 @@ function Header(props) {
     function onClickHandler(e, url) {
         e.preventDefault();
         if (window.location.pathname.length >= 45) {
+            winner && myBoard.is_play_again === null && sendPlayAgain(props.client, lobbyId, myBoard.id, false);
+
             if (!winner && users && users.length === 2 && enemyBoard.user_id) {
                 setContent(Object.assign({url: url}, {userId: enemyBoard.user_id, lobbyId: lobbyId, boardId: myBoard.id}));
                 setIsOpenModal(true);

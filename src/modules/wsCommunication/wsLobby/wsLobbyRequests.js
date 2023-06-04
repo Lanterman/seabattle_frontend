@@ -52,8 +52,8 @@ export function sendWhoStarts(client) {
     }));
 };
 
-export function sendDetermineWinner(client, enemyId=null) {
-    const data = {type: "determine_winner"};
+export function sendDetermineWinner(client, bet, enemyId=null) {
+    const data = {type: "determine_winner", bet: bet};
     if (enemyId) data.enemy_id = enemyId;
     client.send(JSON.stringify(data));
 };

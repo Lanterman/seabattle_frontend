@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDollar,  faClock, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faDollar, faClock, faUser, faStar } from '@fortawesome/free-solid-svg-icons';
 
 import { timer, createBoardVariable } from "../../../modules/services";
 import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResponse";
@@ -39,7 +39,6 @@ function Lobby(props) {
         timer.isAnswered = true;
     };
     
-    // console.log("Добавить логику рейтинга и денег")
     // console.log("Переработать переход на новую игру при обоюдном согласии о еще партии, временно перезагружает страницу")
     // console.log("Заменить прод редис на тестовый в тестах")
     
@@ -79,7 +78,7 @@ function Lobby(props) {
                 wsResp.setTimeLeft(dispatch, data.time_left);
 
                 if (userId === data.user_id && data.enemy_ships === 0) {
-                    sendDetermineWinner(props.client);
+                    sendDetermineWinner(props.client, lobby.bet);
                 };
 
             } else if (["drop_ship", "clear_board", "random_placed"].includes(data.type)) {
@@ -150,7 +149,7 @@ function Lobby(props) {
 
     function timeIsOver(typeAction, enemyId, myBoard) {
         if (typeAction === "turn") {
-            sendDetermineWinner(props.client, myBoard.is_my_turn && enemyId);
+            sendDetermineWinner(props.client, lobby.bet, myBoard.is_my_turn && enemyId);
         } else {
             if (!myBoard.is_ready) {
                 const board = createBoardVariable(myBoard);
@@ -206,8 +205,12 @@ function Lobby(props) {
                         <span>{enemy.username}</span>
                         <FontAwesomeIcon icon={faUser}/>
                         <div className="enemy-info">
-                            <p className="info">First name: {enemy.first_name ? enemy.first_name : "None"}</p>
-                            <p className="info">Last name: {enemy.last_name ? enemy.last_name : "None"}</p>
+                            <p className="user-info">First name: {enemy.first_name ? enemy.first_name : "None"}</p>
+                            <p className="user-info">Last name: {enemy.last_name ? enemy.last_name : "None"}</p>
+                            <p className="user-info">
+                                Rating: {enemy.rating}
+                                <FontAwesomeIcon className="user-rating" icon={faStar}/>
+                            </p>
                         </div>
                     </span>
                 </span>}

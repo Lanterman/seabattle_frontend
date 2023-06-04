@@ -70,19 +70,31 @@
     min-width: 160px;
     padding: 5px 3px 0px 3px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    margin-left: 24.5%;
+    margin-left: 25%;
     text-align: left;
+    padding: 10px;
 }
 
-.enemy-info .info {
+.enemy-info .user-info {
     padding-bottom: 3px;
     color: rgb(88, 84, 84);
 }
 
-.enemy-info a:hover {background-color: #ddd;}
+.enemy-info:hover {
+    background-color: #ddd;
+}
 
 /* Show the dropdown menu on hover */
-.enemy:hover .enemy-info {display: block;}
+.enemy:hover .enemy-info {
+    display: block;
+}
+
+.enemy .enemy-info .user-rating {
+    font-size: 17px;
+    margin-left: 2px;
+    margin-bottom: 1px;
+}
+
 /* dropdown */
 
 .waiting, .waiting-new-game {
