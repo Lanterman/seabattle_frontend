@@ -1,0 +1,41 @@
+.top-users {
+    margin-top: 40px;
+    margin-left: 20%;
+}
+
+.top-users .block-user {
+    display: block;
+    text-decoration: none;
+    font-size: 20px;
+    width: 600px;
+    margin-bottom: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    color: rgb(23, 0, 235);
+}
+
+.top-users .block-user:hover {
+    color: rgb(240, 65, 65);
+}
+
+.top-users .odd {
+    background-color: rgb(221, 220, 220);
+}
+
+.top-users .even {
+    background-color: rgb(199, 196, 196);
+}
+
+.top-users .block-user .number-user {
+    margin-right: 5px;
+}
+
+.top-users .block-user .rating-user {
+    float: right;
+}
+
+.top-users .block-user .rating-user .star {
+    margin-left: 3px;
+    font-size: 18px;
+    color: yellowgreen;
+}

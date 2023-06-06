@@ -55,7 +55,10 @@ async function createLobby(formData) {
 
 async function getLobbyList(token, queryParams) {
     const baseURL = "http://127.0.0.1:8000/api/v1";
-    const response = await axios.get(`${baseURL}/lobbies/${queryParams}`, {headers: {"Authorization": `Token ${token}`}});
+    const response = await axios.get(
+        `${baseURL}/lobbies/${queryParams ? "?" + queryParams : ""}`, 
+        {headers: {"Authorization": `Token ${token}`}}
+    );
 
     if (response.statusText !== "OK") {
         throw new Response("", {status: response.status, statusText: "Not found"});
@@ -73,7 +76,7 @@ const lobbyListLoader = async ({request}) => {
         return redirect("/login?next=/lobbies");
     };
 
-    return {lobbyList: getLobbyList(token, `?${queryParams}`)};
+    return {lobbyList: getLobbyList(token, queryParams)};
 };
 
 

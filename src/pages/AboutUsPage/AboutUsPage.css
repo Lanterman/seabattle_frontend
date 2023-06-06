@@ -1,0 +1,54 @@
+.title-about {
+    margin-top: 50px;
+    font-size: 30px;
+    text-align: center;
+}
+
+.info-prod {
+    margin: 30px 10%;
+    font-size: 20px;
+}
+
+.info-prod span {
+    display: block;
+    padding: 3px 0px;
+}
+
+.contacts .contacts-title {
+    margin: 50px 10% 20px 10%;
+    font-size: 25px;
+}
+
+.contacts .contact {
+    margin: 10px 12%;
+    font-size: 20px;
+}
+
+.contacts .contact .link {
+    text-decoration: none;
+    margin-left: 10px;
+    color: rgb(23, 0, 235);
+}
+
+.contacts .contact .link:hover:hover {
+    color: rgb(240, 65, 65);
+}
+
+.contacts .contact .phone {
+    margin-left: 10px;
+}
+
+.team .team-title {
+    margin: 50px 10% 20px 10%;
+    font-size: 25px;
+}
+
+.team .people {
+    margin: 10px 12%;
+    font-size: 20px;
+}
+
+.team .people .full-name {
+    text-decoration: none;
+    margin-left: 10px;
+}
