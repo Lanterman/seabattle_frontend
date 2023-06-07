@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link, Navigate, useLocation } from "react-router-dom";
+import { ImGoogle, ImGithub } from "react-icons/im";
 
 import "./LoginPage.css";
 
@@ -26,14 +27,41 @@ function LoginPage(props) {
     };
 
     return (
-        <form className="main-page" onSubmit={setLogin}>
-            <input placeholder="username" required type="text" onChange={(e) => setUsername(e.target.value)}/>
-            <input placeholder="password" required type="password" onChange={(e) => setPassword(e.target.value)}/>
-            <input type="submit" value="sign-in"/>
-            {isAuth && <Navigate to={redirectURL ? redirectURL : `/profile/${username}/`} />}
+        <div className="main-page" >
+            <div className="login-page">
+                <p className="login-title">Sign in</p>
+                <form className="sign-in" onSubmit={setLogin}>
+                    <input placeholder="Username" required type="text" className="value"
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <input placeholder="Password" required type="password" className="value"
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <input type="submit" value="Sign in" className="submit-login"/>
+                </form>
 
-            <Link to="/register" >Sign on</Link>
-        </form>
+                <div className="separation"></div>
+
+                <div className="buttons">
+                    <button className="button google">
+                        <ImGoogle className="icon" />
+                        <span className="value">Login with Google</span>
+                    </button>
+
+                    <button className="button github">
+                        <ImGithub className="icon" />
+                        <span className="value">Login with GitHub</span>
+                    </button>
+                </div>
+
+                <p className="register">
+                    Don't have an account? 
+                    <Link to="/register" className="register-link" >Sign up</Link>
+                </p>
+            </div>
+
+            {isAuth && <Navigate to={redirectURL ? redirectURL : `/profile/${username}/`} />}
+        </div>
     );
 };
 
