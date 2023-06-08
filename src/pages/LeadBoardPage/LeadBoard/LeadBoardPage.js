@@ -46,7 +46,7 @@ async function getTopUserListLoader() {
     const token = sessionStorage.getItem("auth_token");
 
     if (!token) {
-        return redirect(`/login?next=/leadboard/`);
+        return redirect(`/sign-in?next=/leadboard/`);
     };
 
     return {topUserList: getTopUserList(token)};

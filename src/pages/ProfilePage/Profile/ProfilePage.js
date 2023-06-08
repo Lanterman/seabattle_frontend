@@ -1,6 +1,6 @@
 import { React, Suspense } from "react";
 import axios from "axios";
-import { Navigate, redirect, useLoaderData, Await } from "react-router-dom";
+import { redirect, useLoaderData, Await } from "react-router-dom";
 
 import { UserInfo } from "../UserInfo/UserInfo";
 
@@ -9,10 +9,9 @@ import "./ProfilePage.css";
 
 function ProfilePage(props) {
     
-    const token = sessionStorage.getItem("auth_token");
     const {userInfo} = useLoaderData();
 
-    return token ? (
+    return (
         <div className="main-page">
             <Suspense fallback={<h1 className="suspense">Loading...</h1>}>
                 <Await resolve={userInfo}>
@@ -22,8 +21,7 @@ function ProfilePage(props) {
                 </Await>
             </Suspense>
         </div>
-        ):
-        <Navigate to="/login"/>
+        )
 };
 
 
@@ -66,7 +64,7 @@ const userInfoLoader = async ({request}) => {
     const usernameInURL = splitURL[splitURL.length - 1];
 
     if (!token) {
-        return redirect(`/login?next=/profile/${usernameInURL}/`);
+        return redirect(`/sign-in${usernameInURL === null ? `?next=/profile/${usernameInURL}` : ""}/`);
     };
 
     return {userInfo: getUserInfo(token, usernameInURL)};

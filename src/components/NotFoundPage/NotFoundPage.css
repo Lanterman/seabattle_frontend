@@ -1,0 +1,10 @@
+.not-found-page .code {
+    text-align: center;
+    font-size: 60px;
+    margin-top: 25%;
+}
+
+.not-found-page .detail {
+    text-align: center;
+    font-size: 25px;
+}

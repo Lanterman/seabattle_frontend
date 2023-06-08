@@ -73,7 +73,7 @@ const lobbyListLoader = async ({request}) => {
     const queryParams = request.url.split("?")[1];
 
     if (!token) {
-        return redirect("/login?next=/lobbies");
+        return redirect("/sign-in?next=/lobbies");
     };
 
     return {lobbyList: getLobbyList(token, queryParams)};

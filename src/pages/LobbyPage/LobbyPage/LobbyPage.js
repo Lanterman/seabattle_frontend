@@ -129,7 +129,7 @@ const lobbyLoader = async ({params}) => {
     const userId = Number(sessionStorage.getItem("user_id"))
 
     if (!token) {
-        return redirect(`/login?next=/lobbies/${slug}`);
+        return redirect(`/sign-in?next=/lobbies/${slug}`);
     };
 
     const lobby = await getLobbyBySlug(slug, token);
