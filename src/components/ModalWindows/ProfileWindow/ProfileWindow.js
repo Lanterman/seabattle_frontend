@@ -48,6 +48,11 @@ function ProfileWindow(props) {
                                     defaultValue={firstName}
                                 />
                             </div>
+                            {props.errors?.first_name && props.errors.first_name.map((error, number) => {
+                                return (<li key={number} className="error" >
+                                    {error}
+                                </li>)
+                            })}
 
                             <div className="block">
                                 <span className="label">Last name:</span>
@@ -55,6 +60,11 @@ function ProfileWindow(props) {
                                     defaultValue={lastName}
                                 />
                             </div>
+                            {props.errors?.last_name && props.errors.last_name.map((error, number) => {
+                                return (<li key={number} className="error" >
+                                    {error}
+                                </li>)
+                            })}
 
                             <div className="block">
                                 <span className="label">Email:</span>
@@ -62,6 +72,11 @@ function ProfileWindow(props) {
                                     defaultValue={email} type="email"
                                 />
                             </div>
+                            {props.errors?.email && props.errors.email.map((error, number) => {
+                                return (<li key={number} className="error" >
+                                    {error}
+                                </li>)
+                            })}
 
                             <div className="block">
                                 <span className="label">Mobile number:</span>
@@ -69,6 +84,11 @@ function ProfileWindow(props) {
                                     defaultValue={mobileNumber} type="number"
                                 />
                             </div>
+                            {props.errors?.mobile_number && props.errors.mobile_number.map((error, number) => {
+                            return (<li key={number} className="error" >
+                                {error}
+                            </li>)
+                    })}
                         </>
                     }
 

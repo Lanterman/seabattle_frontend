@@ -26,8 +26,6 @@ function UserInfo(props) {
     const photo = useSelector(state => state.profile.photo);
     const isProcessing = ["submitting", "loading"].includes(navigation.state);
 
-    isProcessing && typeModal && setTypeModal(null);
-
     useEffect(() => {
         props.info.updated_in !== updatedIn && dispath(defineProfileStateAction(props.info));
     });
@@ -66,7 +64,7 @@ function UserInfo(props) {
                     <span className="value" >{mobileNumber || "None"}</span>
                 </div>
 
-                {props.info.id &&<div className="cash">
+                {props.info.id && <div className="cash">
                     <label className="key">Cash:</label>
                     <span className="value" >{cash} $</span>
                 </div>}
@@ -105,6 +103,7 @@ function UserInfo(props) {
                 isProcessing={isProcessing}
                 setTypeModal={setTypeModal}
                 typeModal={typeModal}
+                errors={props.errors}
                 />}
         </div>
     );

@@ -1,6 +1,6 @@
 import { React, Suspense } from "react";
 import axios from "axios";
-import { redirect, useLoaderData, Await } from "react-router-dom";
+import { redirect, useLoaderData, Await, useActionData } from "react-router-dom";
 
 import { UserInfo } from "../UserInfo/UserInfo";
 import NotFoundPage from "../../../components/NotFoundPage/NotFoundPage";
@@ -11,13 +11,17 @@ import "./ProfilePage.css";
 function ProfilePage(props) {
     
     const {userInfo} = useLoaderData();
+    const actionData = useActionData();
+
     return (
         <div className="main-page">
             <Suspense fallback={<h1 className="suspense">Loading...</h1>}>
                 <Await resolve={userInfo}>
                     {resolved => {
-                        if (resolved.status === 200) {
-                            return <UserInfo info={resolved.data} />;
+                        if (resolved.status !== 404) {
+                            return <UserInfo info={resolved.data} 
+                                        errors={actionData?.status === 400 ? actionData.data : ""}
+                                    />;
                         } else {
                             return <NotFoundPage />;
                         };
@@ -49,18 +53,19 @@ async function getUserInfo(token, username) {
 async function updateInfo(formData) {
     const token = sessionStorage.getItem("auth_token");
     const username = sessionStorage.getItem("username");
-    const baseURL = `http://127.0.0.1:8000/api/v1/auth/profile/${username}/`;
     const headers = {"Authorization": `Token ${token}`};
 
     if (formData.photo) headers['Content-Type'] = 'multipart/form-data';
 
-    const response = await axios.patch(baseURL, formData, {headers: headers});
-    
-    if (response.statusText !== "OK") {
-        throw new Response("", {status: response.status, statusText: "Bad request!"});
-    };
+    const response = await axios.patch(`auth/profile/${username}/`, formData, {headers: headers})
+        .then(function(response) {
+            return response.data;
+        })
+        .catch((function(response) {
+            return response.response;
+        }));
 
-    return response.data;
+    return response
 };
 
 
