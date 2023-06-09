@@ -7,6 +7,7 @@ import "./LoginPage.css";
 
 
 function LoginPage(props) {
+    const [errors, setErrors] = useState([]);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isAuth, setIsAuth] = useState(false);
@@ -22,7 +23,7 @@ function LoginPage(props) {
                 setIsAuth(true);
             })
             .catch((function(response) {
-              console.log(response.message);
+                setErrors(response.response.data)
           }));
     };
 
@@ -31,6 +32,12 @@ function LoginPage(props) {
             <div className="login-page">
                 <p className="login-title">Sign in</p>
                 <form className="sign-in" onSubmit={setLogin}>
+                    {errors && errors.map((error, number) => {
+                        return (<li key={number} className="error" >
+                            {error}
+                        </li>)
+                    })}
+
                     <input placeholder="Username" required type="text" className="value"
                         onChange={(e) => setUsername(e.target.value)}
                     />

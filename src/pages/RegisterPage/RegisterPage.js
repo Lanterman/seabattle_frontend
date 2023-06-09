@@ -106,7 +106,7 @@ async function registerUser(formData) {
             .catch((function(response) {
               return response.response.data
           }));
-    console.log(response)
+
     return response
 };
 

@@ -1,7 +1,12 @@
+.not-found-page {
+    position: absolute;
+    top: 30%;
+    left: 30%;
+}
+
 .not-found-page .code {
     text-align: center;
     font-size: 60px;
-    margin-top: 25%;
 }
 
 .not-found-page .detail {

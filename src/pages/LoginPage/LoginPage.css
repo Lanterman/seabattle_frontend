@@ -40,6 +40,10 @@
     background-color: rgb(17, 36, 211);
 }
 
+.sign-in .error {
+    color: red;
+}
+
 .separation {
     height: 1px;
     background-color: rgb(104, 102, 102);

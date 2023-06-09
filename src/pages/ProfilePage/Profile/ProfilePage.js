@@ -3,6 +3,7 @@ import axios from "axios";
 import { redirect, useLoaderData, Await } from "react-router-dom";
 
 import { UserInfo } from "../UserInfo/UserInfo";
+import NotFoundPage from "../../../components/NotFoundPage/NotFoundPage";
 
 import "./ProfilePage.css";
 
@@ -10,14 +11,17 @@ import "./ProfilePage.css";
 function ProfilePage(props) {
     
     const {userInfo} = useLoaderData();
-
     return (
         <div className="main-page">
             <Suspense fallback={<h1 className="suspense">Loading...</h1>}>
                 <Await resolve={userInfo}>
-                    {resolved => (
-                        <UserInfo info={resolved} />
-                    )}
+                    {resolved => {
+                        if (resolved.status === 200) {
+                            return <UserInfo info={resolved.data} />;
+                        } else {
+                            return <NotFoundPage />;
+                        };
+                    }}
                 </Await>
             </Suspense>
         </div>
@@ -30,13 +34,15 @@ async function getUserInfo(token, username) {
     const response = await axios.get(
         `${baseURL}/auth/profile/${username}/`, 
         {headers: {"Authorization": `Token ${token}`}}
-    );
+        )
+        .then(function(response) {
+            return response;
+        })
+        .catch((function(response) {
+            return response.response;
+        }));
 
-    if (response.statusText !== "OK") {
-        throw new Response("", {status: response.status, statusText: "Not found"});
-    };
-
-    return response.data;
+    return response;
 };
 
 
