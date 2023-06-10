@@ -16,9 +16,9 @@ function LobbyList(props) {
     const lobbyList = props.lobbyList;
 
     useEffect(() => {
-        if (mainAction && mainAction !== displayWsResult._lobbySlug) {
-            sendNotifCreatedGame(props.mainClient, mainAction);
-            displayWsResult._lobbySlug = mainAction;
+        if (mainAction?.lobbySlug && mainAction?.lobbySlug !== displayWsResult._lobbySlug) {
+            sendNotifCreatedGame(props.mainClient, mainAction.lobbySlug);
+            displayWsResult._lobbySlug = mainAction.lobbySlug;
         };
 
         props.mainClient.onmessage = (e) => {
@@ -61,7 +61,7 @@ function LobbyList(props) {
         <div className="lobbyList">
             <h1 className="title">Lobbies</h1>
 
-            {mainAction && <Navigate to={`/lobbies/${mainAction}`} />}
+            {mainAction?.lobbySlug && <Navigate to={`/lobbies/${mainAction.lobbySlug}`} />}
 
             {props.lobbyList.length ? 
                 props.lobbyList?.map(lobby => <Lobby lobby={lobby} key={lobby.slug} />) :

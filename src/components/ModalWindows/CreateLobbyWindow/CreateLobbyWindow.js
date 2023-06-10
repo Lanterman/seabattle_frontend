@@ -1,4 +1,4 @@
-import { Form } from "react-router-dom";
+import { Form, useActionData } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faAdd } from '@fortawesome/free-solid-svg-icons';
 
@@ -6,6 +6,7 @@ import "./CreateLobbyWindow.css";
 
 
 function CreateLobbyWindow(props) {
+    const mainAction = useActionData();
 
     function modalCloseHandler() {
         props.setIsOpenModal(false);
@@ -23,8 +24,16 @@ function CreateLobbyWindow(props) {
                     <input name="type" readOnly hidden value="create"/>
                     <div className="block">
                         <span className="label">Name:</span>
-                        <input className="value" name="name" placeholder="Name" required/>
+                        <input className={`value ${mainAction?.errors?.name && "er-value"}`} name="name" 
+                            placeholder="Name" required
+                        />
                     </div>
+
+                    {mainAction?.errors?.name && mainAction.errors.name.map((error, number) => {
+                        return (<li key={number} className="error" >
+                            {error}
+                        </li>)
+                    })}
                     
                     <div className="block">
                         <span className="label">Bet:</span>

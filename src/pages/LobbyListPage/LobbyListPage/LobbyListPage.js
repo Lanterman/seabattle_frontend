@@ -42,27 +42,28 @@ function LobbyListPage(props) {
 
 async function createLobby(formData) {
     const token = sessionStorage.getItem("auth_token");
-    const baseURL = "http://127.0.0.1:8000/api/v1/lobbies/";
-    const response = await axios.post(baseURL, formData, {headers: {"Authorization": `Token ${token}`}});
+    const response = await axios.post("lobbies/", formData, {headers: {"Authorization": `Token ${token}`}})
+        .then(function(response) {
+            return {lobbySlug: response.data.slug};
+        })
+        .catch(function(response) {
+            return {errors: response.response.data};
+        });
 
-    if (response.statusText !== "Created") {
-        throw new Response("", {status: response.status, statusText: "Bad request!"});
-    };
-
-    return response.data.slug;
+    return response;
 };
 
 
 async function getLobbyList(token, queryParams) {
-    const baseURL = "http://127.0.0.1:8000/api/v1";
+    const baseURL = "http://127.0.0.1:8000/api/v1/lobbies";
     const response = await axios.get(
-        `${baseURL}/lobbies/${queryParams ? "?" + queryParams : ""}`, 
+        `${baseURL}/${queryParams ? "?" + queryParams : ""}`, 
         {headers: {"Authorization": `Token ${token}`}}
-    );
-
-    if (response.statusText !== "OK") {
-        throw new Response("", {status: response.status, statusText: "Not found"});
-    };
+    ).then(function(response) {
+        return response;
+    }).catch(function(response) {
+        console.log(response);
+    });
 
     return response.data;
 };

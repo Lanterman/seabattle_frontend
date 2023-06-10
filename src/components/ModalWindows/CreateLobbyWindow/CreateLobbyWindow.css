@@ -12,7 +12,7 @@
     top: 20%;
     display: block;
     width: 350px;
-    height: 310px;
+    height: auto;
     background: rgb(209, 211, 218);
     padding: 10px;
     border: 1px solid black;
@@ -50,7 +50,11 @@
 }
 
 .modal-create .form .block {
-    margin: 0px 0px 25px 8px;
+    margin: 20px 0px 10px 8px;
+}
+
+.modal-create .form .block .er-value {
+    border: 1px solid red;
 }
 
 .modal-create .form .label {
@@ -72,6 +76,10 @@
     width: 103.1%;
     padding: 2px;
     margin-left: -5px;
+}
+
+.modal-create .form .error {
+    color: red;
 }
 
 .modal-create .buttons {
