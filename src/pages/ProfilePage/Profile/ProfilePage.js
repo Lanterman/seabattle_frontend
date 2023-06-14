@@ -34,10 +34,9 @@ function ProfilePage(props) {
 
 
 async function getUserInfo(token, username) {
-    const baseURL = "http://127.0.0.1:8000/api/v1";
     const response = await axios.get(
-        `${baseURL}/auth/profile/${username}/`, 
-        {headers: {"Authorization": `Token ${token}`}}
+        `${window.env.BASE_URL}/auth/profile/${username}/`, 
+        {headers: {"Authorization": `${window.env.TYPE_TOKEN} ${token}`}}
         )
         .then(function(response) {
             return response;
@@ -49,15 +48,14 @@ async function getUserInfo(token, username) {
     return response;
 };
 
-
 async function updateInfo(formData) {
     const token = sessionStorage.getItem("auth_token");
     const username = sessionStorage.getItem("username");
-    const headers = {"Authorization": `Token ${token}`};
+    const headers = {"Authorization": `${window.env.TYPE_TOKEN} ${token}`};
 
     if (formData.photo) headers['Content-Type'] = 'multipart/form-data';
 
-    const response = await axios.patch(`auth/profile/${username}/`, formData, {headers: headers})
+    const response = await axios.patch(`/auth/profile/${username}/`, formData, {headers: headers})
         .then(function(response) {
             return response.data;
         })
@@ -65,7 +63,7 @@ async function updateInfo(formData) {
             return response.response;
         }));
 
-    return response
+    return response;
 };
 
 

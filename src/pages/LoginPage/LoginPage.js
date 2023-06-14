@@ -15,7 +15,7 @@ function LoginPage(props) {
 
     function setLogin(e) {
         e.preventDefault();
-        axios.post('auth/sign-in/', {username: username, password: password})
+        axios.post('/auth/sign-in/', {username: username, password: password})
             .then(function(response) {
                 sessionStorage.setItem("auth_token", response.data.key);
                 sessionStorage.setItem("user_id", response.data.user);

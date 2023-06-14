@@ -5,14 +5,13 @@ import { useLoaderData, redirect, useOutletContext, useNavigate } from "react-ro
 
 import { timer } from "../../../modules/services";
 import  { defineLobbyStateAction, clearState } from "../../../store/reducers/lobbyReducer";
+import { sendDeleteGame } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { sendNotifDeletedGame } from "../../../modules/wsCommunication/wsApp/wsMainRequests";
 
 import { SidePanel } from "../SidePanel/SidePanel";
 import { Lobby } from "../Lobby/Lobby";
 
-
 import "./LobbyPage.css";
-import { sendDeleteGame } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
-import { sendNotifDeletedGame } from "../../../modules/wsCommunication/wsApp/wsMainRequests";
 
 
 function LobbyPage(props) {
@@ -104,22 +103,22 @@ function LobbyPage(props) {
 
 
 async function getLobbyBySlug(slug, token) {
-    try {
-        const baseURL = "http://127.0.0.1:8000/api/v1";
-        const response = await axios.get(`${baseURL}/lobbies/${slug}/`, {headers: {"Authorization": `Token ${token}`}});
+    const response = await axios.get(
+        `${window.env.BASE_URL}/lobbies/${slug}/`, 
+        {headers: {"Authorization": `${window.env.TYPE_TOKEN} ${token}`}}
+    )
+        .then(function(response) {
+            return response
+        })
+        .catch(function(error) {
+            if (error.response.status === 403) {
+                return error.response;
+            } else if (error.response.status === 404) {
+                return error.response;
+            };
+        });
 
-        if (response.statusText !== "OK") {
-            throw new Response("", {status: response.status, statusText: "Not found"});
-        };
-
-        return response;
-    } catch (error) {
-        if (error.response.status === 403) {
-            return error.response;
-        } else if (error.response.status === 404) {
-            return error.response;
-        };
-    };
+    return response;
 };  
 
 

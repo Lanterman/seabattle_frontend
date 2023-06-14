@@ -29,7 +29,8 @@ function UserInfo(props) {
     navigation.state === "loading" && !props.errors && typeModal && setTypeModal(null);
 
     useEffect(() => {
-        props.info.updated_in !== updatedIn && dispath(defineProfileStateAction(props.info));
+        (username !== props.info.username | props.info.updated_in !== updatedIn) && 
+            dispath(defineProfileStateAction(props.info));
     });
 
     return (

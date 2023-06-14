@@ -42,7 +42,10 @@ function LobbyListPage(props) {
 
 async function createLobby(formData) {
     const token = sessionStorage.getItem("auth_token");
-    const response = await axios.post("lobbies/", formData, {headers: {"Authorization": `Token ${token}`}})
+    const response = await axios.post(
+        "/lobbies/", formData, 
+        {headers: {"Authorization": `${window.env.TYPE_TOKEN} ${token}`}}
+    )
         .then(function(response) {
             return {lobbySlug: response.data.slug};
         })
@@ -55,10 +58,9 @@ async function createLobby(formData) {
 
 
 async function getLobbyList(token, queryParams) {
-    const baseURL = "http://127.0.0.1:8000/api/v1/lobbies";
     const response = await axios.get(
-        `${baseURL}/${queryParams ? "?" + queryParams : ""}`, 
-        {headers: {"Authorization": `Token ${token}`}}
+        `${window.env.BASE_URL}/lobbies/${queryParams ? "?" + queryParams : ""}`, 
+        {headers: {"Authorization": `${window.env.TYPE_TOKEN} ${token}`}}
     ).then(function(response) {
         return response;
     }).catch(function(response) {

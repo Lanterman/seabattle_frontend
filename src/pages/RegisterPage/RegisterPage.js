@@ -96,7 +96,7 @@ function RegisterPage(props) {
 
 
 async function registerUser(formData) {
-    const response = await axios.post('auth/sign-up/', formData)
+    const response = await axios.post('/auth/sign-up/', formData)
         .then(function(response) {
             sessionStorage.setItem("auth_token", response.data.key);
             sessionStorage.setItem("user_id", response.data.user);

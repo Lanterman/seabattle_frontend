@@ -31,8 +31,10 @@ function LeadBoardPage(props) {
 
 
 async function getTopUserList(token) {
-    const baseURL = "http://127.0.0.1:8000/api/v1/leadboard/";
-    const response = await axios.get(baseURL, {headers: {"Authorization": `Token ${token}`}});
+    const response = await axios.get(
+        window.env.BASE_URL + "/leadboard/", 
+        {headers: {"Authorization": `${window.env.TYPE_TOKEN} ${token}`}}
+    );
 
     if (response.statusText !== "OK") {
         throw new Response("", {status: response.status, statusText: "Not found"});
