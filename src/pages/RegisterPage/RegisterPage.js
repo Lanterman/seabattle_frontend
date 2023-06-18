@@ -18,7 +18,7 @@ function RegisterPage(props) {
                         </li>)
                     })}
                     <input placeholder="Username" required type="text" className="value"
-                        name="username" minLength="5" maxLength="30"
+                        name="username" minLength="5" maxLength="30" autoComplete="off"
                     />
                     {errors?.username && errors.username.map((error, number) => {
                         return (<li key={number} className="error" >
@@ -45,7 +45,7 @@ function RegisterPage(props) {
                     })}
 
                     <input placeholder="Email" required type="email" className="value"
-                        name="email" minLength="5" maxLength="30"
+                        name="email" minLength="5" maxLength="30" autoComplete="off"
                     />
                     {errors?.email && errors.email.map((error, number) => {
                         return (<li key={number} className="error" >

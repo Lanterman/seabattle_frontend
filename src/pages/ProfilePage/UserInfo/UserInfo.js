@@ -43,37 +43,37 @@ function UserInfo(props) {
             </div>
             <div className="info">
                 <div className="usename">
-                    <label className="key">Username:</label>
+                    <span className="key">Username:</span>
                     <span className="value">{username}</span>
                 </div>
 
                 <div className="first-name">
-                    <label className="key">First name:</label>
+                    <span className="key">First name:</span>
                     <span className="value" >{firstName || "None"}</span>
                 </div>
 
                 <div className="last-name">
-                    <label className="key">Last name:</label>
+                    <span className="key">Last name:</span>
                     <span className="value" >{lastName || "None"}</span>
                 </div>
 
                 <div className="email">
-                    <label className="key">Email:</label>
+                    <span className="key">Email:</span>
                     <span className="value" >{email}</span>
                 </div>
 
                 <div className="mobile-number">
-                    <label className="key">Mobile number:</label>
+                    <span className="key">Mobile number:</span>
                     <span className="value" >{mobileNumber || "None"}</span>
                 </div>
 
                 {props.info.id && <div className="cash">
-                    <label className="key">Cash:</label>
+                    <span className="key">Cash:</span>
                     <span className="value" >{cash} $</span>
                 </div>}
 
                 <div className="rating">
-                    <label className="key">Rating:</label>
+                    <span className="key">Rating:</span>
                     <span className="value" >
                         {rating}
                         <FontAwesomeIcon className="star" icon={faStar}/>
@@ -81,12 +81,12 @@ function UserInfo(props) {
                 </div>
 
                 <div className="create-in">
-                <label className="key">Created in:</label>
+                <span className="key">Created in:</span>
                     <span className="value" >{createdIn}</span>
                 </div>
 
                 <div className="update-in">
-                    <label className="key">Updated in:</label>
+                    <span className="key">Updated in:</span>
                     <span className="value" >{updatedIn || "None"}</span>
                 </div>
             </div>

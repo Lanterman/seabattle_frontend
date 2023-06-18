@@ -38,20 +38,20 @@ function FilterWindow(props) {
 
                     <div className="block">
                         <span className="label">Name:</span>
-                        <input className="value" name={name && "name"} placeholder="Name" value={name}
-                            onChange={(e) => dispath(setNameAction(e.target.value))}
+                        <input className="value" name={name && "name"} placeholder="Name" value={name} id="name"
+                            onChange={(e) => dispath(setNameAction(e.target.value))} autoComplete="off"
                             />
                     </div>
 
                     <div className="block">
                         <span className="label">Bet:</span>
                         <input className="max-value" type="number" min="5" max="1000" placeholder="Max" 
-                            name={betMax && "bet_max"}
+                            name={betMax && "bet_max"} id="bet-max"
                             value={betMax} onChange={(e) => dispath(setBetMaxAction(e.target.value))}
                             />
                         <span className="separate">-</span>
                         <input className="min-value" type="number" min="0" max="1000" placeholder="Min" 
-                            name ={betMin && "bet_min"}
+                            name ={betMin && "bet_min"} id="bet-min"
                             value={betMin} onChange={(e) => dispath(setBetMinAction(e.target.value))}
                             />
                     </div>
@@ -59,12 +59,12 @@ function FilterWindow(props) {
                     <div className="block">
                         <span className="label">Time to move:</span>
                         <input className="max-value" type="number" min="30" max="90" placeholder="Max" 
-                            name={timeToMoveMax && "time_to_move_max"} value={timeToMoveMax} 
+                            name={timeToMoveMax && "time_to_move_max"} value={timeToMoveMax} id="move-max"
                             onChange={(e) => dispath(setTimeToMoveMaxAction(e.target.value))}
                             />
                         <span className="separate">-</span>
                         <input className="min-value" type="number" min="0" max="90" placeholder="Min" 
-                            name={timeToMoveMin && "time_to_move_min"} value={timeToMoveMin} 
+                            name={timeToMoveMin && "time_to_move_min"} value={timeToMoveMin} id="move-min"
                             onChange={(e) => dispath(setTimeToMoveMinAction(e.target.value))} 
                             />
                     </div>
@@ -73,12 +73,12 @@ function FilterWindow(props) {
                         <span className="label">Time to placement:</span>
                         <input className="max-value" type="number" min="30" max="90" placeholder="Max" 
                             name={timeToPlacementMax && "time_to_placement_max"} value={timeToPlacementMax} 
-                            onChange={(e) => dispath(setTimeToPlacementMaxAction(e.target.value))}
+                            onChange={(e) => dispath(setTimeToPlacementMaxAction(e.target.value))} id="placement_max"
                             />
                         <span className="separate">-</span>
                         <input className="min-value" type="number" min="0" max="90" placeholder="Min" 
                             name={timeToPlacementMin && "time_to_placement_min"} value={timeToPlacementMin} 
-                            onChange={(e) => dispath(setTimeToPlacementMinAction(e.target.value))}
+                            onChange={(e) => dispath(setTimeToPlacementMinAction(e.target.value))} id="placement_min"
                             />
                     </div>
 

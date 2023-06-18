@@ -69,7 +69,7 @@ function ProfileWindow(props) {
                             <div className="block">
                                 <span className="label">Email:</span>
                                 <input className="value-info" name="email" placeholder="Email" required
-                                    defaultValue={email} type="email"
+                                    defaultValue={email} type="email" autoComplete="off"
                                 />
                             </div>
                             {props.errors?.email && props.errors.email.map((error, number) => {

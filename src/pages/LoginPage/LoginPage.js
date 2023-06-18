@@ -39,10 +39,10 @@ function LoginPage(props) {
                     })}
 
                     <input placeholder="Username" required type="text" className="value"
-                        onChange={(e) => setUsername(e.target.value)}
+                        onChange={(e) => setUsername(e.target.value)} id="username" autoComplete="off"
                     />
                     <input placeholder="Password" required type="password" className="value"
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => setPassword(e.target.value)} id="password"
                     />
                     <input type="submit" value="Sign in" className="submit-login"/>
                 </form>

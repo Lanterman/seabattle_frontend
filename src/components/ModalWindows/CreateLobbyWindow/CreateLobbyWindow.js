@@ -24,8 +24,8 @@ function CreateLobbyWindow(props) {
                     <input name="type" readOnly hidden value="create"/>
                     <div className="block">
                         <span className="label">Name:</span>
-                        <input className={`value ${mainAction?.errors?.name && "er-value"}`} name="name" 
-                            placeholder="Name" required
+                        <input className={`value ${mainAction?.errors?.name ? "er-value" : ""}`} name="name" 
+                            placeholder="Name" required autoComplete="off"
                         />
                     </div>
 
