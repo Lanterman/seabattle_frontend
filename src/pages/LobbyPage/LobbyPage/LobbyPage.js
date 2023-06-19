@@ -89,7 +89,7 @@ function LobbyPage(props) {
     return lobby.status === 404 ? 
         <div className="main-page"><h1 className="is-full">The lobby has been removed</h1></div> :
         (lobby.status === 403 ?
-            <div className="main-page"><h1 className="is-full">The lobby is crowded</h1></div> :
+            <div className="main-page"><h1 className="is-full">{lobby.data.detail}</h1></div> :
             (isWSReady && myBoard ? (
                 <div>
                     <div className="main-page">

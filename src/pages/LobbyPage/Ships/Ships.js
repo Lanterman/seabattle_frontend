@@ -55,7 +55,7 @@ function Ships(props) {
         <div className="initial-ships">
             {ships.map((ship) =>
                 <div key={ship.name} className="shipBlock">
-                    <label className="ship-label"> - {ship.count} {ship.count > 1 ? "ships" : "ship"}</label>
+                    <span className="ship-label"> - {ship.count} {ship.count > 1 ? "ships" : "ship"}</span>
                     <p 
                         id={ship.plane === "vertical" ? `${ship.name}-vertical` : ship.name}
                         className={`ship ${ship.count > 0 ? "exists" : "does-not-exists"}`}
