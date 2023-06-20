@@ -51,6 +51,12 @@ function CreateLobbyWindow(props) {
                         </p>
                     </div>
 
+                    {mainAction?.errors?.bet && mainAction.errors.bet.map((error, number) => {
+                        return (<li key={number} className="error" >
+                            {error}
+                        </li>)
+                    })}
+
                     <div className="block">
                         <span className="label">Time to move:</span>
                         <p className="value">

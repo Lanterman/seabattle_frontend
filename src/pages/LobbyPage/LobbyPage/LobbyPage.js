@@ -32,7 +32,6 @@ function LobbyPage(props) {
     useEffect(() => {
         if (client) {
             client.onopen = (e) => {
-                console.log("Websocket started");
                 setIsWSReady(!!client.readyState);
             };
 

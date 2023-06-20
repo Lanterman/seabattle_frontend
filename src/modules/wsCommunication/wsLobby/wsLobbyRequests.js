@@ -99,7 +99,7 @@ export function sendPlayAgain(client, lobbyId, boardId, answer) {
     }));
 };
 
-export function sendCreateNewGame(client, bet, name, timeToMove, timeToPlacement, enemyId) {
+export function sendCreateNewGame(client, bet, name, timeToMove, timeToPlacement, enemyId, lobbyId) {
     client.send(JSON.stringify({
         type: "create_new_game",
         bet: bet,
@@ -107,6 +107,7 @@ export function sendCreateNewGame(client, bet, name, timeToMove, timeToPlacement
         time_to_move: timeToMove,
         time_to_placement: timeToPlacement,
         enemy_id: enemyId,
+        lobby_id: lobbyId,
     }));
 };
 

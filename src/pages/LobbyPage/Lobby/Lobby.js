@@ -60,9 +60,10 @@ function Lobby(props) {
 
         if (!timer.isTimeIsOver && timeLeft <= 0) timeIsOver(typeAction, enemy.id, myBoard);
 
-        if (timer.isAnswered && myBoard.is_play_again && enemyBoard.is_play_again && winner === me.username) {
+        if (timer.isAnswered && myBoard.is_play_again && enemyBoard.is_play_again && winner !== me.username) {
             sendCreateNewGame(props.client, lobby.bet, lobby.name, lobby.time_to_move, lobby.time_to_placement, 
-                enemy.id);
+                enemy.id, lobby.id);
+            timer.isAnswered = false;
         };
 
         props.client.onmessage = (e) => {
