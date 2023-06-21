@@ -9,6 +9,7 @@ const defaultState = {
     createdIn: "", 
     updatedIn: "", 
     photo: "",
+    gamesHistory: [],
 };
 
 const PRELOAD = "PRELOAD";
@@ -39,6 +40,7 @@ export const profileReducer = (state = defaultState, action) => {
                 createdIn: action.payload.created_in,
                 updatedIn: action.payload.updated_in,
                 photo: action.payload.photo,
+                gamesHistory: action.payload.lobbies,
             };
         case SET_USERNAME:
             return {...state, username: action.payload};

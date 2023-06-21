@@ -7,7 +7,7 @@ class Aside extends React.Component {
     render() {
         return (
             <aside className="aside">
-                Aside
+                
             </aside>
         );
     };

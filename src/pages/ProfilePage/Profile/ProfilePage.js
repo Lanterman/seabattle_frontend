@@ -1,17 +1,20 @@
-import { React, Suspense } from "react";
 import axios from "axios";
+import { React, Suspense } from "react";
+import { useSelector } from "react-redux";
 import { redirect, useLoaderData, Await, useActionData } from "react-router-dom";
 
 import { UserInfo } from "../UserInfo/UserInfo";
+import { SidePanel } from "../SidePanel/SidePanel";
 import NotFoundPage from "../../../components/NotFoundPage/NotFoundPage";
 
 import "./ProfilePage.css";
 
 
 function ProfilePage(props) {
-    
     const {userInfo} = useLoaderData();
     const actionData = useActionData();
+    const pageUsername = useSelector(state => state.profile.username);
+    const ownUsername = sessionStorage.getItem("username");
 
     return (
         <div className="main-page">
@@ -28,6 +31,7 @@ function ProfilePage(props) {
                     }}
                 </Await>
             </Suspense>
+            {pageUsername === ownUsername && <SidePanel />}
         </div>
         )
 };

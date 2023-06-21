@@ -5,6 +5,7 @@
 
 .singl-lobby .lobby-name {
     text-align: center;
+    max-width: 1020px;
     font-size: 35px;
     margin-top: 25px;
 }

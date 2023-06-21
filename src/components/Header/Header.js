@@ -71,7 +71,7 @@ function Header(props) {
                 </NavLink>
             </nav>
             <div className="aside-header">
-                <Link to="/" onClick={(e) => onClickHandler(e, "/")}>v0.1.0</Link>
+                <Link to="/" onClick={(e) => onClickHandler(e, "/")}>{window.env.PROJECT_VERSION}</Link>
                 <Link to="https://github.com/Lanterman/seabattle_backend" >GitHub</Link>
             </div>
 
