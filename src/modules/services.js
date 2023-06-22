@@ -1,6 +1,18 @@
 export const columnNameList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 export const fieldNumberList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
+export let displayWsResult = {
+    _lobbySlug: "",
+
+    get lobbySlug() {
+        return this._lobbySlug;
+    },
+
+    set lobbySlug(value) {
+        this._lobbySlug = value;
+    }
+};
+
 export let timer = {
     _isCountdownHasStarted: false,
     _isTimeIsOver: false,

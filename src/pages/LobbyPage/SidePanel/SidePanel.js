@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { sendReadyToPlay, sendRandomPlacement }from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import { createBoardVariable } from "../../../modules/services";
 import { Chat } from "../Chat/Chat";
-import { ModalWindow } from "../../../components/ModalWindow/ModalWindow";
+import { LobbyWindow } from "../../../components/ModalWindows/LobbyWindow/LobbyWindow";
 
 import "./SidePanel.css";
 
@@ -64,7 +64,7 @@ function SidePanel(props) {
                         onClick={() => setIsOpenModal(true)} />
                 </div>
 
-                {isOpenModal && <ModalWindow 
+                {isOpenModal && <LobbyWindow 
                                     type="give-up" 
                                     msg="Do you really want to give up?"
                                     client={props.client}

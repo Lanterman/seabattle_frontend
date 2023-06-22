@@ -1,0 +1,12 @@
+.filter {
+    margin-left: 150px;
+    padding: 35px 10px;
+    width: 70px;
+    position: absolute;
+}
+
+.filter .filter-button {
+    font-size: 17px;
+    width: 100%;
+    padding: 3px;
+}

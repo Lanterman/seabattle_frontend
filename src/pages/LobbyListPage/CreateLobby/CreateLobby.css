@@ -1,0 +1,11 @@
+.create {
+    width: 130px;
+    padding: 35px 10px;
+    position: absolute;
+}
+
+.create .create-button {
+    font-size: 17px;
+    width: 100%;
+    padding: 3px;
+}

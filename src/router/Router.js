@@ -3,25 +3,27 @@ import { Route, createBrowserRouter, createRoutesFromElements } from "react-rout
 import Layout from "../components/Layout/Layout";
 import NotFoundPage from "../components/NotFoundPage/NotFoundPage";
 
+import { BasePage } from "../pages/BasePage/BasePage";
 import { LoginPage } from "../pages/LoginPage/LoginPage";
-import { RegisterPage } from "../pages/RegisterPage/RegisterPage";
-import ProfilePage from '../pages/ProfilePage/ProfilePage';
-import { LobbyListPage, lobbyListLoader } from '../pages/LobbyListPage/LobbyListPage/LobbyListPage';
+import { RegisterPage, registerUserAction } from "../pages/RegisterPage/RegisterPage";
+import { ProfilePage, profileAction, userInfoLoader } from '../pages/ProfilePage/Profile/ProfilePage';
+import { LobbyListPage, lobbyAction, lobbyListLoader } from '../pages/LobbyListPage/LobbyListPage/LobbyListPage';
 import { LobbyPage, lobbyLoader } from '../pages/LobbyPage/LobbyPage/LobbyPage';
-import LeadBoardPage from '../pages/LeadBoardPage/LeadBoardPage';
-import AboutMePage from '../pages/AboutMePage/AboutMePage';
+import { LeadBoardPage, getTopUserListLoader } from '../pages/LeadBoardPage/LeadBoard/LeadBoardPage';
+import AboutUsPage from '../pages/AboutUsPage/AboutUsPage';
 import "../App.css";
 
 
 const router = createBrowserRouter(createRoutesFromElements(
     <Route path="/" element={<Layout />} >
-        <Route index element={<ProfilePage />} />
-        <Route path="login/" element={<LoginPage />} />
-        <Route path="register/" element={<RegisterPage />} />
-        <Route path="lobbies/" element={<LobbyListPage />} loader={lobbyListLoader} />
+        <Route index element={<BasePage />} />
+        <Route path="profile/:username/" element={<ProfilePage />} loader={userInfoLoader} action={profileAction}/>
+        <Route path="sign-in/" element={<LoginPage />} />
+        <Route path="sign-up/" element={<RegisterPage />} action={registerUserAction} />
+        <Route path="lobbies/" element={<LobbyListPage />} loader={lobbyListLoader} action={lobbyAction}/>
         <Route path="lobbies/:slug/" element={<LobbyPage />} loader={lobbyLoader} />
-        <Route path="leadboard/" element={<LeadBoardPage />} />
-        <Route path="about/" element={<AboutMePage />} />
+        <Route path="leadboard/" element={<LeadBoardPage />} loader={getTopUserListLoader} />
+        <Route path="about/" element={<AboutUsPage />} />
         <Route path="*" element={<NotFoundPage />} />
     </Route>    
 ));

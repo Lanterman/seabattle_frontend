@@ -1,17 +1,18 @@
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faQuestion } from '@fortawesome/free-solid-svg-icons';
 
-import { sendDetermineWinner, sendPlayAgain } from "../../modules/wsCommunication/wsLobby/wsLobbyRequests";
-import { clearState } from "../../store/reducers/lobbyReducer";
+import { sendDetermineWinner, sendPlayAgain } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { clearState } from "../../../store/reducers/lobbyReducer";
 
-import "./ModalWindow.css";
+import "./LobbyWindow.css";
 
 
-function ModalWindow(props) {
+function LobbyWindow(props) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const bet = useSelector(state => state.lobby.bet);
 
     function modalAgreeHandler() {
         if (props.type === "give-up") {
@@ -23,7 +24,7 @@ function ModalWindow(props) {
     };
 
     function giveUpHandler() {
-        sendDetermineWinner(props.client, props.content.userId);
+        sendDetermineWinner(props.client, bet, props.content.userId);
         if (props.content.url) {
             playAgainHandler(false);
             props.client.close();
@@ -60,4 +61,4 @@ function ModalWindow(props) {
     );
 };
 
-export { ModalWindow };
+export { LobbyWindow };

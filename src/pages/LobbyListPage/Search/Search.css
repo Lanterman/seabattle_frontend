@@ -1,0 +1,18 @@
+.search {
+    text-align: center;
+    padding: 35px 15px;
+    width: 32.8%;
+    position: absolute;
+    margin-left: 250px;
+}
+
+.search .value {
+    font-size: 17px;
+    margin-right: 10px;
+    padding: 3px;
+}
+
+.search .button {
+    font-size: 17px;
+    padding: 3px 5px;
+}

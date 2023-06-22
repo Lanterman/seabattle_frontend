@@ -1,15 +1,26 @@
-import { Form } from "react-router-dom";
+import { useState } from "react";
+
+import { CreateLobbyWindow } from "../../../components/ModalWindows/CreateLobbyWindow/CreateLobbyWindow";
 
 
-function  CreateLobby(props) {
+import "./CreateLobby.css";
+
+function CreateLobby(props) {
+    const [isOpenModal, setIsOpenModal] = useState(false);
+
+    function onClickHandler() {
+        setIsOpenModal(true);
+    };
 
     return (
-        <Form action="/lobbies/new" method="post">
-            <label>Title: <input type="text" name="title" /></label>
-            <label>Body: <input type="text" name="body" /></label>
-            <input type="hidden" name="userId" value="1" />
-            <input type="submit" value="Add lobby"/>
-        </Form>
+        <div className="create">
+            <input className="create-button" type="button" value="Create lobby" onClick={() => onClickHandler()}/>
+
+            {isOpenModal && <CreateLobbyWindow
+                isProcessing={props.isProcessing}
+                setIsOpenModal={setIsOpenModal}
+                />}
+        </div>
     );
 };
 

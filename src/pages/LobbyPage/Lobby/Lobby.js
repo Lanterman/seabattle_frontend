@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDollar,  faClock, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faDollar, faClock, faUser, faStar } from '@fortawesome/free-solid-svg-icons';
 
 import { timer, createBoardVariable } from "../../../modules/services";
 import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResponse";
@@ -9,10 +9,11 @@ import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeLeft,
     clearState } from "../../../store/reducers/lobbyReducer";
 import { sendWhoStarts, sendDetermineWinner, sendCountDownTimer, sendTimeIsOver, sendCreateNewGame,
     sendAddUserToGame } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { sendNotifAddUserToGame } from "../../../modules/wsCommunication/wsApp/wsMainRequests";
 
 import { Board } from "../Board/Board";
 import { Ships } from "../Ships/Ships";
-import { ModalWindow } from "../../../components/ModalWindow/ModalWindow";
+import { LobbyWindow } from "../../../components/ModalWindows/LobbyWindow/LobbyWindow";
 
 import "./Lobby.css";
 
@@ -32,14 +33,12 @@ function Lobby(props) {
     const [me, enemy] = users[0]["id"] === userId ? [users[0], users[1]] : [users[1], users[0]];
     const typeAction = myBoard.is_ready & enemyBoard.is_ready ? "turn" : "placement";
     const wsResp = new WSResponse();
-    console.log()
 
     if (!timer.isAnswered && winner && myBoard.is_play_again === null) {
         setIsOpenModal(true);
         timer.isAnswered = true;
     };
     
-    // console.log("В дальнейшем при выходе из лобби, если только 1 пользователь, удалять ее")
     // console.log("Переработать переход на новую игру при обоюдном согласии о еще партии, временно перезагружает страницу")
     // console.log("Заменить прод редис на тестовый в тестах")
     
@@ -47,6 +46,7 @@ function Lobby(props) {
         const countdown = users.length === 2 & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
         if (!timer.isEnemyConnected && users.length === 1 && me?.id !== userId) {
             sendAddUserToGame(props.client, lobby.id, !enemyBoard.user_id ? enemyBoard.id: myBoard.id);
+            sendNotifAddUserToGame(props.mainClient, lobby.id);
             timer.isEnemyConnected = true;
         };
 
@@ -60,9 +60,10 @@ function Lobby(props) {
 
         if (!timer.isTimeIsOver && timeLeft <= 0) timeIsOver(typeAction, enemy.id, myBoard);
 
-        if (timer.isAnswered && myBoard.is_play_again && enemyBoard.is_play_again && winner === me.username) {
+        if (timer.isAnswered && myBoard.is_play_again && enemyBoard.is_play_again && winner !== me.username) {
             sendCreateNewGame(props.client, lobby.bet, lobby.name, lobby.time_to_move, lobby.time_to_placement, 
-                enemy.id);
+                enemy.id, lobby.id);
+            timer.isAnswered = false;
         };
 
         props.client.onmessage = (e) => {
@@ -78,7 +79,7 @@ function Lobby(props) {
                 wsResp.setTimeLeft(dispatch, data.time_left);
 
                 if (userId === data.user_id && data.enemy_ships === 0) {
-                    sendDetermineWinner(props.client);
+                    sendDetermineWinner(props.client, lobby.bet);
                 };
 
             } else if (["drop_ship", "clear_board", "random_placed"].includes(data.type)) {
@@ -149,7 +150,7 @@ function Lobby(props) {
 
     function timeIsOver(typeAction, enemyId, myBoard) {
         if (typeAction === "turn") {
-            sendDetermineWinner(props.client, myBoard.is_my_turn && enemyId);
+            sendDetermineWinner(props.client, lobby.bet, myBoard.is_my_turn && enemyId);
         } else {
             if (!myBoard.is_ready) {
                 const board = createBoardVariable(myBoard);
@@ -205,8 +206,12 @@ function Lobby(props) {
                         <span>{enemy.username}</span>
                         <FontAwesomeIcon icon={faUser}/>
                         <div className="enemy-info">
-                            <p className="info">First name: {enemy.first_name ? enemy.first_name : "None"}</p>
-                            <p className="info">Last name: {enemy.last_name ? enemy.last_name : "None"}</p>
+                            <p className="user-info">First name: {enemy.first_name ? enemy.first_name : "None"}</p>
+                            <p className="user-info">Last name: {enemy.last_name ? enemy.last_name : "None"}</p>
+                            <p className="user-info">
+                                Rating: {enemy.rating}
+                                <FontAwesomeIcon className="user-rating" icon={faStar}/>
+                            </p>
                         </div>
                     </span>
                 </span>}
@@ -228,7 +233,7 @@ function Lobby(props) {
             {users.length !== 2 && <div className="waiting"><i>Waiting for an enemy...</i></div>}
             {winner && (enemyBoard.is_play_again === null || myBoard.is_play_again === null) &&
                 <div className="waiting"><i>Waiting for an enemy...</i></div>}
-            {isOpenModal && <ModalWindow 
+            {isOpenModal && <LobbyWindow 
                                 type="play-again" 
                                 msg="Do you want to play again?"
                                 client={props.client}

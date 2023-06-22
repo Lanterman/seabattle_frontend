@@ -1,6 +1,6 @@
 const defaultState = {
-    myBoard: null, enemyBoard: null, currentShip: null, isCanPutShip: true, winner: null, timeLeft: null, timeToMove: null,
-    users: null, messages: null,
+    myBoard: null, enemyBoard: null, currentShip: null, isCanPutShip: true, winner: null, bet: null, timeLeft: null, 
+    timeToMove: null, users: null, messages: null, lobbyId: null,
 };
 
 const PRELOAD = "PRELOAD";
@@ -21,6 +21,7 @@ export const lobbyReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 lobbyId: action.payload.lobbyId,
+                bet: action.payload.bet,
                 timeLeft: action.payload.timeLeft,
                 timeToMove: action.payload.timeToMove,
                 winner: action.payload.winner,

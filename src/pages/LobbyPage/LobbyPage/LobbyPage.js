@@ -5,10 +5,11 @@ import { useLoaderData, redirect, useOutletContext, useNavigate } from "react-ro
 
 import { timer } from "../../../modules/services";
 import  { defineLobbyStateAction, clearState } from "../../../store/reducers/lobbyReducer";
+import { sendDeleteGame } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+import { sendNotifDeletedGame } from "../../../modules/wsCommunication/wsApp/wsMainRequests";
 
 import { SidePanel } from "../SidePanel/SidePanel";
 import { Lobby } from "../Lobby/Lobby";
-
 
 import "./LobbyPage.css";
 
@@ -23,6 +24,7 @@ function LobbyPage(props) {
     const userId = Number(sessionStorage.getItem("user_id"));
     const [isWSReady, setIsWSReady] = useState(false);
     const myBoard = useSelector(state => state.lobby.myBoard);
+    const users = useSelector(state => state.lobby.users);
     const client = useMemo(() => {
         return lobby.status === 200 ? new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${slug}/?token=${token}`) : null;
     }, [slug, token, lobby.status]);
@@ -30,7 +32,6 @@ function LobbyPage(props) {
     useEffect(() => {
         if (client) {
             client.onopen = (e) => {
-                console.log("Websocket started");
                 setIsWSReady(!!client.readyState);
             };
 
@@ -50,18 +51,18 @@ function LobbyPage(props) {
                     boards[0].user_id ?
                         (boards[0].user_id === userId ?
                             {lobbyId: data.id, myBoard: boards[0], enemyBoard: boards[1], winner: data.winner, 
-                                timeLeft: data.time_left, timeToMove: data.time_to_move, users: data.users, 
-                                messages: data.messages} :
+                                bet: data.bet, timeLeft: data.time_left, timeToMove: data.time_to_move, 
+                                users: data.users, messages: data.messages} :
                             {lobbyId: data.id, myBoard: boards[1], enemyBoard: boards[0], winner: data.winner, 
-                                timeLeft: data.time_left, timeToMove: data.time_to_move, users: data.users, 
-                                messages: data.messages}) :
+                                bet: data.bet, timeLeft: data.time_left, timeToMove: data.time_to_move, 
+                                users: data.users, messages: data.messages}) :
                         (boards[1].user_id === userId ?
                             {lobbyId: data.id, myBoard: boards[1], enemyBoard: boards[0], winner: data.winner, 
-                                timeLeft: data.time_left, timeToMove: data.time_to_move, users: data.users, 
-                                messages: data.messages} :
+                                bet: data.bet, timeLeft: data.time_left, timeToMove: data.time_to_move, 
+                                users: data.users, messages: data.messages} :
                             {lobbyId: data.id, myBoard: boards[0], enemyBoard: boards[1], winner: data.winner, 
-                                timeLeft: data.time_left, timeToMove: data.time_to_move, users: data.users, 
-                                messages: data.messages})
+                                bet: data.bet, timeLeft: data.time_left, timeToMove: data.time_to_move, 
+                                users: data.users, messages: data.messages})
                 ));
 
                 outletContext.setClient(client);
@@ -74,40 +75,49 @@ function LobbyPage(props) {
     });
 
     window.onpopstate = () => {
+        if (users.length !== 2) {
+            sendDeleteGame(client);
+            sendNotifDeletedGame(outletContext.mainClient, lobby.data.id);
+        };
+
         client.close();
         outletContext.setClient(null);
         dispatch(clearState());
     };
 
-    return client ? 
-        (isWSReady && myBoard ? (
-            <div>
-                <div className="main-page">
-                    {<Lobby lobby={lobby.data} client={client} lobbySlug={slug} navigate={navigate} 
-                        setIsWSReady={setIsWSReady}/>}
+    return lobby.status === 404 ? 
+        <div className="main-page"><h1 className="is-full">The lobby has been removed</h1></div> :
+        (lobby.status === 403 ?
+            <div className="main-page"><h1 className="is-full">{lobby.data.detail}</h1></div> :
+            (isWSReady && myBoard ? (
+                <div>
+                    <div className="main-page">
+                        {<Lobby lobby={lobby.data} client={client} lobbySlug={slug} navigate={navigate} 
+                            setIsWSReady={setIsWSReady} mainClient={outletContext.mainClient}/>}
+                    </div>
+                    <SidePanel client={client} lobbySlug={slug} lobbyId={lobby.data.id}/>
                 </div>
-                <SidePanel client={client} lobbySlug={slug} lobbyId={lobby.data.id}/>
-            </div>
-            ) : <div className="main-page"><h1 className="suspense">Lobby is loading...</h1></div>) :
-        <div className="main-page"><h1 className="is-full">The lobby is crowded</h1></div>;
+                ) : <div className="main-page"><h1 className="suspense">Lobby is loading...</h1></div>));
 };
 
 
 async function getLobbyBySlug(slug, token) {
-    try {
-        const baseURL = "http://127.0.0.1:8000/api/v1";
-        const response = await axios.get(`${baseURL}/lobbies/${slug}/`, {headers: {"Authorization": `Token ${token}`}});
+    const response = await axios.get(
+        `${window.env.BASE_URL}/lobbies/${slug}/`, 
+        {headers: {"Authorization": `${window.env.TYPE_TOKEN} ${token}`}}
+    )
+        .then(function(response) {
+            return response
+        })
+        .catch(function(error) {
+            if (error.response.status === 403) {
+                return error.response;
+            } else if (error.response.status === 404) {
+                return error.response;
+            };
+        });
 
-        if (response.statusText !== "OK") {
-            throw new Response("", {status: response.status, statusText: "Not found"});
-        };
-
-        return response;
-    } catch (error) {
-        if (error.response.status === 403) {
-            return error.response;
-        };
-    };
+    return response;
 };  
 
 
@@ -117,7 +127,7 @@ const lobbyLoader = async ({params}) => {
     const userId = Number(sessionStorage.getItem("user_id"))
 
     if (!token) {
-        return redirect(`/login?next=/lobbies/${slug}`);
+        return redirect(`/sign-in?next=/lobbies/${slug}`);
     };
 
     const lobby = await getLobbyBySlug(slug, token);

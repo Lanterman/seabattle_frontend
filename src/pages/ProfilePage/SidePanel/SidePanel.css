@@ -1,0 +1,72 @@
+.profile-side-panel {
+    position: fixed;
+    margin-left: 53%;
+    float: right;
+    width: 32%;
+    height: 100%;
+    background-color: rgb(232, 240, 240);
+    border-left: 1px inset rgb(228, 227, 227);
+    z-index: 99;
+}
+
+.profile-side-panel .profile-side-title{
+    text-align: center;
+    margin: 80px 15% 20px 15%;
+    font-size: 24px;
+}
+
+.profile-side-panel .game-history {
+    display: block;
+    font-size: 18px;
+    margin: 0px 15% 8px 15%;
+    width: 70%;
+    text-decoration: none;
+    padding: 3px;
+    border-radius: 15px;
+}
+
+.profile-side-panel .game-history:hover {
+    background-color: gray;
+}
+
+.profile-side-panel .odd {
+    background-color: rgb(221, 220, 220);
+}
+
+.profile-side-panel .even {
+    background-color: rgb(219, 209, 209);
+}
+
+.profile-side-panel .game-history .game-number {
+    color: black;
+    margin-left: 8px;
+    width: 20px;
+}
+
+.profile-side-panel .game-history .game-name {
+    margin-left: 8px;
+    word-wrap: break-word;
+}
+
+.profile-side-panel .game-history .win {
+    color: rgb(71, 192, 24);
+ }
+ 
+ .profile-side-panel .game-history .lose {
+     color: rgb(243, 32, 32);
+ }
+
+.profile-side-panel .game-history .game-is-private {
+    color: rgb(68, 68, 255);
+    display: inline;
+    float: right;
+    width: 30px;
+    margin-right: 3px;
+}
+
+.profile-side-panel .no-games {
+    font-size: 19px;
+    text-align: center;
+    opacity: 0.5;
+    margin-top: 50px;
+}

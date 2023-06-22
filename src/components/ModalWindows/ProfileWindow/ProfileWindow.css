@@ -1,0 +1,114 @@
+.wrap {
+    margin-left: 15%;
+    width: 53%;
+    height: 100%;
+    position: fixed;
+    left: 0; top: 0; right: 0; bottom: 0;
+}
+  
+.modal-profile {
+    position: absolute;
+    left: 32%;
+    top: 20%;
+    display: block;
+    width: 350px;
+    height: auto;
+    background: rgb(209, 211, 218);
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    box-shadow: 3px 3px 3px gray;
+}
+
+.modal-profile .modal-title {
+    border-bottom: 1px solid rgb(139, 137, 137);
+    padding-bottom: 5px;
+}
+
+.modal-profile .modal-title .question-icon {
+    float: left;
+    font-size: 20px;
+}
+
+.modal-profile .modal-title .blue {
+    color: rgb(55, 0, 255);
+}
+
+.modal-profile .modal-title .red {
+    color: rgb(255, 0, 55);
+}
+
+.modal-profile .modal-title .close-icon {
+    float: right;
+    font-size: 20px;
+}
+
+.modal-profile .modal-title .close-icon:hover {
+    color: gray;
+}
+
+.modal-profile .modal-title .title {
+    font-size: 20px;
+    text-align: center;
+}
+
+.modal-profile .form {
+    margin-top: 15px;
+}
+
+.modal-profile .form .block {
+    margin: 25px 0px 5px 8px;
+}
+
+.modal-profile .form .label {
+    font-size: 18px;
+}
+
+.modal-profile .form .value-info {
+    float: right;
+    font-size: 17px;
+    width: 50%;
+    padding: 1px;
+    margin-right: 8px;
+    margin-top: -2.8px;
+}
+
+.modal-profile .form .warning {
+    font-size: 17px;
+    margin-left: 17px;
+    margin-bottom: 10px;
+    color: rgb(243, 70, 57);
+}
+
+.modal-profile .form .recommendation {
+    font-size: 17px;
+    margin-left: 21px;
+}
+
+.modal-profile .form .value-photo {
+    font-size: 17px;
+    width: 100%;
+    padding: 1px;
+    margin-top: 8px;
+}
+
+.modal-profile .form .accept {
+    font-size: 18px;
+    text-align: center;
+    color: rgb(243, 70, 57);
+}
+
+.modal-profile .buttons {
+    margin-left: 49%;
+}
+
+.modal-profile .buttons .back, .modal-profile .buttons .submit {
+    font-size: 17.5px;
+    width: 80px;
+    height: 25px;
+    margin-left: 5px;
+}
+
+.modal-profile .error {
+    color: red;
+}

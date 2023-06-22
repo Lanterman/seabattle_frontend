@@ -1,3 +1,105 @@
-.login {
-    padding-top: 20%;
+.login-page {
+    margin: 100px 28% 0px 28%;
+    padding: 20px;
+    width: 40%;
+    background-color: rgb(204, 205, 211);
+    border-radius: 25px;
+}
+
+.login-page .login-title {
+    font-size: 30px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sign-in input {
+    display: block;
+    margin: 10px 7%;
+    border-radius: 5px;
+    border: 1px solid gray;
+}
+
+.sign-in .value {
+    font-size: 17px;
+    height: 30px;
+    width: 80%;
+    padding: 3px 10px;
+    border: 1px solid gray;
+}
+
+.sign-in .submit-login {
+    padding: 8px;
+    font-size: 20px;
+    width: 85%;
+    margin-top: 20px;
+    background-color: rgb(31, 99, 224);
+    color: aliceblue;
+}
+
+.sign-in .submit-login:hover {
+    background-color: rgb(17, 36, 211);
+}
+
+.sign-in .error {
+    color: red;
+}
+
+.separation {
+    height: 1px;
+    background-color: rgb(104, 102, 102);
+    width: 85%;
+    margin: 20px 7%;
+}
+
+.login-page .button {
+    display: block;
+    margin-left: 2%;
+    width: 107%;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    text-align: left;
+    overflow: hidden;
+}
+
+.login-page .button:hover {
+    opacity: 0.8;
+}
+
+.login-page .button .icon {
+    padding: 8px 10px 4px 10px;
+    font-size: 22px;
+}
+
+.login-page .button .value {
+    font-size: 18px;
+    border-left: 2px solid;
+    padding-left: 18px;
+    font-size: 20px;
+    float: right;
+    width: 82%;
+    height: 31px;
+    padding-top: 8px;
+}
+
+.login-page .google {
+    background-color: rgb(56, 72, 214);
+}
+
+.login-page .github {
+    background-color: rgb(128, 125, 125);
+}
+
+.register {
+    text-align: center;
+    font-size: 17px;
+}
+
+.register .register-link {
+    color: blue;
+    margin-left: 5px;
+}
+
+.register .register-link:hover {
+    color: rgb(14, 28, 160);
 }

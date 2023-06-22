@@ -4,12 +4,10 @@ import axios from "axios";
 
 import router from "./router/Router";
 
-// const request = axios.create({baseURL: "http://127.0.0.1:8000/api/v1/"});
 
 function App(props) {
 
-    axios.defaults.baseURL = "http://127.0.0.1:8000/api/v1/";
-    
+    axios.defaults.baseURL = window.env.BASE_URL;
 
     return (
         <RouterProvider router={router} />

@@ -1,0 +1,117 @@
+.wrap {
+    margin-left: 15%;
+    width: 53%;
+    height: 100%;
+    position: fixed;
+    left: 0; top: 0; right: 0; bottom: 0;
+}
+  
+.modal-filter {
+    position: absolute;
+    left: 32%;
+    top: 20%;
+    display: block;
+    width: 350px;
+    height: 310px;
+    background: rgb(209, 211, 218);
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    box-shadow: 3px 3px 3px gray;
+}
+
+.modal-filter .modal-title {
+    border-bottom: 1px solid rgb(139, 137, 137);
+    padding-bottom: 5px;
+}
+
+.modal-filter .modal-title .question-icon {
+    float: left;
+    font-size: 20px;
+    color: rgb(55, 0, 255);
+}
+
+.modal-filter .modal-title .close-icon {
+    float: right;
+    font-size: 20px;
+}
+
+.modal-filter .modal-title .close-icon:hover {
+    color: gray;
+}
+
+.modal-filter .modal-title .title {
+    font-size: 20px;
+    text-align: center;
+}
+
+.modal-filter .form {
+    margin-top: 15px;
+}
+
+.modal-filter .form .block {
+    margin: 0px 0px 25px 8px;
+}
+
+.modal-filter .form .block, .modal-create {
+    margin: 0px 0px 25px 8px;
+}
+
+.modal-filter .form .label {
+    font-size: 18px;
+}
+
+.modal-filter .form .value {
+    float: right;
+    font-size: 17px;
+    width: 50%;
+    padding: 1px;
+    margin-right: 8px;
+    margin-top: -2.8px;
+}
+
+.modal-filter .form .min-value, .modal-filter .form .max-value {
+    float: right;
+    font-size: 17px;
+    width: 20%;
+    padding: 1px;
+    margin-right: 8px;
+    margin-top: -2.8px;
+}
+
+.modal-filter .form .min-value {
+    margin-right: 0px;
+}
+
+.modal-filter .form .separate {
+    float: right;
+    font-size: 25px;
+    width: 28px;
+    margin-top: -6px;
+    text-align: center;
+}
+
+.modal-filter .form .password-label {
+    font-size: 18px;
+    position: relative;
+    left: 29.5%;
+}
+
+.modal-filter .form .radio-value {
+    height: 17px;
+    width: 17px;
+    margin: 0px 15px 0px 3px;
+    position: relative;
+    top: 2px;
+}
+
+.modal-filter .buttons {
+    margin-left: 49%;
+}
+
+.modal-filter .buttons .back, .modal-filter .buttons .submit {
+    font-size: 17.5px;
+    width: 80px;
+    height: 25px;
+    margin-left: 5px;
+}

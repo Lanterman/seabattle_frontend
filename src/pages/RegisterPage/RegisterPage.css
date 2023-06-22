@@ -1,0 +1,66 @@
+.register-page {
+    margin: 100px 28% 0px 28%;
+    padding: 20px;
+    width: 40%;
+    background-color: rgb(204, 205, 211);
+    border-radius: 25px;
+}
+
+.register-page .register-title {
+    font-size: 30px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sign-up input {
+    display: block;
+    margin: 10px 7%;
+    border-radius: 5px;
+    border: 1px solid gray;
+}
+
+.sign-up .value {
+    font-size: 17px;
+    height: 30px;
+    width: 80%;
+    padding: 3px 10px;
+    border: 1px solid gray;
+}
+
+.sign-up .submit-register {
+    padding: 8px;
+    font-size: 20px;
+    width: 85%;
+    margin-top: 20px;
+    background-color: rgb(31, 99, 224);
+    color: aliceblue;
+}
+
+.sign-up .submit-register:hover {
+    background-color: rgb(17, 36, 211);
+}
+
+.separation {
+    height: 1px;
+    background-color: rgb(104, 102, 102);
+    width: 85%;
+    margin: 20px 7%;
+}
+
+.login {
+    text-align: center;
+    font-size: 17px;
+}
+
+.login .login-link {
+    color: blue;
+    margin-left: 5px;
+}
+
+.login .login-link:hover {
+    color: rgb(14, 28, 160);
+}
+
+.register-page .sign-up .error {
+    color: red;
+}

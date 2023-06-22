@@ -1,11 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link, Navigate, useLocation } from "react-router-dom";
+import { ImGoogle, ImGithub } from "react-icons/im";
 
 import "./LoginPage.css";
 
 
 function LoginPage(props) {
+    const [errors, setErrors] = useState([]);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isAuth, setIsAuth] = useState(false);
@@ -13,7 +15,7 @@ function LoginPage(props) {
 
     function setLogin(e) {
         e.preventDefault();
-        axios.post('auth/login/', {username: username, password: password})
+        axios.post('/auth/sign-in/', {username: username, password: password})
             .then(function(response) {
                 sessionStorage.setItem("auth_token", response.data.key);
                 sessionStorage.setItem("user_id", response.data.user);
@@ -21,19 +23,52 @@ function LoginPage(props) {
                 setIsAuth(true);
             })
             .catch((function(response) {
-              console.log(response.message);
+                setErrors(response.response.data)
           }));
     };
 
     return (
-        <form className="main-page" onSubmit={setLogin}>
-            <input placeholder="username" required type="text" onChange={(e) => setUsername(e.target.value)}/>
-            <input placeholder="password" required type="password" onChange={(e) => setPassword(e.target.value)}/>
-            <input type="submit" value="sign-in"/>
-            {isAuth && <Navigate to={redirectURL ? redirectURL : "/"} />}
+        <div className="main-page" >
+            <div className="login-page">
+                <p className="login-title">Sign in</p>
+                <form className="sign-in" onSubmit={setLogin}>
+                    {errors && errors.map((error, number) => {
+                        return (<li key={number} className="error" >
+                            {error}
+                        </li>)
+                    })}
 
-            <Link to="/register" >Sign on</Link>
-        </form>
+                    <input placeholder="Username" required type="text" className="value"
+                        onChange={(e) => setUsername(e.target.value)} id="username" autoComplete="off"
+                    />
+                    <input placeholder="Password" required type="password" className="value"
+                        onChange={(e) => setPassword(e.target.value)} id="password"
+                    />
+                    <input type="submit" value="Sign in" className="submit-login"/>
+                </form>
+
+                <div className="separation"></div>
+
+                <div className="buttons">
+                    <button className="button google">
+                        <ImGoogle className="icon" />
+                        <span className="value">Login with Google</span>
+                    </button>
+
+                    <button className="button github">
+                        <ImGithub className="icon" />
+                        <span className="value">Login with GitHub</span>
+                    </button>
+                </div>
+
+                <p className="register">
+                    Don't have an account? 
+                    <Link to="/sign-up" className="register-link" >Sign up</Link>
+                </p>
+            </div>
+
+            {isAuth && <Navigate to={redirectURL ? redirectURL : `/profile/${username}/`} />}
+        </div>
     );
 };
 

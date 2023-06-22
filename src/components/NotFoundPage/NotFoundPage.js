@@ -1,9 +1,13 @@
-import { Link } from "react-router-dom";
+import "./NotFoundPage.css";
 
 function NotFoundPage() {
+  
     return (
-        <div className="notFoundPage">
-            <b>This page doesn't exist. Go <Link to="/">home</Link></b>
+        <div className="main-page">
+            <div className="not-found-page">
+                <p className="code">404</p>
+                <p className="detail">This is not the webp age you are looking for.</p>
+            </div>
         </div>
     );
 };
