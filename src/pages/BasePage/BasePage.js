@@ -10,7 +10,7 @@ function BasePage(props) {
         <div className="main-page">
             <div className="base-page">
                 <h1 className="base-title">Sea battle</h1>
-                <p className="description">
+                <div className="description">
                     <p className="base">
                         One game can be played by 2 users or a user and a computer. 
                         The computer will have several levels of difficulty.
@@ -28,7 +28,7 @@ function BasePage(props) {
                         with the loss connection will not have time to switch, will not make a move in the 
                         allotted time, or will want to give up. Each move is given a certain amount of time.
                     </p>
-                </p>
+                </div>
             </div>
         </div>
     ) :
