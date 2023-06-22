@@ -14,7 +14,7 @@ function SidePanel(props) {
                 <div className="profile-side-title">
                     Games history
                 </div>
-                {gamesHistory.map((game, number) => {
+                {gamesHistory.length > 0 ? gamesHistory.map((game, number) => {
                     return (
                         <Link to={`/lobbies/${game.slug}/`} key={number} 
                             className={`game-history ${number % 2 === 0 ? "odd" : "even"}`}
@@ -30,7 +30,9 @@ function SidePanel(props) {
                             }
                         </Link>
                     )
-                })}
+                }) :  
+                    <p className="no-games">No complited games.</p>
+                }
         </div>
     );
 };

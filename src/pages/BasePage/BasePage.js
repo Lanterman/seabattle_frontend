@@ -1,9 +1,12 @@
-import "./BasePage.css"
+import { Navigate } from "react-router-dom";
+
+import "./BasePage.css";
 
 
 function BasePage(props) {
+    const token = sessionStorage.getItem("auth_token");
 
-    return (
+    return token ? (
         <div className="main-page">
             <div className="base-page">
                 <h1 className="base-title">Sea battle</h1>
@@ -28,7 +31,8 @@ function BasePage(props) {
                 </p>
             </div>
         </div>
-    );
+    ) :
+        <Navigate to={`/sign-in?next=/`}/>;
 };
 
 export {BasePage};

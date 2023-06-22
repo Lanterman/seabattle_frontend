@@ -1,14 +1,18 @@
 import React from "react";
-import { Link} from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 
 import "./AboutUsPage.css";
 
 
 class AboutUsPage extends React.Component {
+    constructor(props){
+        super(props);
+         this.token = sessionStorage.getItem("auth_token");    
+    };
 
     render() {
-        return (
+        return this.token ? (
             <div className="main-page">
                 <h1 className="title-about">About us</h1>
                 <p className="info-prod">
@@ -65,7 +69,8 @@ class AboutUsPage extends React.Component {
                     </p>
                 </div>
             </div>
-        );
+        ) :
+            <Navigate to={`/sign-in?next=about`}/>;
     };
 };
 
