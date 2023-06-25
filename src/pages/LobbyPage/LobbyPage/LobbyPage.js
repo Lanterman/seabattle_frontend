@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLoaderData, redirect, useOutletContext, useNavigate } from "react-router-dom";
+import { useLoaderData, redirect, useOutletContext, useNavigate, Navigate } from "react-router-dom";
 
 import { timer } from "../../../modules/services";
 import  { defineLobbyStateAction, clearState } from "../../../store/reducers/lobbyReducer";
@@ -89,15 +89,17 @@ function LobbyPage(props) {
         <div className="main-page"><h1 className="is-full">The lobby has been removed</h1></div> :
         (lobby.status === 403 ?
             <div className="main-page"><h1 className="is-full">{lobby.data.detail}</h1></div> :
-            (isWSReady && myBoard ? (
-                <div>
-                    <div className="main-page">
-                        {<Lobby lobby={lobby.data} client={client} lobbySlug={slug} navigate={navigate} 
-                            setIsWSReady={setIsWSReady} mainClient={outletContext.mainClient}/>}
+            (lobby.status === 401 ?
+                <Navigate to={`/sign-in?next=/lobbies/${slug}`} />:
+                (isWSReady && myBoard ? (
+                    <div>
+                        <div className="main-page">
+                            {<Lobby lobby={lobby.data} client={client} lobbySlug={slug} navigate={navigate} 
+                                setIsWSReady={setIsWSReady} mainClient={outletContext.mainClient}/>}
+                        </div>
+                        <SidePanel client={client} lobbySlug={slug} lobbyId={lobby.data.id}/>
                     </div>
-                    <SidePanel client={client} lobbySlug={slug} lobbyId={lobby.data.id}/>
-                </div>
-                ) : <div className="main-page"><h1 className="suspense">Lobby is loading...</h1></div>));
+                    ) : <div className="main-page"><h1 className="suspense">Lobby is loading...</h1></div>)));
 };
 
 
@@ -110,7 +112,9 @@ async function getLobbyBySlug(slug, token) {
             return response
         })
         .catch(function(error) {
-            if (error.response.status === 403) {
+            if (error.response.status === 401) {
+                return error.response;
+            } else if (error.response.status === 403) {
                 return error.response;
             } else if (error.response.status === 404) {
                 return error.response;

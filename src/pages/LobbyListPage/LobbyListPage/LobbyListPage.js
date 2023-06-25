@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { useNavigation, Await, useLoaderData, redirect, useOutletContext } from "react-router-dom";
+import { useNavigation, Await, useLoaderData, redirect, useOutletContext, Navigate } from "react-router-dom";
 
 import Filter from "../Filter/Filter";
 import Search from "../Search/Search";
@@ -27,12 +27,16 @@ function LobbyListPage(props) {
             </div>
             <Suspense fallback={<h1 className="suspense">Loading...</h1>}>
                 <Await resolve={lobbyList}>
-                    {resolved => (
-                        <LobbyList 
-                            mainClient={outletContext.mainClient} 
-                            lobbyList={lobbies ? lobbies : resolved.results}
-                            />
-                    )}
+                    {resolved => {
+                        if (resolved.status === 401) {
+                            return <Navigate to={`/sign-in${`?next=/lobbies/`}`} />;
+                        } else {
+                            return <LobbyList 
+                                        mainClient={outletContext.mainClient} 
+                                        lobbyList={lobbies ? lobbies : resolved.data.results}
+                                    />
+                        };
+                    }}
                 </Await>
             </Suspense>
         </div>
@@ -65,9 +69,10 @@ async function getLobbyList(token, queryParams) {
         return response;
     }).catch(function(response) {
         console.log(response);
+        return response.response;
     });
 
-    return response.data;
+    return response;
 };
 
 

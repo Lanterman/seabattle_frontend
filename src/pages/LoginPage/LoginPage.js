@@ -3,6 +3,8 @@ import axios from "axios";
 import { Link, Navigate, useLocation } from "react-router-dom";
 import { ImGoogle, ImGithub } from "react-icons/im";
 
+import { ServerErrorException } from "../../modules/services";
+
 import "./LoginPage.css";
 
 
@@ -12,6 +14,7 @@ function LoginPage(props) {
     const [password, setPassword] = useState('');
     const [isAuth, setIsAuth] = useState(false);
     const redirectURL = useLocation().search?.slice(6);
+    const ServerError = new ServerErrorException();
 
     function setLogin(e) {
         e.preventDefault();
@@ -23,7 +26,8 @@ function LoginPage(props) {
                 setIsAuth(true);
             })
             .catch((function(response) {
-                setErrors(response.response.data)
+                if (response.response.status === 500) throw ServerError;
+                setErrors(response.response.data);
           }));
     };
 

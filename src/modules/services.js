@@ -59,3 +59,10 @@ export function createBoardVariable(board) {
     ));
     return columnBoard;
 };
+
+
+export class ServerErrorException {
+    constructor(message=null) {
+        this.message = message ? message : "Internal Server Error";
+    };
+ };

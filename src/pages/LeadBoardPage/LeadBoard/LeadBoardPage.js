@@ -18,9 +18,13 @@ function LeadBoardPage(props) {
                 <h1 className="title-board">Leader board</h1>
                 <Suspense fallback={<h1 className="suspense">Loading...</h1>}>
                     <Await resolve={topUserList}>
-                        {resolved => (
-                            <TopUserList topUser={resolved} />
-                        )}
+                        {resolved => {
+                            if (resolved.response?.status === 401) {
+                                return <Navigate to={`/sign-in${`?next=/leadbord/`}`} />;
+                            } else {
+                                return <TopUserList topUser={resolved.data.results} />
+                            }
+                        }}
                     </Await>
                 </Suspense>
             </div>
@@ -34,13 +38,15 @@ async function getTopUserList(token) {
     const response = await axios.get(
         window.env.BASE_URL + "/leadboard/", 
         {headers: {"Authorization": `${window.env.TYPE_TOKEN} ${token}`}}
-    );
+    )
+    .then(function(response) {
+        return response;
+    })
+    .catch(function(error){
+        return error;
+    });
 
-    if (response.statusText !== "OK") {
-        throw new Response("", {status: response.status, statusText: "Not found"});
-    };
-
-    return response.data.results;
+    return response;
 };
 
 

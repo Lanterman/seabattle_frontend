@@ -1,7 +1,7 @@
 import axios from "axios";
 import { React, Suspense } from "react";
 import { useSelector } from "react-redux";
-import { redirect, useLoaderData, Await, useActionData } from "react-router-dom";
+import { redirect, useLoaderData, Await, useActionData, Navigate } from "react-router-dom";
 
 import { UserInfo } from "../UserInfo/UserInfo";
 import { SidePanel } from "../SidePanel/SidePanel";
@@ -21,12 +21,17 @@ function ProfilePage(props) {
             <Suspense fallback={<h1 className="suspense">Loading...</h1>}>
                 <Await resolve={userInfo}>
                     {resolved => {
-                        if (resolved.status !== 404) {
+                        if (resolved.status === 401) {
+                            const splitPathname = window.location.pathname.split("/");
+                            const usernameToURL = splitPathname[splitPathname.length - 2];
+                            const redirectURL = `/sign-in${usernameToURL !== [] ? `?next=/profile/${usernameToURL}` : ""}/`;
+                            return <Navigate to={redirectURL} />;
+                        } else if (resolved.status === 404) {
+                            return <NotFoundPage />;
+                        } else {
                             return <UserInfo info={resolved.data} 
                                         errors={actionData?.status === 400 ? actionData.data : ""}
-                                    />;
-                        } else {
-                            return <NotFoundPage />;
+                                   />;
                         };
                     }}
                 </Await>
