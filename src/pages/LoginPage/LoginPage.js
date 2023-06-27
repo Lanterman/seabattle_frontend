@@ -20,9 +20,11 @@ function LoginPage(props) {
         e.preventDefault();
         axios.post('/auth/sign-in/', {username: username, password: password})
             .then(function(response) {
-                sessionStorage.setItem("auth_token", response.data.key);
+                sessionStorage.setItem("auth_token", response.data.access_token);
                 sessionStorage.setItem("user_id", response.data.user);
                 sessionStorage.setItem("username", username);
+                sessionStorage.setItem("refresh_token", response.data.refresh_token);
+                // document.cookie = `refresh_token = ${response.data.refresh_token}`;
                 setIsAuth(true);
             })
             .catch((function(response) {

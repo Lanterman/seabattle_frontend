@@ -2,6 +2,8 @@ import axios from "axios";
 import { React, Suspense } from "react";
 import { Navigate, redirect, useLoaderData, Await } from "react-router-dom";
 
+import { refreshTokenRequest } from "../../../modules/requestsToBackend";
+
 import { TopUserList } from "../TopUserList/TopUserList";
 
 import "./LeadBoardPage.css";
@@ -20,7 +22,7 @@ function LeadBoardPage(props) {
                     <Await resolve={topUserList}>
                         {resolved => {
                             if (resolved.response?.status === 401) {
-                                return <Navigate to={`/sign-in${`?next=/leadbord/`}`} />;
+                                return <Navigate to={`/sign-in${`?next=/leadboard/`}`} />;
                             } else {
                                 return <TopUserList topUser={resolved.data.results} />
                             }
@@ -42,7 +44,15 @@ async function getTopUserList(token) {
     .then(function(response) {
         return response;
     })
-    .catch(function(error){
+    .catch(async function(error){
+        if (error.response.status === 401) {            
+            if (error.response.data.detail === "Token expired.") {
+                const isRedirect = await refreshTokenRequest();
+                if (!isRedirect) {
+                    return await getTopUserList(sessionStorage.getItem("auth_token"));
+                };
+            };
+        };
         return error;
     });
 

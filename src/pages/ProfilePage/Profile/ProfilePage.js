@@ -3,6 +3,8 @@ import { React, Suspense } from "react";
 import { useSelector } from "react-redux";
 import { redirect, useLoaderData, Await, useActionData, Navigate } from "react-router-dom";
 
+import { refreshTokenRequest } from "../../../modules/requestsToBackend";
+
 import { UserInfo } from "../UserInfo/UserInfo";
 import { SidePanel } from "../SidePanel/SidePanel";
 import NotFoundPage from "../../../components/NotFoundPage/NotFoundPage";
@@ -50,8 +52,16 @@ async function getUserInfo(token, username) {
         .then(function(response) {
             return response;
         })
-        .catch((function(response) {
-            return response.response;
+        .catch((async function(error) {
+            if (error.response.status === 401) {            
+                if (error.response.data.detail === "Token expired.") {
+                    const isRedirect = await refreshTokenRequest();
+                    if (!isRedirect) {
+                        return await getUserInfo(sessionStorage.getItem("auth_token"), username);
+                    };
+                };
+            };
+            return error.response;
         }));
 
     return response;
@@ -68,8 +78,16 @@ async function updateInfo(formData) {
         .then(function(response) {
             return response.data;
         })
-        .catch((function(response) {
-            return response.response;
+        .catch((async function(error) {
+            if (error.response.status === 401) {            
+                if (error.response.data.detail === "Token expired.") {
+                    const isRedirect = await refreshTokenRequest();
+                    if (!isRedirect) {
+                        return await updateInfo(formData);
+                    };
+                };
+            };
+            return error.response;
         }));
 
     return response;

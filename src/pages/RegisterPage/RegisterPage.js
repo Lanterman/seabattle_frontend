@@ -98,9 +98,11 @@ function RegisterPage(props) {
 async function registerUser(formData) {
     const response = await axios.post('/auth/sign-up/', formData)
         .then(function(response) {
-            sessionStorage.setItem("auth_token", response.data.key);
+            sessionStorage.setItem("auth_token", response.data.access_token);
             sessionStorage.setItem("user_id", response.data.user);
             sessionStorage.setItem("username", formData.username);
+            sessionStorage.setItem("refresh_token", response.data.refresh_token);
+            // document.cookie = `refresh_token = ${response.data.refresh_token}`;
             return redirect(`/profile/${formData.username}/`);
             })
             .catch((function(response) {

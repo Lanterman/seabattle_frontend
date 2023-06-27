@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLoaderData, redirect, useOutletContext, useNavigate, Navigate } from "react-router-dom";
 
 import { timer } from "../../../modules/services";
+import { refreshTokenRequest } from "../../../modules/requestsToBackend";
 import  { defineLobbyStateAction, clearState } from "../../../store/reducers/lobbyReducer";
 import { sendDeleteGame } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import { sendNotifDeletedGame } from "../../../modules/wsCommunication/wsApp/wsMainRequests";
@@ -111,8 +112,14 @@ async function getLobbyBySlug(slug, token) {
         .then(function(response) {
             return response
         })
-        .catch(function(error) {
+        .catch(async function(error) {
             if (error.response.status === 401) {
+                if (error.response.data.detail === "Token expired.") {
+                    const isRedirect = await refreshTokenRequest();
+                    if (!isRedirect) {
+                        return await getLobbyBySlug(slug, sessionStorage.getItem("auth_token"));
+                    };
+                };
                 return error.response;
             } else if (error.response.status === 403) {
                 return error.response;
