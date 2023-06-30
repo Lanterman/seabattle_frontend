@@ -16,6 +16,15 @@ function LoginPage(props) {
     const redirectURL = useLocation().search?.slice(6);
     const ServerError = new ServerErrorException();
 
+    if (!isAuth) {
+        sessionStorage.removeItem("auth_token");
+        sessionStorage.removeItem("user_id");
+        sessionStorage.removeItem("username");
+        sessionStorage.removeItem("refresh_token");
+        sessionStorage.removeItem("is_activated", true);
+        // document.cookie = "refresh_token=";
+    }
+
     function setLogin(e) {
         e.preventDefault();
         axios.post('/auth/sign-in/', {username: username, password: password})
@@ -24,6 +33,7 @@ function LoginPage(props) {
                 sessionStorage.setItem("user_id", response.data.user);
                 sessionStorage.setItem("username", username);
                 sessionStorage.setItem("refresh_token", response.data.refresh_token);
+                sessionStorage.setItem("is_activated", true);
                 // document.cookie = `refresh_token = ${response.data.refresh_token}`;
                 setIsAuth(true);
             })

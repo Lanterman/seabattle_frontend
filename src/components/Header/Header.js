@@ -73,6 +73,12 @@ function Header(props) {
             <div className="aside-header">
                 <Link to="/" onClick={(e) => onClickHandler(e, "/")}>{window.env.PROJECT_VERSION}</Link>
                 <Link to="https://github.com/Lanterman/seabattle_backend" >GitHub</Link>
+                
+                <div className="auth-user">
+                    <span>{username}</span>
+                    |
+                    <Link className="sign-out" to="/sign-in">Sign out</Link>
+                </div>
             </div>
 
             {isOpenModal && <LobbyWindow 

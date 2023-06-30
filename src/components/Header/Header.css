@@ -38,10 +38,9 @@
 }
 
 .aside-header {
-    padding-top: 20px;
-    width: 30%;
-    float: right;
+    padding-top: 18px;
     font-size: 18px;
+    margin-left: 70%;
 }
 
 .aside-header a {
@@ -53,3 +52,22 @@
 .aside-header a:hover {
     color: rgb(67, 130, 247);
 }
+
+.auth-user {
+    margin-left: 50px;
+    font-size: 19px;
+    display: inline;
+    color: white;
+}
+
+.auth-user span {
+    margin-right: 5px;
+}
+
+.auth-user .sign-out {
+    color: white;
+    text-decoration: none;
+    margin-left: 5px;
+    padding: 0px;
+}
+

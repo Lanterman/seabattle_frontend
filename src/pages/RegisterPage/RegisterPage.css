@@ -71,16 +71,16 @@
     margin: 30% 0px 15px 0px;
 }
 
-.block {
+.reg-block {
     text-align: center;
 }
 
-.block .label {
+.reg-block .label {
     font-size: 19px;
     margin-right: 20px;
 }
 
-.block .value {
+.reg-block .value {
     font-size: 18px;
     width: 60%;
     padding: 3px;
@@ -88,7 +88,7 @@
     border-radius: 5px;
 }
 
-.block .er-value {
+.reg-block .er-value {
     border-color: red;
 }
 
@@ -99,12 +99,18 @@
     font-size: 17px;
 }
 
-.button {
-    text-align: center;
+.reg-button {
+    text-align: right;
     margin-top: 15px;
 }
 
-.button .submit {
+.reg-button .back {
     font-size: 16px;
     padding: 2px 15px;
+}
+
+.reg-button .submit {
+    font-size: 16px;
+    padding: 2px 15px;
+    margin: 0px 10% 0px 20px;
 }
