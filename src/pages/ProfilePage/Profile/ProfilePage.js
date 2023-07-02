@@ -67,14 +67,16 @@ async function getUserInfo(token, username) {
     return response;
 };
 
-async function updateInfo(formData) {
+async function updateInfo(method, formData) {
     const token = sessionStorage.getItem("auth_token");
     const username = sessionStorage.getItem("username");
     const headers = {"Authorization": `${window.env.TYPE_TOKEN} ${token}`};
+    let url = `/auth/profile/${username}/`;
 
+    if (formData?.new_password) url += "reset_password/";
     if (formData.photo) headers['Content-Type'] = 'multipart/form-data';
 
-    const response = await axios.patch(`/auth/profile/${username}/`, formData, {headers: headers})
+    const response = await axios[method](url, formData, {headers: headers})
         .then(function(response) {
             return response.data;
         })
@@ -109,6 +111,7 @@ const userInfoLoader = async ({request}) => {
 
 async function profileAction({request}) {
     const formData = await request.formData();
+    let method = "patch";
     let inputData = {};
 
     if (formData.get("type") === "Update information") {
@@ -121,9 +124,17 @@ async function profileAction({request}) {
     
     } else if (formData.get("type") === "Update photo") {
         inputData = {photo: formData.get("photo")};
+    
+    } else if (formData.get("type") === "Reset password") {
+        method = "put"
+        inputData = {
+            old_password: formData.get("oldPassword"),
+            new_password: formData.get("newPassword"),
+            confirm_password: formData.get("confirmPassword"),
+        };
     };
 
-    const updatedInfo = await updateInfo(inputData);
+    const updatedInfo = await updateInfo(method, inputData);
 
     return updatedInfo;
 };

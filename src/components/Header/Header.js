@@ -4,6 +4,7 @@ import { faShip } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 
+import { clearProfileState } from "../../store/reducers/profileReducer";
 import { clearState } from "../../store/reducers/lobbyReducer";
 import { LobbyWindow } from "../ModalWindows/LobbyWindow/LobbyWindow";
 import { sendDeleteGame, sendPlayAgain } from "../../modules/wsCommunication/wsLobby/wsLobbyRequests";
@@ -20,6 +21,7 @@ function Header(props) {
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
     const myBoard = useSelector(state => state.lobby.myBoard);
     const users = useSelector(state => state.lobby.users);
+    const usernameState = useSelector(state => state.profile.username);
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [content, setContent] = useState({});
     const username = sessionStorage.getItem("username");
@@ -75,9 +77,20 @@ function Header(props) {
                 <Link to="https://github.com/Lanterman/seabattle_backend" >GitHub</Link>
                 
                 <div className="auth-user">
-                    <span>{username}</span>
-                    |
-                    <Link className="sign-out" to="/sign-in">Sign out</Link>
+                    {usernameState ? (
+                        <>
+                            <span>{username}</span>
+                            |
+                            <Link className="sign-auth" to="/sign-in"
+                                onClick={(e) => {
+                                    dispatch(clearProfileState());
+                                    onClickHandler(e, "/sign-in");
+                                }}
+                            >
+                            Sign out
+                            </Link>
+                        </>) :
+                        <Link className="sign-auth" to="/sign-in">Sign in</Link>}
                 </div>
             </div>
 
