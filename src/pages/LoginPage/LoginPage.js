@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { Link, Navigate, useLocation } from "react-router-dom";
-import { ImGoogle, ImGithub } from "react-icons/im";
+import { Link, Navigate, useLocation, useOutletContext } from "react-router-dom";
+import { ImGithub } from "react-icons/im";
+import { GoogleLogin } from "@leecheuk/react-google-login";
+import { gapi } from 'gapi-script';
 
 import { ServerErrorException } from "../../modules/services";
 
@@ -9,6 +11,7 @@ import "./LoginPage.css";
 
 
 function LoginPage(props) {
+    const outletContext = useOutletContext();
     const [errors, setErrors] = useState([]);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -17,13 +20,24 @@ function LoginPage(props) {
     const ServerError = new ServerErrorException();
 
     if (!isAuth) {
-        sessionStorage.removeItem("auth_token");
-        sessionStorage.removeItem("user_id");
-        sessionStorage.removeItem("username");
-        sessionStorage.removeItem("refresh_token");
-        sessionStorage.removeItem("is_activated", true);
-        // document.cookie = "refresh_token=";
+        sessionStorage.clear();
+        // document.cookie = "refresh_token=";x
     }
+
+    if (outletContext.mainClient.readyState) {
+        outletContext.mainClient.close();
+    };
+
+    useEffect(() => {
+        function start() {
+          gapi.client.init({
+            clientId: window.env.GOOGLE_CLIENT_ID,
+            scope: 'email',
+          });
+        }
+    
+        gapi.load('client:auth2', start);
+      }, []);
 
     function setLogin(e) {
         e.preventDefault();
@@ -42,6 +56,49 @@ function LoginPage(props) {
                 setErrors(response.response.data);
           }));
     };
+
+    function authWithGitHub() {
+        axios.get(
+            `https://github.com/login/oauth/authorize?client_id=${window.env.GITHUB_CLIENT_ID}`,
+            {headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Accept": 'application/json',
+                "Content-Type": "application/json"
+            }, withCredentials: true}
+            )
+            .then(function(response) {
+                console.log(response);
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    };
+
+    const onSuccess = async (res) => {
+        const user = {
+              "grant_type":"convert_token",
+              "client_id":window.env.DRF_GOOGLE_CLIENT_ID,
+              "client_secret": window.env.DRF_GOOGLE_SECRET_KEY,
+              "backend":"google-oauth2",
+              "token": res.accessToken
+            };
+
+            const data = await axios.post('http://127.0.0.1:8000/auth/convert-token/', user ,{headers: {
+                'Content-Type': 'application/json'
+            }}, {withCredentials: true});
+            console.log(data)
+            sessionStorage.clear();
+            sessionStorage.setItem('username', res.profileObj.email.split("@")[0]);
+            sessionStorage.setItem('auth_token', `${data.data.access_token}.oauth`);
+            sessionStorage.setItem('refresh_token', data.data.refresh_token);
+            sessionStorage.setItem("is_activated", true);
+            // document.cookie = `refresh_token = ${data.data.refresh_token}`;
+            setIsAuth(true);
+      }
+
+      const onFailure = (err) => {
+        console.log('failed:', err);
+      };
 
     return (
         <div className="main-page" >
@@ -66,12 +123,15 @@ function LoginPage(props) {
                 <div className="separation"></div>
 
                 <div className="buttons">
-                    <button className="button google">
-                        <ImGoogle className="icon" />
-                        <span className="value">Login with Google</span>
-                    </button>
+                    <GoogleLogin className="button google"
+                        clientId={window.env.GOOGLE_CLIENT_ID}
+                        buttonText="Sign in with Google"
+                        onSuccess={onSuccess}
+                        onFailure={onFailure}
+                        cookiePolicy={'single_host_origin'}
+                    />
 
-                    <button className="button github">
+                    <button className="button github" onClick={() => authWithGitHub()}>
                         <ImGithub className="icon" />
                         <span className="value">Login with GitHub</span>
                     </button>
@@ -83,7 +143,7 @@ function LoginPage(props) {
                 </p>
             </div>
 
-            {isAuth && <Navigate to={redirectURL ? redirectURL : `/profile/${username}/`} />}
+            {isAuth && <Navigate to={redirectURL ? redirectURL : `/profile/${username ? username : sessionStorage.getItem("username")}/`} />}
         </div>
     );
 };

@@ -21,7 +21,6 @@ function Header(props) {
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
     const myBoard = useSelector(state => state.lobby.myBoard);
     const users = useSelector(state => state.lobby.users);
-    const usernameState = useSelector(state => state.profile.username);
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [content, setContent] = useState({});
     const username = sessionStorage.getItem("username");
@@ -77,7 +76,7 @@ function Header(props) {
                 <Link to="https://github.com/Lanterman/seabattle_backend" >GitHub</Link>
                 
                 <div className="auth-user">
-                    {usernameState ? (
+                    {username ? (
                         <>
                             <span>{username}</span>
                             |

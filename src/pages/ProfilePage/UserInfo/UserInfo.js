@@ -25,7 +25,8 @@ function UserInfo(props) {
     const updatedIn = useSelector(state => state.profile.updatedIn);
     const photo = useSelector(state => state.profile.photo);
     const isProcessing = ["submitting", "loading"].includes(navigation.state);
-
+    
+    sessionStorage.setItem("user_id", props.info.id)
     navigation.state === "loading" && !props.errors && typeModal && setTypeModal(null);
 
     useEffect(() => {

@@ -24,10 +24,7 @@ function ProfilePage(props) {
                 <Await resolve={userInfo}>
                     {resolved => {
                         if (resolved.status === 401) {
-                            const splitPathname = window.location.pathname.split("/");
-                            const usernameToURL = splitPathname[splitPathname.length - 2];
-                            const redirectURL = `/sign-in${usernameToURL !== [] ? `?next=/profile/${usernameToURL}` : ""}/`;
-                            return <Navigate to={redirectURL} />;
+                            return <Navigate to="/sign-in" />;
                         } else if (resolved.status === 404) {
                             return <NotFoundPage />;
                         } else {
@@ -102,7 +99,7 @@ const userInfoLoader = async ({request}) => {
     const usernameInURL = splitURL[splitURL.length - 1];
 
     if (!token) {
-        return redirect(`/sign-in${usernameInURL === null ? `?next=/profile/${usernameInURL}` : ""}/`);
+        return redirect(`/sign-in`);
     };
 
     return {userInfo: getUserInfo(token, usernameInURL)};
