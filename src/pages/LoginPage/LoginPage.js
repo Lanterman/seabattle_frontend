@@ -1,8 +1,11 @@
-import { useState, useEffect } from "react";
 import axios from "axios";
+import { useState, useEffect } from "react";
 import { Link, Navigate, useLocation, useOutletContext } from "react-router-dom";
 import { ImGithub } from "react-icons/im";
+
 import { GoogleLogin } from "@leecheuk/react-google-login";
+import OAuth2Login from 'react-simple-oauth2-login';
+
 import { gapi } from 'gapi-script';
 
 import { ServerErrorException } from "../../modules/services";
@@ -41,7 +44,7 @@ function LoginPage(props) {
 
     function setLogin(e) {
         e.preventDefault();
-        axios.post('/auth/sign-in/', {username: username, password: password})
+        axios.post(`${window.env.BASE_URL}/auth/sign-in/`, {username: username, password: password})
             .then(function(response) {
                 sessionStorage.setItem("auth_token", response.data.access_token);
                 sessionStorage.setItem("user_id", response.data.user);
@@ -57,24 +60,7 @@ function LoginPage(props) {
           }));
     };
 
-    function authWithGitHub() {
-        axios.get(
-            `https://github.com/login/oauth/authorize?client_id=${window.env.GITHUB_CLIENT_ID}`,
-            {headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Accept": 'application/json',
-                "Content-Type": "application/json"
-            }, withCredentials: true}
-            )
-            .then(function(response) {
-                console.log(response);
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
-    };
-
-    const onSuccess = async (res) => {
+    const GoogleOnSuccess = async (res) => {
         const user = {
               "grant_type":"convert_token",
               "client_id":window.env.DRF_GOOGLE_CLIENT_ID,
@@ -83,10 +69,10 @@ function LoginPage(props) {
               "token": res.accessToken
             };
 
-            const data = await axios.post('http://127.0.0.1:8000/auth/convert-token/', user ,{headers: {
+            const data = await axios.post(`${window.env.BASE_URL_AUTH}/convert-token/`, user ,{headers: {
                 'Content-Type': 'application/json'
             }}, {withCredentials: true});
-            console.log(data)
+
             sessionStorage.clear();
             sessionStorage.setItem('username', res.profileObj.email.split("@")[0]);
             sessionStorage.setItem('auth_token', `${data.data.access_token}.oauth`);
@@ -95,10 +81,50 @@ function LoginPage(props) {
             // document.cookie = `refresh_token = ${data.data.refresh_token}`;
             setIsAuth(true);
       }
-
-      const onFailure = (err) => {
+    
+      const GoogleOnFailure = (err) => {
         console.log('failed:', err);
       };
+
+    const GitHubOnSuccess = async (res) => {
+        console.log(res)
+        const dataForGitHubToken = {
+            client_id: window.env.GITHUB_CLIENT_ID,
+            client_secret: window.env.GITHUB_SECRET_KEY,
+            code: res.code,
+        };
+
+        const GitHubToken = await axios.post(
+            "login/oauth/access_token", 
+            dataForGitHubToken, 
+            {headers: {"Accept": "application/json"}}
+        );
+
+        const user = {
+            "grant_type":"convert_token",
+            "client_id":window.env.DRF_GITHUB_CLIENT_ID,
+            "client_secret": window.env.DRF_GITHUB_SECRET_KEY,
+            "backend":"github",
+            "token": GitHubToken.data.access_token
+        };
+
+          const dataToGitHub = await axios.post(`${window.env.BASE_URL_AUTH}/convert-token/`, user ,{headers: {
+              'Content-Type': 'application/json'
+          }}, {withCredentials: true});
+          console.log(dataToGitHub)
+  
+        //   sessionStorage.clear();
+        //   sessionStorage.setItem('username', res.profileObj.email.split("@")[0]);
+        //   sessionStorage.setItem('auth_token', `${data.data.access_token}.oauth`);
+        //   sessionStorage.setItem('refresh_token', data.data.refresh_token);
+        //   sessionStorage.setItem("is_activated", true);
+        //   // document.cookie = `refresh_token = ${data.data.refresh_token}`;
+        //   setIsAuth(true);
+    };
+
+    const GitHubOnFailure = ({ access_token: token }) => {
+        console.error(token)
+    };
 
     return (
         <div className="main-page" >
@@ -126,15 +152,24 @@ function LoginPage(props) {
                     <GoogleLogin className="button google"
                         clientId={window.env.GOOGLE_CLIENT_ID}
                         buttonText="Sign in with Google"
-                        onSuccess={onSuccess}
-                        onFailure={onFailure}
+                        onSuccess={GoogleOnSuccess}
+                        onFailure={GoogleOnFailure}
                         cookiePolicy={'single_host_origin'}
                     />
 
-                    <button className="button github" onClick={() => authWithGitHub()}>
+                    <OAuth2Login
+                        className="button github"
+                        clientId={window.env.GITHUB_CLIENT_ID}
+                        authorizationUrl={window.env.GITHUB_OAUTH_URL}
+                        responseType="code"
+                        redirectUri=""
+                        scope="user"
+                        onSuccess={GitHubOnSuccess}
+                        onFailure={GitHubOnFailure}
+                    >
                         <ImGithub className="icon" />
                         <span className="value">Login with GitHub</span>
-                    </button>
+                    </OAuth2Login>
                 </div>
 
                 <p className="register">

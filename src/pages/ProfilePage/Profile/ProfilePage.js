@@ -68,7 +68,7 @@ async function updateInfo(method, formData) {
     const token = sessionStorage.getItem("auth_token");
     const username = sessionStorage.getItem("username");
     const headers = {"Authorization": `${window.env.TYPE_TOKEN} ${token}`};
-    let url = `/auth/profile/${username}/`;
+    let url = `${window.env.BASE_URL}/auth/profile/${username}/`;
 
     if (formData?.new_password) url += "reset_password/";
     if (formData.photo) headers['Content-Type'] = 'multipart/form-data';

@@ -75,15 +75,11 @@
     font-size: 18px;
     border-left: 2px solid;
     padding-left: 18px;
-    font-size: 20px;
+    font-size: 18px;
     float: right;
     width: 82%;
     height: 31px;
-    padding-top: 8px;
-}
-
-.login-page .google {
-    background-color: rgb(56, 72, 214);
+    padding-top: 10px;
 }
 
 .login-page .github {

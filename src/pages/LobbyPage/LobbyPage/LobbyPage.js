@@ -27,7 +27,7 @@ function LobbyPage(props) {
     const myBoard = useSelector(state => state.lobby.myBoard);
     const users = useSelector(state => state.lobby.users);
     const client = useMemo(() => {
-        return lobby.status === 200 ? new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${slug}/?token=${token}`) : null;
+        return lobby.status === 200 ? new WebSocket(`${window.env.BASE_URL_WS}/ws/lobby/${slug}/?token=${token}`) : null;
     }, [slug, token, lobby.status]);
 
     useEffect(() => {

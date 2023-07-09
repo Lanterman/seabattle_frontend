@@ -9,7 +9,7 @@ function Layout(props) {
     const token = sessionStorage.getItem("auth_token");
     const [client, setClient] = useState(null);
     const mainClient = useMemo(() => {
-        return new WebSocket(`ws://127.0.0.1:8000/ws/main/?token=${token}`);
+        return new WebSocket(`${window.env.BASE_URL_WS}/ws/main/?token=${token}`);
     }, [token]);
     // console.log("На главном вебсокете сделть проверку завершенных игр, если есть не завершенная, предложить догирать")
     return (

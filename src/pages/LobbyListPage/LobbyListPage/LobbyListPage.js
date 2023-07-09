@@ -49,7 +49,7 @@ function LobbyListPage(props) {
 async function createLobby(formData) {
     const token = sessionStorage.getItem("auth_token");
     const response = await axios.post(
-        "/lobbies/", formData, 
+        `${window.env.BASE_URL}/lobbies/`, formData, 
         {headers: {"Authorization": `${window.env.TYPE_TOKEN} ${token}`}}
         )
         .then(function(response) {

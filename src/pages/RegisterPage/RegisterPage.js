@@ -142,7 +142,7 @@ function RegisterPage(props) {
 
 
 async function registerUser(formData) {
-    const response = await axios.post('/auth/sign-up/', formData)
+    const response = await axios.post(`${window.env.BASE_URL}/auth/sign-up/`, formData)
         .then(function(response) {
             sessionStorage.setItem("auth_token", response.data.access_token);
             sessionStorage.setItem("user_id", response.data.user);
@@ -162,7 +162,7 @@ async function registerUser(formData) {
 async function activateAccount(secretKey) {
     const user_id = sessionStorage.getItem("user_id");
 
-    const response = await axios.get(`/auth/activate_account/${user_id}/${secretKey}/`)
+    const response = await axios.get(`${window.env.BASE_URL}/auth/activate_account/${user_id}/${secretKey}/`)
         .then(function(response) {
             sessionStorage.setItem("is_activated", true);
             return redirect("/")

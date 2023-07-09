@@ -101,9 +101,11 @@ function UserInfo(props) {
                 <input className="delete" type="button" value="Delete photo" 
                     onClick={() => setTypeModal("Delete photo")}
                 />
-                <input className="reset-password" type="button" value="Reset password" 
-                    onClick={() => setTypeModal("Reset password")}
-                />
+                { sessionStorage.getItem("auth_token").indexOf(".oauth") < 0 &&
+                    <input className="reset-password" type="button" value="Reset password" 
+                        onClick={() => setTypeModal("Reset password")}
+                    />
+                }
             </div>}
 
             {typeModal && <ProfileWindow
