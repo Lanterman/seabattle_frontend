@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { Link, Navigate, useLocation, useOutletContext } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import { ImGithub } from "react-icons/im";
 
 import { GoogleLogin } from "@leecheuk/react-google-login";
@@ -14,7 +14,6 @@ import "./LoginPage.css";
 
 
 function LoginPage(props) {
-    const outletContext = useOutletContext();
     const [errors, setErrors] = useState([]);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -26,10 +25,6 @@ function LoginPage(props) {
         sessionStorage.clear();
         // document.cookie = "refresh_token=";x
     }
-
-    if (outletContext.mainClient.readyState) {
-        outletContext.mainClient.close();
-    };
 
     useEffect(() => {
         function start() {
@@ -87,7 +82,6 @@ function LoginPage(props) {
       };
 
     const GitHubOnSuccess = async (res) => {
-        console.log(res)
         const dataForGitHubToken = {
             client_id: window.env.GITHUB_CLIENT_ID,
             client_secret: window.env.GITHUB_SECRET_KEY,
@@ -108,18 +102,22 @@ function LoginPage(props) {
             "token": GitHubToken.data.access_token
         };
 
-          const dataToGitHub = await axios.post(`${window.env.BASE_URL_AUTH}/convert-token/`, user ,{headers: {
-              'Content-Type': 'application/json'
-          }}, {withCredentials: true});
-          console.log(dataToGitHub)
+        const dataToGitHub = await axios.post(`${window.env.BASE_URL_AUTH}/convert-token/`, user ,{headers: {
+            'Content-Type': 'application/json'
+        }}, {withCredentials: true});
+
+        const getUsername = await axios.get(
+            `${window.env.BASE_URL}/auth/get-username/`,
+            {headers: {'Authorization': `Bearer ${dataToGitHub.data.access_token}.oauth`}}
+        );
   
-        //   sessionStorage.clear();
-        //   sessionStorage.setItem('username', res.profileObj.email.split("@")[0]);
-        //   sessionStorage.setItem('auth_token', `${data.data.access_token}.oauth`);
-        //   sessionStorage.setItem('refresh_token', data.data.refresh_token);
-        //   sessionStorage.setItem("is_activated", true);
+          sessionStorage.clear();
+          sessionStorage.setItem('username', getUsername.data.user__username);
+          sessionStorage.setItem('auth_token', `${dataToGitHub.data.access_token}.oauth`);
+          sessionStorage.setItem('refresh_token', dataToGitHub.data.refresh_token);
+          sessionStorage.setItem("is_activated", true);
         //   // document.cookie = `refresh_token = ${data.data.refresh_token}`;
-        //   setIsAuth(true);
+          setIsAuth(true);
     };
 
     const GitHubOnFailure = ({ access_token: token }) => {
