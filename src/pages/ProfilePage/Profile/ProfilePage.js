@@ -1,7 +1,9 @@
 import axios from "axios";
 import { React, Suspense } from "react";
 import { useSelector } from "react-redux";
-import { redirect, useLoaderData, Await, useActionData } from "react-router-dom";
+import { redirect, useLoaderData, Await, useActionData, Navigate } from "react-router-dom";
+
+import { refreshTokenRequest } from "../../../modules/requestsToBackend";
 
 import { UserInfo } from "../UserInfo/UserInfo";
 import { SidePanel } from "../SidePanel/SidePanel";
@@ -21,12 +23,14 @@ function ProfilePage(props) {
             <Suspense fallback={<h1 className="suspense">Loading...</h1>}>
                 <Await resolve={userInfo}>
                     {resolved => {
-                        if (resolved.status !== 404) {
+                        if (resolved.status === 401) {
+                            return <Navigate to="/sign-in" />;
+                        } else if (resolved.status === 404) {
+                            return <NotFoundPage />;
+                        } else {
                             return <UserInfo info={resolved.data} 
                                         errors={actionData?.status === 400 ? actionData.data : ""}
-                                    />;
-                        } else {
-                            return <NotFoundPage />;
+                                   />;
                         };
                     }}
                 </Await>
@@ -45,26 +49,44 @@ async function getUserInfo(token, username) {
         .then(function(response) {
             return response;
         })
-        .catch((function(response) {
-            return response.response;
+        .catch((async function(error) {
+            if (error.response.status === 401) {            
+                if (error.response.data.detail === "Token expired.") {
+                    const isRedirect = await refreshTokenRequest();
+                    if (!isRedirect) {
+                        return await getUserInfo(sessionStorage.getItem("auth_token"), username);
+                    };
+                };
+            };
+            return error.response;
         }));
 
     return response;
 };
 
-async function updateInfo(formData) {
+async function updateInfo(method, formData) {
     const token = sessionStorage.getItem("auth_token");
     const username = sessionStorage.getItem("username");
     const headers = {"Authorization": `${window.env.TYPE_TOKEN} ${token}`};
+    let url = `${window.env.BASE_URL}/auth/profile/${username}/`;
 
+    if (formData?.new_password) url += "reset_password/";
     if (formData.photo) headers['Content-Type'] = 'multipart/form-data';
 
-    const response = await axios.patch(`/auth/profile/${username}/`, formData, {headers: headers})
+    const response = await axios[method](url, formData, {headers: headers})
         .then(function(response) {
             return response.data;
         })
-        .catch((function(response) {
-            return response.response;
+        .catch((async function(error) {
+            if (error.response.status === 401) {            
+                if (error.response.data.detail === "Token expired.") {
+                    const isRedirect = await refreshTokenRequest();
+                    if (!isRedirect) {
+                        return await updateInfo(formData);
+                    };
+                };
+            };
+            return error.response;
         }));
 
     return response;
@@ -77,7 +99,7 @@ const userInfoLoader = async ({request}) => {
     const usernameInURL = splitURL[splitURL.length - 1];
 
     if (!token) {
-        return redirect(`/sign-in${usernameInURL === null ? `?next=/profile/${usernameInURL}` : ""}/`);
+        return redirect(`/sign-in`);
     };
 
     return {userInfo: getUserInfo(token, usernameInURL)};
@@ -86,6 +108,7 @@ const userInfoLoader = async ({request}) => {
 
 async function profileAction({request}) {
     const formData = await request.formData();
+    let method = "patch";
     let inputData = {};
 
     if (formData.get("type") === "Update information") {
@@ -98,9 +121,17 @@ async function profileAction({request}) {
     
     } else if (formData.get("type") === "Update photo") {
         inputData = {photo: formData.get("photo")};
+    
+    } else if (formData.get("type") === "Reset password") {
+        method = "put"
+        inputData = {
+            old_password: formData.get("oldPassword"),
+            new_password: formData.get("newPassword"),
+            confirm_password: formData.get("confirmPassword"),
+        };
     };
 
-    const updatedInfo = await updateInfo(inputData);
+    const updatedInfo = await updateInfo(method, inputData);
 
     return updatedInfo;
 };

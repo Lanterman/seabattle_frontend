@@ -64,7 +64,7 @@
 }
 
 /* dropdown */
-.enemy-info {
+.singl-lobby .enemy-info {
     display: none;
     position: absolute;
     background-color: rgb(176, 192, 233);
@@ -76,21 +76,21 @@
     padding: 10px;
 }
 
-.enemy-info .user-info {
+.singl-lobby .enemy-info .user-info {
     padding-bottom: 3px;
     color: rgb(88, 84, 84);
 }
 
-.enemy-info:hover {
+.singl-lobby .enemy-info:hover {
     background-color: #ddd;
 }
 
 /* Show the dropdown menu on hover */
-.enemy:hover .enemy-info {
+.singl-lobby .enemy:hover .enemy-info {
     display: block;
 }
 
-.enemy .enemy-info .user-rating {
+.singl-lobby .enemy .enemy-info .user-rating {
     font-size: 17px;
     margin-left: 2px;
     margin-bottom: 1px;

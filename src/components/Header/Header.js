@@ -4,6 +4,7 @@ import { faShip } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 
+import { clearProfileState } from "../../store/reducers/profileReducer";
 import { clearState } from "../../store/reducers/lobbyReducer";
 import { LobbyWindow } from "../ModalWindows/LobbyWindow/LobbyWindow";
 import { sendDeleteGame, sendPlayAgain } from "../../modules/wsCommunication/wsLobby/wsLobbyRequests";
@@ -73,6 +74,23 @@ function Header(props) {
             <div className="aside-header">
                 <Link to="/" onClick={(e) => onClickHandler(e, "/")}>{window.env.PROJECT_VERSION}</Link>
                 <Link to="https://github.com/Lanterman/seabattle_backend" >GitHub</Link>
+                
+                <div className="auth-user">
+                    {username ? (
+                        <>
+                            <span>{username}</span>
+                            |
+                            <Link className="sign-auth" to="/sign-in"
+                                onClick={(e) => {
+                                    dispatch(clearProfileState());
+                                    onClickHandler(e, "/sign-in");
+                                }}
+                            >
+                            Sign out
+                            </Link>
+                        </>) :
+                        <Link className="sign-auth" to="/sign-in">Sign in</Link>}
+                </div>
             </div>
 
             {isOpenModal && <LobbyWindow 

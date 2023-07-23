@@ -23,6 +23,7 @@ const SET_RATING = "SET_RATING";
 const SET_CREATED_IN = "SET_CREATED_IN";
 const SET_UPDATED_IN = "SET_UPDATED_IN";
 const SET_PHOTO = "SET_PHOTO";
+const CLEAR_PROFILE_STATE = "CLEAR_PROFILE_STATE";
 
 
 export const profileReducer = (state = defaultState, action) => {
@@ -62,6 +63,8 @@ export const profileReducer = (state = defaultState, action) => {
             return {...state, updatedIn: action.payload};
         case SET_PHOTO:
             return {...state, photo: action.payload};
+        case CLEAR_PROFILE_STATE:
+            return defaultState;
         default: 
             return state;
     }
@@ -77,5 +80,6 @@ export const setMobileNumberAction = (payload) => ({type: SET_MOBILE_NUMBER, pay
 export const setCashAction = (payload) => ({type: SET_CASH, payload});
 export const setRatingAction = (payload) => ({type: SET_RATING, payload});
 export const setCreatedInAction = (payload) => ({type: SET_CREATED_IN, payload});
-export const setUpdatedInAction = (payload) =>({type: SET_UPDATED_IN, payload});
-export const setPhotoAction = (payload) =>({type: SET_PHOTO, payload});
+export const setUpdatedInAction = (payload) => ({type: SET_UPDATED_IN, payload});
+export const setPhotoAction = (payload) => ({type: SET_PHOTO, payload});
+export const clearProfileState = () => ({type: CLEAR_PROFILE_STATE});

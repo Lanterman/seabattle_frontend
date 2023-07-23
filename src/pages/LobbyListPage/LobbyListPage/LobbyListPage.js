@@ -1,7 +1,9 @@
 import { Suspense } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { useNavigation, Await, useLoaderData, redirect, useOutletContext } from "react-router-dom";
+import { useNavigation, Await, useLoaderData, redirect, useOutletContext, Navigate } from "react-router-dom";
+
+import { refreshTokenRequest } from "../../../modules/requestsToBackend";
 
 import Filter from "../Filter/Filter";
 import Search from "../Search/Search";
@@ -27,12 +29,16 @@ function LobbyListPage(props) {
             </div>
             <Suspense fallback={<h1 className="suspense">Loading...</h1>}>
                 <Await resolve={lobbyList}>
-                    {resolved => (
-                        <LobbyList 
-                            mainClient={outletContext.mainClient} 
-                            lobbyList={lobbies ? lobbies : resolved.results}
-                            />
-                    )}
+                    {resolved => {
+                        if (resolved.status === 401) {
+                            return <Navigate to={`/sign-in${`?next=/lobbies/`}`} />;
+                        } else {
+                            return <LobbyList 
+                                        mainClient={outletContext.mainClient} 
+                                        lobbyList={lobbies ? lobbies : resolved.data.results}
+                                    />
+                        };
+                    }}
                 </Await>
             </Suspense>
         </div>
@@ -43,14 +49,22 @@ function LobbyListPage(props) {
 async function createLobby(formData) {
     const token = sessionStorage.getItem("auth_token");
     const response = await axios.post(
-        "/lobbies/", formData, 
+        `${window.env.BASE_URL}/lobbies/`, formData, 
         {headers: {"Authorization": `${window.env.TYPE_TOKEN} ${token}`}}
-    )
+        )
         .then(function(response) {
             return {lobbySlug: response.data.slug};
         })
-        .catch(function(response) {
-            return {errors: response.response.data};
+        .catch(async function(error) {
+            if (error.response.status === 401) {            
+                if (error.response.data.detail === "Token expired.") {
+                    const isRedirect = await refreshTokenRequest();
+                    if (!isRedirect) {
+                        return await createLobby(formData);
+                    };
+                };
+            };
+            return {errors: error.response.data};
         });
 
     return response;
@@ -63,11 +77,19 @@ async function getLobbyList(token, queryParams) {
         {headers: {"Authorization": `${window.env.TYPE_TOKEN} ${token}`}}
     ).then(function(response) {
         return response;
-    }).catch(function(response) {
-        console.log(response);
+    }).catch(async function(error) {
+        if (error.response.status === 401) {            
+            if (error.response.data.detail === "Token expired.") {
+                const isRedirect = await refreshTokenRequest();
+                if (!isRedirect) {
+                    return await getLobbyList(sessionStorage.getItem("auth_token"), queryParams);
+                };
+            };
+        };
+        return error.response;
     });
 
-    return response.data;
+    return response;
 };
 
 

@@ -80,10 +80,25 @@
 
 .profile-buts {
     position: fixed;
-    margin: 510px 0px 0px 48px;
+    margin: 510px 0px 0px 50px;
+}
+
+.profile-buts input {
+    padding: 1px 5px;
+}
+
+.profile-buts .update {
+    margin-right: 13px;
 }
 
 .profile-buts .update, .profile-buts .delete {
     font-size: 17px;
-    margin-left: 15px;
+}
+
+.profile-buts .reset-password {
+    display: block;
+    font-size: 17px;
+    margin-left: 29%;
+    margin-top: 20px;
+    color: rgb(230, 34, 34);
 }

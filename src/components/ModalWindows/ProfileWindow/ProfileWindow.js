@@ -20,10 +20,21 @@ function ProfileWindow(props) {
     function getTitleIcon() {
         if (props.typeModal === "Update information") {
             return faUserEdit;
+        } else if (props.typeModal === "Reset password") {
+            return faUserEdit;
         } else {
             return faImage;
         };
-        
+    };
+
+    function getValueOfSubmitButton() {
+        if (props.typeModal === "Delete photo") {
+            return "Remove";
+        } else if (props.typeModal === "Reset password") {
+            return "Reset";
+        } else {
+            return "Update";
+        };
     };
 
     return (
@@ -31,7 +42,7 @@ function ProfileWindow(props) {
             <div className="modal-profile">
                 <div className="modal-title">
                     <FontAwesomeIcon icon={getTitleIcon()} 
-                        className={`question-icon ${props.typeModal === "Delete photo" ? "red" : "blue"}`}
+                        className={`question-icon ${["Delete photo", "Reset password"].includes(props.typeModal) ? "red" : "blue"}`}
                     />
                     <FontAwesomeIcon icon={faClose} className="close-icon" onClick={() => modalCloseHandler()} />
                     <p className="title">{props.typeModal}</p>
@@ -116,10 +127,50 @@ function ProfileWindow(props) {
                         </div>
                     }
 
+                    {props.typeModal === "Reset password" && 
+                        <>
+                            <div className="block">
+                                <span className="label">Old password:</span>
+                                <input className="value-info" name="oldPassword" placeholder="Old password"
+                                    required type="password"
+                                />
+                            </div>
+                            {props.errors?.old_password && (
+                                <li className="error" >
+                                    {props.errors.old_password}
+                                </li>)
+                            }
+
+                            <div className="block">
+                                <span className="label">New password:</span>
+                                <input className="value-info" name="newPassword" placeholder="New password"
+                                    required type="password"
+                                />
+                            </div>
+                            {props.errors?.new_password && props.errors.new_password.map((error, number) => {
+                                return (<li key={number} className="error" >
+                                    {error}
+                                </li>)
+                            })}
+
+                            <div className="block">
+                                <span className="label">Confirm password:</span>
+                                <input className="value-info" name="confirmPassword" placeholder="Confirm password" 
+                                    required type="password"
+                                />
+                            </div>
+                            {props.errors?.confirm_password && props.errors.confirm_password.map((error, number) => {
+                            return (<li key={number} className="error" >
+                                {error}
+                            </li>)
+                            })}
+                        </>
+                    }
+
                     <div className="buttons">
                         <input type="button" className="back" value="Back"  onClick={() => modalCloseHandler()}/>
                         <input type="submit" className="submit" 
-                            value={props.typeModal === "Delete photo" ? "Remove" : "Update"} 
+                            value={getValueOfSubmitButton()} 
                             disabled={props.isProcessing || (!photo && props.typeModal === "Delete photo")} 
                         />
                     </div>

@@ -64,3 +64,53 @@
 .register-page .sign-up .error {
     color: red;
 }
+
+.info-to-activate {
+    text-align: center;
+    font-size: 19px;
+    margin: 30% 0px 15px 0px;
+}
+
+.reg-block {
+    text-align: center;
+}
+
+.reg-block .label {
+    font-size: 19px;
+    margin-right: 20px;
+}
+
+.reg-block .value {
+    font-size: 18px;
+    width: 60%;
+    padding: 3px;
+    border: 1px solid;
+    border-radius: 5px;
+}
+
+.reg-block .er-value {
+    border-color: red;
+}
+
+.activate-error {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+    font-size: 17px;
+}
+
+.reg-button {
+    text-align: right;
+    margin-top: 15px;
+}
+
+.reg-button .back {
+    font-size: 16px;
+    padding: 2px 15px;
+}
+
+.reg-button .submit {
+    font-size: 16px;
+    padding: 2px 15px;
+    margin: 0px 10% 0px 20px;
+}
