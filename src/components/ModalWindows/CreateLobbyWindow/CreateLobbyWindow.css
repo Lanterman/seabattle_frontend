@@ -78,6 +78,14 @@
     margin-left: -5px;
 }
 
+.modal-create .form .isBot {
+    width: 20px;
+    height: 20px;
+    margin-right: 165px;
+    cursor: pointer;
+    margin-top: 1px;
+}
+
 .modal-create .form .error {
     color: red;
 }

@@ -33,6 +33,7 @@ function LobbyPage(props) {
     useEffect(() => {
         if (client) {
             client.onopen = (e) => {
+                console.log("Websocket connected!")
                 setIsWSReady(!!client.readyState);
             };
 
@@ -53,17 +54,21 @@ function LobbyPage(props) {
                         (boards[0].user_id === userId ?
                             {lobbyId: data.id, myBoard: boards[0], enemyBoard: boards[1], winner: data.winner, 
                                 bet: data.bet, timeLeft: data.time_left, timeToMove: data.time_to_move, 
-                                users: data.users, messages: data.messages} :
+                                is_play_with_a_bot: data.is_play_with_a_bot, users: data.users, 
+                                messages: data.messages} :
                             {lobbyId: data.id, myBoard: boards[1], enemyBoard: boards[0], winner: data.winner, 
                                 bet: data.bet, timeLeft: data.time_left, timeToMove: data.time_to_move, 
-                                users: data.users, messages: data.messages}) :
+                                is_play_with_a_bot: data.is_play_with_a_bot, users: data.users, 
+                                messages: data.messages}) :
                         (boards[1].user_id === userId ?
                             {lobbyId: data.id, myBoard: boards[1], enemyBoard: boards[0], winner: data.winner, 
                                 bet: data.bet, timeLeft: data.time_left, timeToMove: data.time_to_move, 
-                                users: data.users, messages: data.messages} :
+                                is_play_with_a_bot: data.is_play_with_a_bot, users: data.users, 
+                                messages: data.messages} :
                             {lobbyId: data.id, myBoard: boards[0], enemyBoard: boards[1], winner: data.winner, 
                                 bet: data.bet, timeLeft: data.time_left, timeToMove: data.time_to_move, 
-                                users: data.users, messages: data.messages})
+                                is_play_with_a_bot: data.is_play_with_a_bot, users: data.users, 
+                                messages: data.messages})
                 ));
 
                 outletContext.setClient(client);

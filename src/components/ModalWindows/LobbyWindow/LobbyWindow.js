@@ -24,7 +24,7 @@ function LobbyWindow(props) {
     };
 
     function giveUpHandler() {
-        sendDetermineWinner(props.client, bet, props.content.userId);
+        sendDetermineWinner(props.client, bet, props.content.isBot, props.content.userId);
         if (props.content.url) {
             playAgainHandler(false);
             props.client.close();

@@ -84,6 +84,11 @@ function CreateLobbyWindow(props) {
                         <input className="value" name="password" placeholder="Password" type="password"/>
                     </div>
 
+                    <div className="block">
+                        <span className="label">Play with a bot:</span>
+                        <input className="value isBot" name="playWithABot" type="checkbox" />
+                    </div>
+
                     <div className="buttons">
                         <input type="button" className="back" value="Back"  onClick={() => modalCloseHandler()}/>
                         <input type="submit" className="submit" value="Create" disabled={props.isProcessing} />

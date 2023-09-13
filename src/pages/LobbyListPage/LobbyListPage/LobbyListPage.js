@@ -113,6 +113,7 @@ async function lobbyAction({request}) {
         time_to_move: formData.get("timeToMove"),
         time_to_placement: formData.get("timeToPlacement"),
         password: formData.get("password"),
+        is_play_with_a_bot: formData.get("playWithABot") ? true : false,
     };
     
     const slugOfNewLobby = await createLobby(inputData)

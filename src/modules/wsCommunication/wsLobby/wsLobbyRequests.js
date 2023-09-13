@@ -52,10 +52,13 @@ export function sendWhoStarts(client) {
     }));
 };
 
-export function sendDetermineWinner(client, bet, enemyId=null) {
-    const data = {type: "determine_winner", bet: bet};
-    if (enemyId) data.enemy_id = enemyId;
-    client.send(JSON.stringify(data));
+export function sendDetermineWinner(client, bet, isBot, enemyId=null) {
+    client.send(JSON.stringify({
+        type: "determine_winner", 
+        bet: bet, 
+        is_bot: isBot, 
+        enemy_id: enemyId
+    }));
 };
 
 export function sendCountDownTimer(client, timeToMove = null) {
@@ -99,7 +102,7 @@ export function sendPlayAgain(client, lobbyId, boardId, answer) {
     }));
 };
 
-export function sendCreateNewGame(client, bet, name, timeToMove, timeToPlacement, enemyId, lobbyId) {
+export function sendCreateNewGame(client, bet, name, timeToMove, timeToPlacement, enemyId, lobbyId, isBot) {
     client.send(JSON.stringify({
         type: "create_new_game",
         bet: bet,
@@ -108,6 +111,7 @@ export function sendCreateNewGame(client, bet, name, timeToMove, timeToPlacement
         time_to_placement: timeToPlacement,
         enemy_id: enemyId,
         lobby_id: lobbyId,
+        is_bot: isBot,
     }));
 };
 

@@ -29,27 +29,33 @@ function Lobby(props) {
     const messages = useSelector(state => state.lobby.messages);
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
     const isCanPutShip = useSelector(state => state.lobby.isCanPutShip);
+    const isPlayWithABot = useSelector(state => state.lobby.isPlayWithABot);
     const [isOpenModal, setIsOpenModal] = useState(false);
-    const [me, enemy] = users[0]["id"] === userId ? [users[0], users[1]] : [users[1], users[0]];
+    const [me, enemy] = users[0]?.id === userId ? [users[0], users[1]] : [users[1], users[0]];
     const typeAction = myBoard.is_ready & enemyBoard.is_ready ? "turn" : "placement";
     const wsResp = new WSResponse();
 
+    // Высветить модальное окно с предложением сыграть еще
     if (!timer.isAnswered && winner && myBoard.is_play_again === null) {
         setIsOpenModal(true);
         timer.isAnswered = true;
     };
-    
+        
     // console.log("Переработать переход на новую игру при обоюдном согласии о еще партии, временно перезагружает страницу")
     // console.log("Заменить прод редис на тестовый в тестах")
     
     useEffect(() => {
-        const countdown = users.length === 2 & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
+        // Начать обратный отсчет и следовательно начать игру
+        const countdown = (isPlayWithABot | users.length === 2) & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
+
+        // Добавить пользователя к игре и отправить сообщение в общий чат
         if (!timer.isEnemyConnected && users.length === 1 && me?.id !== userId) {
             sendAddUserToGame(props.client, lobby.id, !enemyBoard.user_id ? enemyBoard.id: myBoard.id);
             sendNotifAddUserToGame(props.mainClient, lobby.id);
             timer.isEnemyConnected = true;
         };
 
+        // Если время подготовки вышло, я готов, а враг нет - через 3 секунды он проиграет автоматически
         if (timeLeft === 0 && !winner && myBoard.is_ready && !enemyBoard.is_ready) {
             setTimeout(() => {
                 if (timeLeft === 0 && !winner && myBoard.is_ready && !enemyBoard.is_ready) {
@@ -58,11 +64,14 @@ function Lobby(props) {
             }, 3000);
         }
 
+        // Если время для расстановки вышло, а я не готов - расставляет и делает готовным к игре автоматически
+        // Если время на ход вышло - проиграл автоматически
         if (!timer.isTimeIsOver && timeLeft <= 0) timeIsOver(typeAction, enemy.id, myBoard);
 
+        // Создает новую игру при взаимном согласии
         if (timer.isAnswered && myBoard.is_play_again && enemyBoard.is_play_again && winner !== me.username) {
             sendCreateNewGame(props.client, lobby.bet, lobby.name, lobby.time_to_move, lobby.time_to_placement, 
-                enemy.id, lobby.id);
+                enemy ? enemy.id : me.id, lobby.id, isPlayWithABot);
             timer.isAnswered = false;
         };
 
@@ -126,9 +135,15 @@ function Lobby(props) {
 
             } else if (data.type === "is_play_again") {
                 wsResp.sendMessage(dispatch, data.message, messages);
-                userId === data.user_id ?
-                    wsResp.setIsPlayAgain(dispatch, setMyBoard, myBoard, data.is_play_again) :
+
+                if (isPlayWithABot) {
+                    wsResp.setIsPlayAgain(dispatch, setMyBoard, myBoard, data.is_play_again);
                     wsResp.setIsPlayAgain(dispatch, setEnemyBoard, enemyBoard, data.is_play_again);
+                } else {
+                    userId === data.user_id ?
+                        wsResp.setIsPlayAgain(dispatch, setMyBoard, myBoard, data.is_play_again) :
+                        wsResp.setIsPlayAgain(dispatch, setEnemyBoard, enemyBoard, data.is_play_again);
+                };
 
             } else if (data.type === "new_group") {
                 setTimeout(() => document.location.href = `/lobbies/${data.lobby_slug}/`, 1000);
@@ -172,7 +187,7 @@ function Lobby(props) {
     function displayGameResults() {
         return (
             <p className="winner">
-                {winner === me.username ? <i id="won">You won!</i> : <i id="lose">You lose!</i>}
+                {winner === "Bot" || winner === enemy?.username ? <i id="lose">You lose!</i> : <i id="won">You won!</i>}
             </p>
         );
     };
@@ -201,20 +216,27 @@ function Lobby(props) {
                     <FontAwesomeIcon icon={faClock}/>
                 </span>
 
-                {enemy && <span className="enemy">
-                    <span>
-                        <span>{enemy.username}</span>
+
+                {isPlayWithABot ? 
+                    <span className="enemy">
+                        <span>Bot</span>
                         <FontAwesomeIcon icon={faUser}/>
-                        <div className="enemy-info">
-                            <p className="user-info">First name: {enemy.first_name ? enemy.first_name : "None"}</p>
-                            <p className="user-info">Last name: {enemy.last_name ? enemy.last_name : "None"}</p>
-                            <p className="user-info">
-                                Rating: {enemy.rating}
-                                <FontAwesomeIcon className="user-rating" icon={faStar}/>
-                            </p>
-                        </div>
+                    </span> :
+                    enemy && <span className="enemy">
+                        <span>
+                            <span>{enemy.username}</span>
+                            <FontAwesomeIcon icon={faUser}/>
+                            <div className="enemy-info">
+                                <p className="user-info">First name: {enemy.first_name ? enemy.first_name : "None"}</p>
+                                <p className="user-info">Last name: {enemy.last_name ? enemy.last_name : "None"}</p>
+                                <p className="user-info">
+                                    Rating: {enemy.rating}
+                                    <FontAwesomeIcon className="user-rating" icon={faStar}/>
+                                </p>
+                            </div>
+                        </span>
                     </span>
-                </span>}
+                }
 
             </div>
 
@@ -230,7 +252,7 @@ function Lobby(props) {
             </div>
             <Ships client={props.client} />
 
-            {users.length !== 2 && <div className="waiting"><i>Waiting for an enemy...</i></div>}
+            {!isPlayWithABot && users.length !== 2 && <div className="waiting"><i>Waiting for an enemy...</i></div>}
             {winner && (enemyBoard.is_play_again === null || myBoard.is_play_again === null) &&
                 <div className="waiting"><i>Waiting for an enemy...</i></div>}
             {isOpenModal && <LobbyWindow 
