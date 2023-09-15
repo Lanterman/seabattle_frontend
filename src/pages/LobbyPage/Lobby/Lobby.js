@@ -7,7 +7,7 @@ import { timer, createBoardVariable } from "../../../modules/services";
 import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResponse";
 import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeLeft, 
     clearState } from "../../../store/reducers/lobbyReducer";
-import { sendWhoStarts, sendDetermineWinner, sendCountDownTimer, sendTimeIsOver, sendCreateNewGame,
+import { sendWhoStarts, sendDetermineWinner, sendCountDownTimer, sendTimeIsOver, sendCreateNewGame, sendBotTakeToShot,
     sendAddUserToGame } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import { sendNotifAddUserToGame } from "../../../modules/wsCommunication/wsApp/wsMainRequests";
 
@@ -40,19 +40,33 @@ function Lobby(props) {
         setIsOpenModal(true);
         timer.isAnswered = true;
     };
-        
+
     // console.log("Переработать переход на новую игру при обоюдном согласии о еще партии, временно перезагружает страницу")
     // console.log("Заменить прод редис на тестовый в тестах")
     
     useEffect(() => {
-        // Начать обратный отсчет и следовательно начать игру
-        const countdown = (isPlayWithABot | users.length === 2) & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
+        // Начать обратный отсчет для подготовки или хода
+        const countdown = (isPlayWithABot | users.length === 2) & timeLeft > 29 & !winner && setInterval(() => countDownTimer(), 1000);
 
         // Добавить пользователя к игре и отправить сообщение в общий чат
         if (!timer.isEnemyConnected && users.length === 1 && me?.id !== userId) {
             sendAddUserToGame(props.client, lobby.id, !enemyBoard.user_id ? enemyBoard.id: myBoard.id);
             sendNotifAddUserToGame(props.mainClient, lobby.id);
             timer.isEnemyConnected = true;
+        };
+
+        // Если игра с ботом, расставляет корабли для бота и делает его готовым к игре
+        if (isPlayWithABot & !enemyBoard.is_ready & lobby.time_to_placement === timeLeft + 1 & !timer.isBotIsReady) {
+            const board = createBoardVariable(enemyBoard);
+            sendTimeIsOver(props.client, enemyBoard.id, enemyBoard.ships, board);
+            timer.isBotIsReady = true
+        };
+
+        // Если ход бота
+        if (isPlayWithABot & enemyBoard.is_my_turn & !timer.isBotShooted) {
+            console.log("start")
+            sendBotTakeToShot(props.client, myBoard.id, lobby.time_to_move);
+            timer.isBotShooted = true;
         };
 
         // Если время подготовки вышло, я готов, а враг нет - через 3 секунды он проиграет автоматически
@@ -91,11 +105,28 @@ function Lobby(props) {
                     sendDetermineWinner(props.client, lobby.bet);
                 };
 
+
+
+
+            } else if (data.type === "bot_taken_to_shot") {
+                console.log(data)
+                myBoard["C"]["C1"] = data.field_name_dict["C1"];
+                dispatch(setMyBoard(Object.assign({}, myBoard)));
+
+                if (data.is_bot_missed) {
+                    timer.isBotShooted = false;
+                };
+            
+
+
+
             } else if (["drop_ship", "clear_board", "random_placed"].includes(data.type)) {
-                wsResp.updateBoard(dispatch, myBoard, data.board, data.ships);
+                const [method, changedBoard] = data.board_id === myBoard.id ? 
+                    [setMyBoard, myBoard] : [setEnemyBoard, enemyBoard];
+                wsResp.updateBoard(dispatch, method, changedBoard, data.board, data.ships);
 
             } else if (data.type === "is_ready_to_play") {
-                userId === data.user_id ?
+                userId === data.user_id & data.board_id === myBoard.id ?
                     wsResp.setIsReadyToPlay(dispatch, setMyBoard, myBoard, data.is_ready) :
                     wsResp.setIsReadyToPlay(dispatch, setEnemyBoard, enemyBoard, data.is_ready);
                 if (myBoard.is_ready & enemyBoard.is_ready) {

@@ -18,6 +18,8 @@ export let timer = {
     _isTimeIsOver: false,
     _isAnswered: false,
     _isEnemyConnected: false,
+    _isBotIsReady: false,
+    _isBotShooted: false,
 
     get isCountdownHasStarted() {
         return this._isCountdownHasStarted;
@@ -49,7 +51,23 @@ export let timer = {
 
     set isEnemyConnected(value) {
         this._isEnemyConnected = value;
-    }
+    },
+
+    get isBotIsReady() {
+        return this._isBotIsReady;
+    },
+
+    set isBotIsReady(value) {
+        this._isBotIsReady = value;
+    },
+
+    get isBotShooted() {
+        return this._isBotShooted
+    },
+
+    set isBotShooted(value) {
+        this._isBotShooted = value;
+    },
 };
 
 export function createBoardVariable(board) {

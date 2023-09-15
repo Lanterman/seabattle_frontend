@@ -16,8 +16,8 @@ export class WSResponse {
         dispatch(secondMethod(Object.assign({}, secondBoard, {"is_my_turn": isMyTurn})));
     };
 
-    updateBoard(dispatch, board, newBoard, ships) {
-        dispatch(setMyBoard(Object.assign({}, board, newBoard, {ships: ships})));
+    updateBoard(dispatch, method, board, newBoard, ships) {
+        dispatch(method(Object.assign({}, board, newBoard, {ships: ships})));
     };
 
     setIsReadyToPlay(dispatch, method, board, isReady) {

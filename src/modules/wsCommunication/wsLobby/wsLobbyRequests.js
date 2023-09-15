@@ -120,3 +120,11 @@ export function sendDeleteGame(client) {
         type: "delete_game",
     }));
 };
+
+export function sendBotTakeToShot(client, boardId, timeToMove) {
+    client.send(JSON.stringify({
+        type: "bot_take_to_shot",
+        board_id: boardId,
+        time_to_turn: timeToMove
+    }));
+};

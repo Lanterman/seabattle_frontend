@@ -58,10 +58,10 @@ function SidePanel(props) {
                         disabled={((isPlayWithABot || users.length === 2) & !winner & (!enemyBoard.is_ready || !myBoard.is_ready) & 
                             boardIsReady & timeLeft > 0 )? false : true}/>
                     <input type="button" className="random-placement" value="Random placement"
-                        disabled={(isPlayWithABot || users.length === 2) & !myBoard.is_ready && !winner ? false : true}
+                        disabled={isPlayWithABot || users.length === 2 & !myBoard.is_ready && !winner ? false : true}
                         onClick={(e) => randomPlacementOnClickHandler(e)} />
                     <input className="give-up" type="button" value="Give up"
-                        disabled={isPlayWithABot || (users.length === 2 && enemyBoard.user_id) & !winner ? false : true}
+                        disabled={isPlayWithABot || users.length === 2 && enemyBoard.user_id && !winner ? false : true}
                         onClick={() => setIsOpenModal(true)} />
                 </div>
 
@@ -71,7 +71,7 @@ function SidePanel(props) {
                                     client={props.client}
                                     setClient={props.setClient}
                                     setIsOpenModal={setIsOpenModal}
-                                    content={{userId: enemyBoard?.user_id, isBot: isPlayWithABot}}/>}
+                                    content={{userId: enemyBoard?.user_id}}/>}
 
         </div>
     );
