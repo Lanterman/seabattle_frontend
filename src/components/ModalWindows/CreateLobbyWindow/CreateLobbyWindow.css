@@ -86,6 +86,25 @@
     margin-top: 1px;
 }
 
+.modal-create .form .bot-level {
+    width: 50%;
+    margin-left: 158px;
+    margin-bottom: 10px;
+}
+
+.modal-create .form .easy, .modal-create .form .medium, .modal-create .form .hard {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.modal-create .form .bot-level .label {
+    position: absolute;
+    margin-top: -1px;
+    margin-left: 10px;
+    color: rgb(87, 81, 81);
+}
+
 .modal-create .form .error {
     color: red;
 }

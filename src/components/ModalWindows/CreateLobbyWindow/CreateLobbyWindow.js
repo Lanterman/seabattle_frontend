@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Form, useActionData } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faAdd } from '@fortawesome/free-solid-svg-icons';
@@ -7,6 +8,7 @@ import "./CreateLobbyWindow.css";
 
 function CreateLobbyWindow(props) {
     const mainAction = useActionData();
+    const [isBotExists, setIsBotExists] = useState(false);
 
     function modalCloseHandler() {
         props.setIsOpenModal(false);
@@ -86,8 +88,28 @@ function CreateLobbyWindow(props) {
 
                     <div className="block">
                         <span className="label">Play with a bot:</span>
-                        <input className="value isBot" name="playWithABot" type="checkbox" />
+                        <input className="value isBot" name="playWithABot" type="checkbox" 
+                            onClick={() => setIsBotExists(!isBotExists)}
+                        />
                     </div>
+
+                    {isBotExists && 
+                        <div className="block">
+                            <span className="label">Bot level:</span>
+                            <div className="bot-level">
+                                <input className="easy" name="bot-level" type="radio" value="easy" defaultChecked/>
+                                <span className="label">Easy</span>
+                            </div>
+                            <div className="bot-level">
+                                <input className="medium" name="bot-level" type="radio" value="medium" />
+                                <span className="label">Medium</span>
+                            </div>
+                            <div className="bot-level">
+                                <input className="hard" name="bot-level" type="radio" value="hard" />
+                                <span className="label">Hard</span>
+                            </div>
+                        </div>
+                    }
 
                     <div className="buttons">
                         <input type="button" className="back" value="Back"  onClick={() => modalCloseHandler()}/>

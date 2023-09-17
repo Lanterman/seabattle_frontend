@@ -107,7 +107,7 @@ function Lobby(props) {
 
 
 
-
+                // Taken shoot
             } else if (data.type === "bot_taken_to_shot") {
                 console.log(data)
                 myBoard["C"]["C1"] = data.field_name_dict["C1"];
