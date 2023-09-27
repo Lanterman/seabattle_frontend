@@ -46,7 +46,7 @@ function Lobby(props) {
     
     useEffect(() => {
         // Начать обратный отсчет для подготовки или хода
-        const countdown = (isPlayWithABot | users.length === 2) & timeLeft > 29 & !winner && setInterval(() => countDownTimer(), 1000);
+        const countdown = (isPlayWithABot | users.length === 2) & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
 
         // Добавить пользователя к игре и отправить сообщение в общий чат
         if (!timer.isEnemyConnected && users.length === 1 && me?.id !== userId) {
@@ -64,8 +64,8 @@ function Lobby(props) {
 
         // Если ход бота
         if (isPlayWithABot & enemyBoard.is_my_turn & !timer.isBotShooted) {
-            console.log("start")
-            sendBotTakeToShot(props.client, myBoard.id, lobby.time_to_move);
+            const lastHit = sessionStorage.getItem("last_hit") || "";
+            sendBotTakeToShot(props.client, myBoard.id, lobby.time_to_move, lastHit, myBoard.ships);
             timer.isBotShooted = true;
         };
 
@@ -102,21 +102,31 @@ function Lobby(props) {
                 wsResp.setTimeLeft(dispatch, data.time_left);
 
                 if (userId === data.user_id && data.enemy_ships === 0) {
-                    sendDetermineWinner(props.client, lobby.bet);
+                    sendDetermineWinner(props.client, lobby.bet, isPlayWithABot);
                 };
-
 
 
                 // Taken shoot
             } else if (data.type === "bot_taken_to_shot") {
-                console.log(data)
-                myBoard["C"]["C1"] = data.field_name_dict["C1"];
-                dispatch(setMyBoard(Object.assign({}, myBoard)));
+                const field_list = Object.keys(data.field_dict);
+                field_list.map((field) => (
+                    myBoard[field[0]][field] = data.field_dict[field]
+                ));
 
-                if (data.is_bot_missed) {
+                if (data.is_my_turn) {
+                    dispatch(setMyBoard(Object.assign({}, myBoard, {"is_my_turn": data.is_my_turn})));
+                    dispatch(setEnemyBoard(Object.assign({}, enemyBoard, {"is_my_turn": !data.is_my_turn})));
                     timer.isBotShooted = false;
+                } else {
+                    dispatch(setMyBoard(Object.assign({}, myBoard)));
                 };
-            
+
+                sessionStorage.setItem("last_hit", data.last_hit);
+                wsResp.setTimeLeft(dispatch, data.time_left);
+                
+                if (data.enemy_ships === 0) {
+                    sendDetermineWinner(props.client, lobby.bet, isPlayWithABot);
+                };
 
 
 

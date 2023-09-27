@@ -121,10 +121,12 @@ export function sendDeleteGame(client) {
     }));
 };
 
-export function sendBotTakeToShot(client, boardId, timeToMove) {
+export function sendBotTakeToShot(client, boardId, timeToMove, lastHit, ships) {
     client.send(JSON.stringify({
         type: "bot_take_to_shot",
         board_id: boardId,
-        time_to_turn: timeToMove
+        time_to_turn: timeToMove,
+        last_hit: lastHit,
+        ships: ships,
     }));
 };
