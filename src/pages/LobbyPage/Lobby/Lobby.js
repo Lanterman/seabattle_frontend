@@ -46,7 +46,7 @@ function Lobby(props) {
     
     useEffect(() => {
         // Начать обратный отсчет для подготовки или хода
-        const countdown = (isPlayWithABot | users.length === 2) & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
+        const countdown = (isPlayWithABot !== null | users.length === 2) & timeLeft > 0 & !winner && setInterval(() => countDownTimer(), 1000);
 
         // Добавить пользователя к игре и отправить сообщение в общий чат
         if (!timer.isEnemyConnected && users.length === 1 && me?.id !== userId) {
@@ -56,16 +56,17 @@ function Lobby(props) {
         };
 
         // Если игра с ботом, расставляет корабли для бота и делает его готовым к игре
-        if (isPlayWithABot & !enemyBoard.is_ready & lobby.time_to_placement === timeLeft + 1 & !timer.isBotIsReady) {
+        if (isPlayWithABot !== null  & !enemyBoard.is_ready & lobby.time_to_placement > timeLeft & !timer.isBotIsReady) {
             const board = createBoardVariable(enemyBoard);
+            sessionStorage.removeItem("last_hit");
             sendTimeIsOver(props.client, enemyBoard.id, enemyBoard.ships, board);
             timer.isBotIsReady = true
         };
 
         // Если ход бота
-        if (isPlayWithABot & enemyBoard.is_my_turn & !timer.isBotShooted) {
+        if (isPlayWithABot !== null  & enemyBoard.is_my_turn & !timer.isBotShooted) {
             const lastHit = sessionStorage.getItem("last_hit") || "";
-            sendBotTakeToShot(props.client, myBoard.id, lobby.time_to_move, lastHit, myBoard.ships);
+            sendBotTakeToShot(props.client, myBoard.id, lobby.time_to_move, lastHit, myBoard.ships, isPlayWithABot);
             timer.isBotShooted = true;
         };
 
@@ -78,12 +79,18 @@ function Lobby(props) {
             }, 3000);
         }
 
+        
+        // РЕШИТЬ ПРОБЛЕМУ С ЗАЩИКЛИВАНИЕМ СООБЩЕНИЙ ПРИ НЕДОСТАТОЧНОЙ СУММЕ ДЕНЕГ, И ДРУГИЕ ТОЖЕ ПРОВЕРИТЬ
+
         // Если время для расстановки вышло, а я не готов - расставляет и делает готовным к игре автоматически
         // Если время на ход вышло - проиграл автоматически
+
+
         if (!timer.isTimeIsOver && timeLeft <= 0) timeIsOver(typeAction, enemy.id, myBoard);
 
         // Создает новую игру при взаимном согласии
-        if (timer.isAnswered && myBoard.is_play_again && enemyBoard.is_play_again && winner !== me.username) {
+        if (timer.isAnswered && myBoard.is_play_again && (isPlayWithABot !== null  || 
+            (enemyBoard.is_play_again && winner !== me.username))) {
             sendCreateNewGame(props.client, lobby.bet, lobby.name, lobby.time_to_move, lobby.time_to_placement, 
                 enemy ? enemy.id : me.id, lobby.id, isPlayWithABot);
             timer.isAnswered = false;
@@ -102,11 +109,11 @@ function Lobby(props) {
                 wsResp.setTimeLeft(dispatch, data.time_left);
 
                 if (userId === data.user_id && data.enemy_ships === 0) {
-                    sendDetermineWinner(props.client, lobby.bet, isPlayWithABot);
+                    sendDetermineWinner(props.client, lobby.bet, isPlayWithABot, userId);
                 };
 
 
-                // Taken shoot
+                // A bot taken shot
             } else if (data.type === "bot_taken_to_shot") {
                 const field_list = Object.keys(data.field_dict);
                 field_list.map((field) => (
@@ -126,6 +133,7 @@ function Lobby(props) {
                 
                 if (data.enemy_ships === 0) {
                     sendDetermineWinner(props.client, lobby.bet, isPlayWithABot);
+                    sessionStorage.removeItem("last_hit");
                 };
 
 
@@ -177,7 +185,7 @@ function Lobby(props) {
             } else if (data.type === "is_play_again") {
                 wsResp.sendMessage(dispatch, data.message, messages);
 
-                if (isPlayWithABot) {
+                if (isPlayWithABot !== null ) {
                     wsResp.setIsPlayAgain(dispatch, setMyBoard, myBoard, data.is_play_again);
                     wsResp.setIsPlayAgain(dispatch, setEnemyBoard, enemyBoard, data.is_play_again);
                 } else {
@@ -257,8 +265,7 @@ function Lobby(props) {
                     <FontAwesomeIcon icon={faClock}/>
                 </span>
 
-
-                {isPlayWithABot ? 
+                {isPlayWithABot !== null  ? 
                     <span className="enemy">
                         <span>Bot</span>
                         <FontAwesomeIcon icon={faUser}/>

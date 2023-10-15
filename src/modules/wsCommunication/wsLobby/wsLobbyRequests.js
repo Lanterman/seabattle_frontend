@@ -52,12 +52,12 @@ export function sendWhoStarts(client) {
     }));
 };
 
-export function sendDetermineWinner(client, bet, isBot, enemyId=null) {
+export function sendDetermineWinner(client, bet, isBot, userId=null) {
     client.send(JSON.stringify({
         type: "determine_winner", 
         bet: bet, 
         is_bot: isBot, 
-        enemy_id: enemyId
+        user_id: userId
     }));
 };
 
@@ -121,12 +121,13 @@ export function sendDeleteGame(client) {
     }));
 };
 
-export function sendBotTakeToShot(client, boardId, timeToMove, lastHit, ships) {
+export function sendBotTakeToShot(client, boardId, timeToMove, lastHit, ships, botLevel) {
     client.send(JSON.stringify({
         type: "bot_take_to_shot",
         board_id: boardId,
         time_to_turn: timeToMove,
         last_hit: lastHit,
         ships: ships,
+        bot_level: botLevel,
     }));
 };

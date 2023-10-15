@@ -51,17 +51,17 @@ function SidePanel(props) {
 
     return (
         <div className="side-panel">
-            <Chat client={props.client} lobbyId={props.lobbyId} users={users} /> {/* Исправить чат */}
+            <Chat client={props.client} lobbyId={props.lobbyId} users={users} />
                 <div className="buttons">
                     <input id="ready-button" type="button" value="Ready" 
                         onClick={(e) => readyOnClickHandler(e)} 
-                        disabled={((isPlayWithABot || users.length === 2) & !winner & (!enemyBoard.is_ready || !myBoard.is_ready) & 
+                        disabled={((isPlayWithABot !== null || users.length === 2) & !winner & (!enemyBoard.is_ready || !myBoard.is_ready) & 
                             boardIsReady & timeLeft > 0 )? false : true}/>
                     <input type="button" className="random-placement" value="Random placement"
-                        disabled={isPlayWithABot || users.length === 2 & !myBoard.is_ready && !winner ? false : true}
+                        disabled={(isPlayWithABot || users.length === 2) && !myBoard.is_ready && !winner ? false : true}
                         onClick={(e) => randomPlacementOnClickHandler(e)} />
                     <input className="give-up" type="button" value="Give up"
-                        disabled={isPlayWithABot || users.length === 2 && enemyBoard.user_id && !winner ? false : true}
+                        disabled={(isPlayWithABot || (users.length === 2 && enemyBoard.user_id)) && !winner ? false : true}
                         onClick={() => setIsOpenModal(true)} />
                 </div>
 

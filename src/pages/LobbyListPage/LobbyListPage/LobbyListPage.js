@@ -113,8 +113,7 @@ async function lobbyAction({request}) {
         time_to_move: formData.get("timeToMove"),
         time_to_placement: formData.get("timeToPlacement"),
         password: formData.get("password"),
-        is_play_with_a_bot: formData.get("playWithABot") ? true : false,
-        bot_level: formData.get("bot-level") ? formData.get("bot-level") : null,
+        is_play_with_a_bot: formData.get("bot-level") ? formData.get("bot-level") : null,
     };
 
     const slugOfNewLobby = await createLobby(inputData)

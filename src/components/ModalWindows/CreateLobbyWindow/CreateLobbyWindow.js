@@ -97,15 +97,15 @@ function CreateLobbyWindow(props) {
                         <div className="block">
                             <span className="label">Bot level:</span>
                             <div className="bot-level">
-                                <input className="easy" name="bot-level" type="radio" value="easy" defaultChecked/>
+                                <input className="easy" name="bot-level" type="radio" value="EASY" defaultChecked/>
                                 <span className="label">Easy</span>
                             </div>
                             <div className="bot-level">
-                                <input className="medium" name="bot-level" type="radio" value="medium" />
+                                <input className="medium" name="bot-level" type="radio" value="MEDIUM" />
                                 <span className="label">Medium</span>
                             </div>
                             <div className="bot-level">
-                                <input className="hard" name="bot-level" type="radio" value="hard" />
+                                <input className="hard" name="bot-level" type="radio" value="HIGH" />
                                 <span className="label">Hard</span>
                             </div>
                         </div>
