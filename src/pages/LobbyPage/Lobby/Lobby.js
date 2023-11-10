@@ -155,6 +155,11 @@ function Lobby(props) {
                     };
                 };
 
+                // Обновить готовность бота на ложь для того, чтоб можно было начинать другие игры без перезагрузки (ВРЕМЕННО)
+                if (timer.isBotIsReady === true) {
+                    timer.isBotIsReady = false;
+                };
+
             } else if (data.type === "who_starts") {
                 userId === data.user_id ?
                     wsResp.determineWhoIsTurning(dispatch, data.is_my_turn, myBoard, enemyBoard) :
