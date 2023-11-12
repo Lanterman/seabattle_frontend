@@ -84,9 +84,9 @@ function Lobby(props) {
         if (!timer.isTimeIsOver && timeLeft <= 0) timeIsOver(typeAction, enemy.id, myBoard);
 
         // Создает новую игру при взаимном согласии
-        if (timer.isAnswered && myBoard.is_play_again && (isPlayWithABot !== null  || 
+        if (timer.isAnswered && myBoard.is_play_again && (isPlayWithABot !== null || 
             (enemyBoard.is_play_again && winner === me.username))) {
-            if (isPlayWithABot === null && enemy.cash > lobby.bet) {
+            if (isPlayWithABot !== null || enemy.cash > lobby.bet) {
                 sendCreateNewGame(props.client, lobby.bet, lobby.name, lobby.time_to_move, lobby.time_to_placement, 
                 enemy ? enemy.id : me.id, lobby.id, isPlayWithABot);
             } else {
