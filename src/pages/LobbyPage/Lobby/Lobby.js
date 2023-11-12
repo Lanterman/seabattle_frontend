@@ -8,7 +8,7 @@ import { WSResponse } from "../../../modules/wsCommunication/wsLobby/wsLobbyResp
 import { setEnemyBoard, setMyBoard, setIsCanPutShip, setTimeLeft, 
     clearState } from "../../../store/reducers/lobbyReducer";
 import { sendWhoStarts, sendDetermineWinner, sendCountDownTimer, sendTimeIsOver, sendCreateNewGame, sendBotTakeToShot,
-    sendAddUserToGame } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
+    sendAddUserToGame, sendMessage } from "../../../modules/wsCommunication/wsLobby/wsLobbyRequests";
 import { sendNotifAddUserToGame } from "../../../modules/wsCommunication/wsApp/wsMainRequests";
 
 import { Board } from "../Board/Board";
@@ -78,10 +78,6 @@ function Lobby(props) {
                 };
             }, 3000);
         }
-
-        
-        // РЕШИТЬ ПРОБЛЕМУ С ЗАЩИКЛИВАНИЕМ СООБЩЕНИЙ ПРИ НЕДОСТАТОЧНОЙ СУММЕ ДЕНЕГ, И ДРУГИЕ ТОЖЕ ПРОВЕРИТЬ
-
         
         // Если время для расстановки вышло, а я не готов - расставляет и делает готовным к игре автоматически
         // Если время на ход вышло - проиграл автоматически
@@ -89,9 +85,13 @@ function Lobby(props) {
 
         // Создает новую игру при взаимном согласии
         if (timer.isAnswered && myBoard.is_play_again && (isPlayWithABot !== null  || 
-            (enemyBoard.is_play_again && winner !== me.username))) {
-            sendCreateNewGame(props.client, lobby.bet, lobby.name, lobby.time_to_move, lobby.time_to_placement, 
+            (enemyBoard.is_play_again && winner === me.username))) {
+            if (isPlayWithABot === null && enemy.cash > lobby.bet) {
+                sendCreateNewGame(props.client, lobby.bet, lobby.name, lobby.time_to_move, lobby.time_to_placement, 
                 enemy ? enemy.id : me.id, lobby.id, isPlayWithABot);
+            } else {
+                sendMessage(props.client, lobby.id, `${enemy.username} don't have enough money!`);
+            };
             timer.isAnswered = false;
         };
 
