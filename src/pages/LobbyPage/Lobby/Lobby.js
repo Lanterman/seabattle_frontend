@@ -66,7 +66,7 @@ function Lobby(props) {
         // Если ход бота
         if (isPlayWithABot !== null  & enemyBoard.is_my_turn & !timer.isBotShooted) {
             const lastHit = sessionStorage.getItem("last_hit") || "";
-            sendBotTakeToShot(props.client, myBoard.id, lobby.time_to_move, lastHit, myBoard.ships, isPlayWithABot);
+            sendBotTakeToShot(props.client, lobby.id, myBoard.id, lobby.time_to_move, lastHit, myBoard.ships, isPlayWithABot);
             timer.isBotShooted = true;
         };
 
@@ -107,8 +107,12 @@ function Lobby(props) {
                 
                 wsResp.setTimeLeft(dispatch, data.time_left);
 
+                if (data.bot_message) {
+                    wsResp.sendMessage(dispatch, data.bot_message, messages);
+                };
+
                 if (userId === data.user_id && data.enemy_ships === 0) {
-                    sendDetermineWinner(props.client, lobby.bet, isPlayWithABot, userId);
+                    sendDetermineWinner(props.client, lobby.id, lobby.bet, isPlayWithABot, userId);
                 };
 
 
@@ -127,11 +131,15 @@ function Lobby(props) {
                     dispatch(setMyBoard(Object.assign({}, myBoard)));
                 };
 
+                if (data.bot_message) {
+                    wsResp.sendMessage(dispatch, data.bot_message, messages);
+                };
+
                 sessionStorage.setItem("last_hit", data.last_hit);
                 wsResp.setTimeLeft(dispatch, data.time_left);
                 
                 if (data.enemy_ships === 0) {
-                    sendDetermineWinner(props.client, lobby.bet, isPlayWithABot);
+                    sendDetermineWinner(props.client, lobby.id, lobby.bet, isPlayWithABot);
                     sessionStorage.removeItem("last_hit");
                 };
 
@@ -167,6 +175,10 @@ function Lobby(props) {
 
             } else if (data.type === "determine_winner") {
                 wsResp.determinedWinner(dispatch, data.winner);
+
+                if (data.bot_message) {
+                    wsResp.sendMessage(dispatch, data.bot_message, messages);
+                };
 
             } else if (data.type === "countdown") {
                 wsResp.setTimeLeft(dispatch, data.time_left);
@@ -218,7 +230,7 @@ function Lobby(props) {
 
     function timeIsOver(typeAction, enemyId, myBoard) {
         if (typeAction === "turn") {
-            sendDetermineWinner(props.client, lobby.bet, myBoard.is_my_turn && enemyId);
+            sendDetermineWinner(props.client, lobby.id, lobby.bet, myBoard.is_my_turn && enemyId);
         } else {
             if (!myBoard.is_ready) {
                 const board = createBoardVariable(myBoard);
@@ -240,7 +252,7 @@ function Lobby(props) {
     function displayGameResults() {
         return (
             <p className="winner">
-                {winner === "Bot" || winner === enemy?.username ? <i id="lose">You lose!</i> : <i id="won">You won!</i>}
+                {winner !== me.username || winner === enemy?.username ? <i id="lose">You lose!</i> : <i id="won">You won!</i>}
             </p>
         );
     };
@@ -299,8 +311,9 @@ function Lobby(props) {
                     client={props.client} 
                     board={myBoard} 
                     enemyId={enemy?.id} 
+                    lobbyId={lobby.id}
                     updateShipClassName={updateShipClassName} />
-                <Board client={props.client} board={enemyBoard} enemyId={enemy?.id} lobbySlug={props.lobbySlug}/>
+                <Board client={props.client} board={enemyBoard} enemyId={enemy?.id} lobbySlug={props.lobbySlug} lobbyId={lobby.id}/>
             </div>
             <Ships client={props.client} />
 

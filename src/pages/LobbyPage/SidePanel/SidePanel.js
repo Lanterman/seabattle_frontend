@@ -70,6 +70,7 @@ function SidePanel(props) {
                                     msg="Do you really want to give up?"
                                     client={props.client}
                                     setClient={props.setClient}
+                                    lobbyId = {props.lobbyId}
                                     setIsOpenModal={setIsOpenModal}
                                     content={{userId: enemyBoard?.user_id}}/>}
 

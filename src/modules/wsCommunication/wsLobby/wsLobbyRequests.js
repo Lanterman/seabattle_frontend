@@ -19,12 +19,14 @@ export function sendPutShip(client, shipId, boardId, plane, shipCount, fieldName
     }));
 };
 
-export function sendShot(client, boardId, fieldName, timeToMove) {
+export function sendShot(client, lobbyId, boardId, fieldName, timeToMove, botLevel) {
     client.send(JSON.stringify({
         type: "take_shot",
+        lobby_id: lobbyId,
         board_id: boardId,
         field_name: fieldName,
-        time_to_turn: timeToMove
+        time_to_turn: timeToMove,
+        bot_level: botLevel
     }));
 };
 
@@ -52,12 +54,13 @@ export function sendWhoStarts(client) {
     }));
 };
 
-export function sendDetermineWinner(client, bet, isBot, userId=null) {
+export function sendDetermineWinner(client, lobbyId, bet, isBot, userId=null) {
     client.send(JSON.stringify({
         type: "determine_winner", 
         bet: bet, 
         is_bot: isBot, 
-        user_id: userId
+        user_id: userId,
+        lobby_id: lobbyId,
     }));
 };
 
@@ -121,9 +124,10 @@ export function sendDeleteGame(client) {
     }));
 };
 
-export function sendBotTakeToShot(client, boardId, timeToMove, lastHit, ships, botLevel) {
+export function sendBotTakeToShot(client, lobbyId, boardId, timeToMove, lastHit, ships, botLevel) {
     client.send(JSON.stringify({
         type: "bot_take_to_shot",
+        lobby_id: lobbyId,
         board_id: boardId,
         time_to_turn: timeToMove,
         last_hit: lastHit,

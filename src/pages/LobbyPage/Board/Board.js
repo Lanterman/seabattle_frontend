@@ -87,6 +87,7 @@ function Board(props) {
                 {columnNameList.map((columName) => {
                     return <Column 
                         key={columName}
+                        lobbyId={props.lobbyId}
                         lobbySlug={props.lobbySlug}
                         boardId={props.board.id}
                         isMyBoard={isMyBoard}
