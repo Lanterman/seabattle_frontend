@@ -13,6 +13,7 @@ function SidePanel(props) {
     const myBoard = useSelector(state => state.lobby.myBoard);
     const timeLeft = useSelector(state => state.lobby.timeLeft);
     const enemyBoard = useSelector(state => state.lobby.enemyBoard);
+    const isPlayWithABot = useSelector(state => state.lobby.isPlayWithABot);
     const users = useSelector(state => state.lobby.users);
     const ships = myBoard.ships;
     const boardIsReady = isShipPlaced();
@@ -54,13 +55,13 @@ function SidePanel(props) {
                 <div className="buttons">
                     <input id="ready-button" type="button" value="Ready" 
                         onClick={(e) => readyOnClickHandler(e)} 
-                        disabled={(users.length === 2 & !winner & (!enemyBoard.is_ready || !myBoard.is_ready) & 
+                        disabled={((isPlayWithABot !== null || users.length === 2) & !winner & (!enemyBoard.is_ready || !myBoard.is_ready) & 
                             boardIsReady & timeLeft > 0 )? false : true}/>
                     <input type="button" className="random-placement" value="Random placement"
-                        disabled={users.length === 2 & !myBoard.is_ready && !winner ? false : true}
+                        disabled={(isPlayWithABot || users.length === 2) && !myBoard.is_ready && !winner ? false : true}
                         onClick={(e) => randomPlacementOnClickHandler(e)} />
                     <input className="give-up" type="button" value="Give up"
-                        disabled={users.length === 2 & !winner && enemyBoard.user_id ? false : true}
+                        disabled={(isPlayWithABot || (users.length === 2 && enemyBoard.user_id)) && !winner ? false : true}
                         onClick={() => setIsOpenModal(true)} />
                 </div>
 
@@ -69,6 +70,7 @@ function SidePanel(props) {
                                     msg="Do you really want to give up?"
                                     client={props.client}
                                     setClient={props.setClient}
+                                    lobbyId = {props.lobbyId}
                                     setIsOpenModal={setIsOpenModal}
                                     content={{userId: enemyBoard?.user_id}}/>}
 

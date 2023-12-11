@@ -13,6 +13,7 @@ function LobbyWindow(props) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const bet = useSelector(state => state.lobby.bet);
+    const isPlayWithABot = useSelector(state => state.lobby.isPlayWithABot);
 
     function modalAgreeHandler() {
         if (props.type === "give-up") {
@@ -24,7 +25,7 @@ function LobbyWindow(props) {
     };
 
     function giveUpHandler() {
-        sendDetermineWinner(props.client, bet, props.content.userId);
+        sendDetermineWinner(props.client, props.lobbyId, bet, isPlayWithABot, props.content.userId);
         if (props.content.url) {
             playAgainHandler(false);
             props.client.close();
