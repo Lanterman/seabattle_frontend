@@ -71,10 +71,11 @@ export function sendCountDownTimer(client, timeToMove = null) {
     }));
 };
 
-export function sendTimeIsOver(client, BoardId, ships, board) {
+export function sendTimeIsOver(client, BoardId, bot_level, ships, board) {
     client.send(JSON.stringify({
         type: "time_is_over", 
         board_id: BoardId,
+        bot_level: bot_level,
         ships: ships,
         board: board,
     }));

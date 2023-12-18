@@ -59,7 +59,7 @@ function Lobby(props) {
         if (isPlayWithABot !== null  & !enemyBoard.is_ready & lobby.time_to_placement > timeLeft & !timer.isBotIsReady) {
             const board = createBoardVariable(enemyBoard);
             sessionStorage.removeItem("last_hit");
-            sendTimeIsOver(props.client, enemyBoard.id, enemyBoard.ships, board);
+            sendTimeIsOver(props.client, enemyBoard.id, isPlayWithABot, enemyBoard.ships, board);
             timer.isBotIsReady = true
         };
 
@@ -81,7 +81,7 @@ function Lobby(props) {
         
         // Если время для расстановки вышло, а я не готов - расставляет и делает готовным к игре автоматически
         // Если время на ход вышло - проиграл автоматически
-        if (!timer.isTimeIsOver && timeLeft <= 0) timeIsOver(typeAction, enemy.id, myBoard);
+        if (!timer.isTimeIsOver && timeLeft <= 0) timeIsOver(typeAction, isPlayWithABot ? "":  enemy.id, myBoard);
 
         // Создает новую игру при взаимном согласии
         if (timer.isAnswered && myBoard.is_play_again && (isPlayWithABot !== null || 
@@ -230,11 +230,15 @@ function Lobby(props) {
 
     function timeIsOver(typeAction, enemyId, myBoard) {
         if (typeAction === "turn") {
-            sendDetermineWinner(props.client, lobby.id, lobby.bet, myBoard.is_my_turn && enemyId);
+            // if (isPlayWithABot) {
+                // sendDetermineWinner(props.client, lobby.id, lobby.bet, isPlayWithABot);
+            // } else {
+            sendDetermineWinner(props.client, lobby.id, lobby.bet, isPlayWithABot, myBoard.is_my_turn && enemyId);
+            // };
         } else {
             if (!myBoard.is_ready) {
                 const board = createBoardVariable(myBoard);
-                sendTimeIsOver(props.client, myBoard.id, myBoard.ships, board);
+                sendTimeIsOver(props.client, myBoard.id,  isPlayWithABot, myBoard.ships, board);
                 timer.isTimeIsOver = true;
             };
         };
