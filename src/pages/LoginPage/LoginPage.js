@@ -176,7 +176,11 @@ function LoginPage(props) {
                 </p>
             </div>
 
-            {isAuth && <Navigate to={redirectURL ? redirectURL : `/profile/${username ? username : sessionStorage.getItem("username")}/`} />}
+            {isAuth && <Navigate to={
+                redirectURL && sessionStorage.getItem("user_id") ? 
+                redirectURL : 
+                `/profile/${username ? username : sessionStorage.getItem("username")}/`} />
+            }
         </div>
     );
 };
